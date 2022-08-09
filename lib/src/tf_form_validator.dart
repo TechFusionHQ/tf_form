@@ -29,7 +29,12 @@ class TFFormValidator {
   }
 
   static bool validateDate(String val) {
-    final dateFormat = DateFormat("dd-MM-yyyy");
+    String locale = Intl.getCurrentLocale();
+    String dateFormatPattern = "dd/MM/yyyy";
+    if (locale == "en_US") {
+      dateFormatPattern = "MM/dd/yyyy";
+    }
+    final dateFormat = DateFormat(dateFormatPattern);
 
     try {
       dateFormat.parse(val);
