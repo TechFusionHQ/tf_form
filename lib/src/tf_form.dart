@@ -77,15 +77,17 @@ class TFForm extends StatefulWidget {
     this.passwordPolicy = const TFFormPasswordPolicy(),
     this.requiredErrorMessage = 'Please enter all required fields',
     this.emailErrorMessage = 'Please check the format of your email address, it should read like ben@somewhere.com',
-    this.emailNameErrorMessage ='Please check the format of your email address, it should read like "Joe Bloggs" &lt;joe@bloggs.com> or joe@bloggs.com',
+    this.emailNameErrorMessage =
+        'Please check the format of your email address, it should read like "Joe Bloggs" &lt;joe@bloggs.com> or joe@bloggs.com',
     this.dateErrorMessage = 'Please enter valid date',
     this.passwordErrorMessage = 'Your password must be at least 6 characters and it must contain numbers and letters',
     this.confirmPasswordErrorMessage = 'Please confirm your password',
     this.simpleCharsErrorMessage = 'Please confirm your password',
-    this.slugCharsErrorMessage ='Please use only letters, numbers, underscores, dots, dashes and spaces',
-    this.simpleSlugCharsErrorMessage = 'Please use only letters, numbers, underscores, dashes. Please do not use underscores or dashes at the start and/or end',
+    this.slugCharsErrorMessage = 'Please use only letters, numbers, underscores, dots, dashes and spaces',
+    this.simpleSlugCharsErrorMessage =
+        'Please use only letters, numbers, underscores, dashes. Please do not use underscores or dashes at the start and/or end',
     this.domainCharsErrorMessage = 'Please use only letters, numbers, dashes and dots. Please do not use dashes or dots at the start and/or end',
-    this.reallySimpleCharsErrorMessage ='Please use only letters and numbers, no punctuation, dots, spaces, etc',
+    this.reallySimpleCharsErrorMessage = 'Please use only letters and numbers, no punctuation, dots, spaces, etc',
     this.numberErrorMessage = 'Please enter only numeric digits',
     this.integerErrorMessage = 'Please enter only integer',
     this.hrefErrorMessage = 'Please enter valid URL',
@@ -98,8 +100,7 @@ class TFForm extends StatefulWidget {
   /// _TFFormState form = TFForm.of(context);
   /// ```
   static TFFormState? of(BuildContext context) {
-    final _TFFormScope? scope =
-        context.dependOnInheritedWidgetOfExactType<_TFFormScope>();
+    final _TFFormScope? scope = context.dependOnInheritedWidgetOfExactType<_TFFormScope>();
     return scope?._formState;
   }
 
@@ -160,22 +161,6 @@ class TFFormState extends State<TFForm> {
         } else {
           errors++;
           field._setErrorMessage(val: widget.emailErrorMessage);
-        }
-      }
-    }
-    return errors;
-  }
-
-  int _validateEmailNameFields() {
-    int errors = 0;
-    if (!_fieldMap.containsKey(TFValidationType.emailName)) return errors;
-    for (var field in _fieldMap[TFValidationType.emailName]!) {
-      if (_needValidate(field)) {
-        if (TFFormValidator.validateEmailName(field.val)) {
-          field._setErrorMessage();
-        } else {
-          errors++;
-          field._setErrorMessage(val: widget.emailNameErrorMessage);
         }
       }
     }
@@ -397,12 +382,6 @@ class TFFormState extends State<TFForm> {
       if (resultEmailAddress > 0) {
         errors += resultEmailAddress;
         errorMessages.add(widget.emailErrorMessage);
-      }
-
-      final resultEmailName = _validateEmailNameFields();
-      if (resultEmailName > 0) {
-        errors += resultEmailName;
-        errorMessages.add(widget.emailNameErrorMessage);
       }
 
       final resultDate = _validateDateFields();
@@ -670,15 +649,11 @@ class TFFormField extends StatefulWidget {
     if (validationTypes.contains(TFValidationType.regex) && regex == null) {
       throw ArgumentError("regex type and regex should both be set.");
     }
-    if (validationTypes.contains(TFValidationType.requiredIfHas) &&
-        relatedController == null) {
-      throw ArgumentError(
-          "requiredIfHas type and relatedController should both be set.");
+    if (validationTypes.contains(TFValidationType.requiredIfHas) && relatedController == null) {
+      throw ArgumentError("requiredIfHas type and relatedController should both be set.");
     }
-    if (validationTypes.contains(TFValidationType.confirmPassword) &&
-        passwordController == null) {
-      throw ArgumentError(
-          "confirmPassword type and passwordController should both be set.");
+    if (validationTypes.contains(TFValidationType.confirmPassword) && passwordController == null) {
+      throw ArgumentError("confirmPassword type and passwordController should both be set.");
     }
   }
 
@@ -692,9 +667,10 @@ class _TFFormFieldState extends State<TFFormField> {
   bool _hasFocus = false;
 
   List<TFValidationType> get validationTypes => widget.validationTypes;
+
   String get val => widget.controller.text.trim();
-  String get requiredErrorMessage =>
-      "Please enter a ${widget.label.toLowerCase()}";
+
+  String get requiredErrorMessage => "Please enter a ${widget.label.toLowerCase()}";
 
   void _setErrorMessage({String val = ""}) {
     setState(() {
@@ -730,11 +706,6 @@ class _TFFormFieldState extends State<TFFormField> {
     if (validationTypes.contains(TFValidationType.emailAddress)) {
       if (!TFFormValidator.validateEmailAddress(val)) {
         return form.widget.emailErrorMessage;
-      }
-    }
-    if (validationTypes.contains(TFValidationType.emailName)) {
-      if (!TFFormValidator.validateEmailName(val)) {
-        return form.widget.emailNameErrorMessage;
       }
     }
     if (validationTypes.contains(TFValidationType.date)) {
@@ -842,8 +813,7 @@ class _TFFormFieldState extends State<TFFormField> {
   Widget _buildLabelText() {
     return Text(
       widget.label,
-      style: widget.labelStyle ??
-          const TextStyle(fontSize: 16, color: Color(0xFF595858)),
+      style: widget.labelStyle ?? const TextStyle(fontSize: 16, color: Color(0xFF595858)),
     );
   }
 
@@ -855,9 +825,7 @@ class _TFFormFieldState extends State<TFFormField> {
       decoration: widget.decoration ?? defaultDecoration,
       child: Row(
         mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: widget.expand
-            ? CrossAxisAlignment.start
-            : CrossAxisAlignment.center,
+        crossAxisAlignment: widget.expand ? CrossAxisAlignment.start : CrossAxisAlignment.center,
         children: [
           if (widget.prefix != null) widget.prefix!,
           if (widget.prefix != null) const SizedBox(width: 10),

@@ -113,8 +113,7 @@ class DemoFormPageState extends State<DemoFormPage> {
                   lastDate: DateTime.now().add(const Duration(days: 200)),
                 );
                 if (result != null) {
-                  birthdayController.text =
-                      "${result.day}-${result.month}-${result.year}";
+                  birthdayController.text = "${result.day}-${result.month}-${result.year}";
                 }
               },
             ),

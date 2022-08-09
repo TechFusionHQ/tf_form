@@ -4,7 +4,6 @@ enum TFValidationType {
   requiredIf,
   requiredIfHas,
   emailAddress,
-  emailName,
   date,
   password,
   confirmPassword,
