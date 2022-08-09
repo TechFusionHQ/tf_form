@@ -21,7 +21,6 @@ enum TFValidationType {
 extension TFValidationTypeExt on TFValidationType {
   bool get isUniqueType => [
         TFValidationType.emailAddress,
-        TFValidationType.emailName,
         TFValidationType.date,
         TFValidationType.password,
         TFValidationType.confirmPassword,
