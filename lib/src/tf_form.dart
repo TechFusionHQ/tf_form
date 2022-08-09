@@ -28,9 +28,6 @@ class TFForm extends StatefulWidget {
   /// The error message when email fields are invalid
   final String emailErrorMessage;
 
-  /// The error message when email name fields are invalid
-  final String emailNameErrorMessage;
-
   /// The error message when date fields are invalid
   final String dateErrorMessage;
 
@@ -77,12 +74,10 @@ class TFForm extends StatefulWidget {
     this.passwordPolicy = const TFFormPasswordPolicy(),
     this.requiredErrorMessage = 'Please enter all required fields',
     this.emailErrorMessage = 'Please check the format of your email address, it should read like ben@somewhere.com',
-    this.emailNameErrorMessage =
-        'Please check the format of your email address, it should read like "Joe Bloggs" &lt;joe@bloggs.com> or joe@bloggs.com',
-    this.dateErrorMessage = 'Please enter valid date',
+    this.dateErrorMessage = 'Please enter a valid date',
     this.passwordErrorMessage = 'Your password must be at least 6 characters and it must contain numbers and letters',
     this.confirmPasswordErrorMessage = 'Please confirm your password',
-    this.simpleCharsErrorMessage = 'Please confirm your password',
+    this.simpleCharsErrorMessage = 'Please use only letters, numbers, underscores, dots, dashes and spaces',
     this.slugCharsErrorMessage = 'Please use only letters, numbers, underscores, dots, dashes and spaces',
     this.simpleSlugCharsErrorMessage =
         'Please use only letters, numbers, underscores, dashes. Please do not use underscores or dashes at the start and/or end',
@@ -90,8 +85,8 @@ class TFForm extends StatefulWidget {
     this.reallySimpleCharsErrorMessage = 'Please use only letters and numbers, no punctuation, dots, spaces, etc',
     this.numberErrorMessage = 'Please enter only numeric digits',
     this.integerErrorMessage = 'Please enter only integer',
-    this.hrefErrorMessage = 'Please enter valid URL',
-    this.phoneErrorMessage = 'Please enter valid phone number',
+    this.hrefErrorMessage = 'Please enter a valid URL',
+    this.phoneErrorMessage = 'Please enter a valid phone number',
   }) : super(key: key);
 
   /// Returns the closest [TFFormState] which encloses the given context.
@@ -678,7 +673,7 @@ class _TFFormFieldState extends State<TFFormField> {
 
   String get val => widget.controller.text.trim();
 
-  String get requiredErrorMessage => "Please enter a ${widget.label.toLowerCase()}";
+  String get requiredErrorMessage => "This field is required";
 
   void _setErrorMessage({String val = ""}) {
     setState(() {
