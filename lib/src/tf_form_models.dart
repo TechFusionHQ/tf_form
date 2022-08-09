@@ -14,7 +14,7 @@ enum TFValidationType {
   domainChars,
   reallySimpleChars,
   href,
-  interger,
+  integer,
   regex,
   phone,
 }
@@ -75,7 +75,7 @@ class TFFormPasswordPolicy {
   final int minAlpha;
 
   /// Minimum number of digit characters
-  final int minNumberic;
+  final int minNumeric;
 
   /// List of words not allowed in password
   final List<String> badWords;
@@ -99,7 +99,7 @@ class TFFormPasswordPolicy {
     this.minLower = 0,
     this.minSpecial = 0,
     this.minAlpha = 1,
-    this.minNumberic = 1,
+    this.minNumeric = 1,
     this.badWords = const <String>[],
     this.badSequenceLength = 0,
     this.noQwertySequences = false,
@@ -115,7 +115,7 @@ class TFFormPasswordPolicy {
       'minLower': minLower,
       'minSpecial': minSpecial,
       'minAlpha': minAlpha,
-      'minNumeric': minNumberic,
+      'minNumeric': minNumeric,
       'badWords': badWords,
       'badSequenceLength': badSequenceLength,
       'noQwertySequences': noQwertySequences,

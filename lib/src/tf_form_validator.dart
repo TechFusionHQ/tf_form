@@ -49,7 +49,7 @@ class TFFormValidator {
   }
 
   static bool validatePassword(String val, TFFormPasswordPolicy policy) {
-    final regexs = {
+    final regexMap = {
       "Upper": upperCharRegex,
       "Lower": lowerCharRegex,
       "Alpha": alphaCharRegex,
@@ -61,8 +61,8 @@ class TFFormValidator {
       return false;
     }
     // enforce lower/upper/alpha/numeric/special rules
-    for (final rule in regexs.keys) {
-      if (regexs[rule]!.allMatches(val).length < policy.toMap()["min$rule"]) {
+    for (final rule in regexMap.keys) {
+      if (regexMap[rule]!.allMatches(val).length < policy.toMap()["min$rule"]) {
         return false;
       }
     }
