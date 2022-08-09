@@ -14,7 +14,7 @@ enum TFValidationType {
   domainChars,
   reallySimpleChars,
   href,
-  interger,
+  integer,
   regex,
   phone,
 }

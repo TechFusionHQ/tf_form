@@ -88,7 +88,7 @@ class TFForm extends StatefulWidget {
     this.reallySimpleCharsErrorMessage ='Please use only letters and numbers, no punctuation, dots, spaces, etc',
     this.numberErrorMessage = 'Please enter only numeric digits',
     this.integerErrorMessage = 'Please enter only integer',
-    this.hrefErrorMessage = 'Please enter valid website address',
+    this.hrefErrorMessage = 'Please enter valid URL',
     this.phoneErrorMessage = 'Please enter valid phone number',
   }) : super(key: key);
 
@@ -334,8 +334,8 @@ class TFFormState extends State<TFForm> {
 
   int _validateIntegerFields() {
     int errors = 0;
-    if (!_fieldMap.containsKey(TFValidationType.interger)) return errors;
-    for (var field in _fieldMap[TFValidationType.interger]!) {
+    if (!_fieldMap.containsKey(TFValidationType.integer)) return errors;
+    for (var field in _fieldMap[TFValidationType.integer]!) {
       if (_needValidate(field)) {
         if (TFFormValidator.validateInteger(field.val)) {
           field._setErrorMessage();
@@ -782,7 +782,7 @@ class _TFFormFieldState extends State<TFFormField> {
         return form.widget.hrefErrorMessage;
       }
     }
-    if (validationTypes.contains(TFValidationType.interger)) {
+    if (validationTypes.contains(TFValidationType.integer)) {
       if (!TFFormValidator.validateInteger(val)) {
         return form.widget.hrefErrorMessage;
       }
