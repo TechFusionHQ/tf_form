@@ -33,7 +33,7 @@ extension TFValidationTypeExt on TFValidationType {
         TFValidationType.reallySimpleChars,
         TFValidationType.reallySimpleChars,
         TFValidationType.href,
-        TFValidationType.interger,
+        TFValidationType.integer,
         TFValidationType.phone,
       ].contains(this);
 }
@@ -75,7 +75,7 @@ class TFFormPasswordPolicy {
   final int minAlpha;
 
   /// Minimum number of digit characters
-  final int minNumeric;
+  final int minDigit;
 
   /// List of words not allowed in password
   final List<String> badWords;
@@ -99,7 +99,7 @@ class TFFormPasswordPolicy {
     this.minLower = 0,
     this.minSpecial = 0,
     this.minAlpha = 1,
-    this.minNumeric = 1,
+    this.minDigit = 1,
     this.badWords = const <String>[],
     this.badSequenceLength = 0,
     this.noQwertySequences = false,
@@ -115,7 +115,7 @@ class TFFormPasswordPolicy {
       'minLower': minLower,
       'minSpecial': minSpecial,
       'minAlpha': minAlpha,
-      'minNumeric': minNumeric,
+      'minDigit': minDigit,
       'badWords': badWords,
       'badSequenceLength': badSequenceLength,
       'noQwertySequences': noQwertySequences,

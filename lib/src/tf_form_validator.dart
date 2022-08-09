@@ -53,7 +53,7 @@ class TFFormValidator {
       "Upper": upperCharRegex,
       "Lower": lowerCharRegex,
       "Alpha": alphaCharRegex,
-      "Numeric": numericCharRegex,
+      "Digit": numericCharRegex,
       "Special": specialCharRegex,
     };
     // enforce min/max length
