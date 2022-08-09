@@ -1,4 +1,25 @@
-/// Validation result object that will be returned when calling [TFForm.validate]
+/// Used to configure the validation type of [TFFormField] and [TFForm] widgets.
+enum TFValidationType {
+  required,
+  requiredIf,
+  requiredIfHas,
+  emailAddress,
+  emailName,
+  date,
+  password,
+  confirmPassword,
+  simpleChars,
+  slugChars,
+  simpleSlugChars,
+  domainChars,
+  reallySimpleChars,
+  href,
+  interger,
+  regex,
+  phone,
+}
+
+/// Validation result object that will be returned when calling [TFFormState.validate]
 class TFFormValidationResult {
   /// Number of errors
   int errors;

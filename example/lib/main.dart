@@ -32,7 +32,7 @@ class DemoFormPageState extends State<DemoFormPage> {
   final _personalFormKey = GlobalKey<TFFormState>();
   final nicknameController = TextEditingController();
   final emailController = TextEditingController();
-  final nameController = TextEditingController();
+  final birthdayController = TextEditingController();
   final phoneController = TextEditingController();
 
   final _addressesFormKey = GlobalKey<TFFormState>();
@@ -79,9 +79,9 @@ class DemoFormPageState extends State<DemoFormPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 20),
             TFFormField(
               label: "Nickname",
+              hintText: "Enter a nickname",
               controller: nicknameController,
               validationTypes: const [
                 TFValidationType.required,
@@ -90,6 +90,7 @@ class DemoFormPageState extends State<DemoFormPage> {
             const SizedBox(height: 10),
             TFFormField(
               label: "Email",
+              hintText: "ben@somewhere.com",
               controller: emailController,
               validationTypes: const [
                 TFValidationType.required,
@@ -98,20 +99,36 @@ class DemoFormPageState extends State<DemoFormPage> {
             ),
             const SizedBox(height: 10),
             TFFormField(
-              label: "Name",
-              controller: nameController,
+              label: "Birthday",
+              hintText: "dd-mm-yyyy",
+              controller: birthdayController,
               validationTypes: const [],
+              suffix: const Icon(Icons.arrow_drop_down),
+              readOnly: true,
+              onTap: () async {
+                final result = await showDatePicker(
+                  context: context,
+                  initialDate: DateTime.now(),
+                  firstDate: DateTime.now().subtract(const Duration(days: 200)),
+                  lastDate: DateTime.now().add(const Duration(days: 200)),
+                );
+                if (result != null) {
+                  birthdayController.text =
+                      "${result.day}-${result.month}-${result.year}";
+                }
+              },
             ),
             const SizedBox(height: 10),
             TFFormField(
               label: "Phone",
+              hintText: "Enter a phone",
               controller: phoneController,
               validationTypes: const [
                 TFValidationType.required,
                 TFValidationType.phone,
               ],
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 40),
             ElevatedButton(
               onPressed: () {
                 _personalFormKey.currentState!.validate();
@@ -132,7 +149,6 @@ class DemoFormPageState extends State<DemoFormPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 20),
             TFFormField(
               label: "Type",
               controller: addressTypeController,
@@ -173,7 +189,6 @@ class DemoFormPageState extends State<DemoFormPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 20),
             TFFormField(
               label: "New password",
               controller: passwordController,

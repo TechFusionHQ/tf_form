@@ -3,27 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:tf_form/src/tf_form_models.dart';
 import 'package:tf_form/src/tf_form_validator.dart';
 
-/// Used to configure the validation type of [TFFormField] and [TFForm] widgets.
-enum TFValidationType {
-  required,
-  requiredIf,
-  requiredIfHas,
-  emailAddress,
-  emailName,
-  date,
-  password,
-  confirmPassword,
-  simpleChars,
-  slugChars,
-  simpleSlugChars,
-  domainChars,
-  reallySimpleChars,
-  href,
-  interger,
-  regex,
-  phone,
-}
-
 /// An optional container for grouping together multiple [TFFormField] widgets
 ///
 /// To obtain the [TFFormState], you may use [TFForm.of]
@@ -33,6 +12,12 @@ class TFForm extends StatefulWidget {
   /// The widget below this widget in the tree.
   /// This is the root of the widget hierarchy that contains this form.
   final Widget child;
+
+  /// Used to enable/disable [TFFormField] auto validation and update its error text
+  final bool autoValidate;
+
+  /// Used to show or not show the error widget
+  final bool visibleError;
 
   /// The policy for password text field type
   final TFFormPasswordPolicy passwordPolicy;
@@ -82,38 +67,29 @@ class TFForm extends StatefulWidget {
   /// The error message when phone fields are invalid
   final String phoneErrorMessage;
 
-  /// Used to enable/disable form fields auto validation and update their error text
-  final bool autoValidate;
-
   /// Constructor
   /// The [child] argument must not be null.
   const TFForm({
     Key? key,
     required this.child,
+    this.autoValidate = true,
+    this.visibleError = true,
     this.passwordPolicy = const TFFormPasswordPolicy(),
     this.requiredErrorMessage = 'Please enter all required fields',
-    this.emailErrorMessage =
-        'Please check the format of your email address, it should read like ben@somewhere.com',
-    this.emailNameErrorMessage =
-        'Please check the format of your email address, it should read like "Joe Bloggs" &lt;joe@bloggs.com> or joe@bloggs.com',
+    this.emailErrorMessage = 'Please check the format of your email address, it should read like ben@somewhere.com',
+    this.emailNameErrorMessage ='Please check the format of your email address, it should read like "Joe Bloggs" &lt;joe@bloggs.com> or joe@bloggs.com',
     this.dateErrorMessage = 'Please enter valid date',
-    this.passwordErrorMessage =
-        'Your password must be at least 6 characters and it must contain numbers and letters',
+    this.passwordErrorMessage = 'Your password must be at least 6 characters and it must contain numbers and letters',
     this.confirmPasswordErrorMessage = 'Please confirm your password',
     this.simpleCharsErrorMessage = 'Please confirm your password',
-    this.slugCharsErrorMessage =
-        'Please use only letters, numbers, underscores, dots, dashes and spaces',
-    this.simpleSlugCharsErrorMessage =
-        'Please use only letters, numbers, underscores, dashes. Please do not use underscores or dashes at the start and/or end',
-    this.domainCharsErrorMessage =
-        'Please use only letters, numbers, dashes and dots. Please do not use dashes or dots at the start and/or end',
-    this.reallySimpleCharsErrorMessage =
-        'Please use only letters and numbers, no punctuation, dots, spaces, etc',
+    this.slugCharsErrorMessage ='Please use only letters, numbers, underscores, dots, dashes and spaces',
+    this.simpleSlugCharsErrorMessage = 'Please use only letters, numbers, underscores, dashes. Please do not use underscores or dashes at the start and/or end',
+    this.domainCharsErrorMessage = 'Please use only letters, numbers, dashes and dots. Please do not use dashes or dots at the start and/or end',
+    this.reallySimpleCharsErrorMessage ='Please use only letters and numbers, no punctuation, dots, spaces, etc',
     this.numberErrorMessage = 'Please enter only numeric digits',
     this.integerErrorMessage = 'Please enter only integer',
     this.hrefErrorMessage = 'Please enter valid website address',
     this.phoneErrorMessage = 'Please enter valid phone number',
-    this.autoValidate = true,
   }) : super(key: key);
 
   /// Returns the closest [TFFormState] which encloses the given context.
@@ -164,10 +140,10 @@ class TFFormState extends State<TFForm> {
     if (_fieldMap.containsKey(TFValidationType.required)) {
       for (var field in _fieldMap[TFValidationType.required]!) {
         if (TFFormValidator.validateRequired(field.val)) {
-          field.setErrorMessage();
+          field._setErrorMessage();
         } else {
           errors++;
-          field.setErrorMessage(val: widget.requiredErrorMessage);
+          field._setErrorMessage(val: field.requiredErrorMessage);
         }
       }
     }
@@ -180,10 +156,10 @@ class TFFormState extends State<TFForm> {
     for (var field in _fieldMap[TFValidationType.emailAddress]!) {
       if (_needValidate(field)) {
         if (TFFormValidator.validateEmailAddress(field.val)) {
-          field.setErrorMessage();
+          field._setErrorMessage();
         } else {
           errors++;
-          field.setErrorMessage(val: widget.emailErrorMessage);
+          field._setErrorMessage(val: widget.emailErrorMessage);
         }
       }
     }
@@ -196,10 +172,10 @@ class TFFormState extends State<TFForm> {
     for (var field in _fieldMap[TFValidationType.emailName]!) {
       if (_needValidate(field)) {
         if (TFFormValidator.validateEmailName(field.val)) {
-          field.setErrorMessage();
+          field._setErrorMessage();
         } else {
           errors++;
-          field.setErrorMessage(val: widget.emailNameErrorMessage);
+          field._setErrorMessage(val: widget.emailNameErrorMessage);
         }
       }
     }
@@ -212,10 +188,10 @@ class TFFormState extends State<TFForm> {
     for (var field in _fieldMap[TFValidationType.date]!) {
       if (_needValidate(field)) {
         if (TFFormValidator.validateDate(field.val)) {
-          field.setErrorMessage();
+          field._setErrorMessage();
         } else {
           errors++;
-          field.setErrorMessage(val: widget.dateErrorMessage);
+          field._setErrorMessage(val: widget.dateErrorMessage);
         }
       }
     }
@@ -231,10 +207,10 @@ class TFFormState extends State<TFForm> {
           field.val,
           widget.passwordPolicy,
         )) {
-          field.setErrorMessage();
+          field._setErrorMessage();
         } else {
           errors++;
-          field.setErrorMessage(val: widget.passwordErrorMessage);
+          field._setErrorMessage(val: widget.passwordErrorMessage);
         }
       }
     }
@@ -248,10 +224,10 @@ class TFFormState extends State<TFForm> {
     for (var field in _fieldMap[TFValidationType.confirmPassword]!) {
       if (_needValidate(field)) {
         if (field.val == field.widget.passwordController!.text) {
-          field.setErrorMessage();
+          field._setErrorMessage();
         } else {
           errors++;
-          field.setErrorMessage(val: widget.confirmPasswordErrorMessage);
+          field._setErrorMessage(val: widget.confirmPasswordErrorMessage);
         }
       }
     }
@@ -264,10 +240,10 @@ class TFFormState extends State<TFForm> {
     for (var field in _fieldMap[TFValidationType.simpleChars]!) {
       if (_needValidate(field)) {
         if (TFFormValidator.validateSimpleChars(field.val)) {
-          field.setErrorMessage();
+          field._setErrorMessage();
         } else {
           errors++;
-          field.setErrorMessage(val: widget.simpleCharsErrorMessage);
+          field._setErrorMessage(val: widget.simpleCharsErrorMessage);
         }
       }
     }
@@ -280,10 +256,10 @@ class TFFormState extends State<TFForm> {
     for (var field in _fieldMap[TFValidationType.simpleChars]!) {
       if (_needValidate(field)) {
         if (TFFormValidator.validateSlugChars(field.val)) {
-          field.setErrorMessage();
+          field._setErrorMessage();
         } else {
           errors++;
-          field.setErrorMessage(val: widget.slugCharsErrorMessage);
+          field._setErrorMessage(val: widget.slugCharsErrorMessage);
         }
       }
     }
@@ -296,10 +272,10 @@ class TFFormState extends State<TFForm> {
     for (var field in _fieldMap[TFValidationType.simpleSlugChars]!) {
       if (_needValidate(field)) {
         if (TFFormValidator.validateSimpleSlugChars(field.val)) {
-          field.setErrorMessage();
+          field._setErrorMessage();
         } else {
           errors++;
-          field.setErrorMessage(val: widget.simpleSlugCharsErrorMessage);
+          field._setErrorMessage(val: widget.simpleSlugCharsErrorMessage);
         }
       }
     }
@@ -312,10 +288,10 @@ class TFFormState extends State<TFForm> {
     for (var field in _fieldMap[TFValidationType.domainChars]!) {
       if (_needValidate(field)) {
         if (TFFormValidator.validateDomainChars(field.val)) {
-          field.setErrorMessage();
+          field._setErrorMessage();
         } else {
           errors++;
-          field.setErrorMessage(val: widget.domainCharsErrorMessage);
+          field._setErrorMessage(val: widget.domainCharsErrorMessage);
         }
       }
     }
@@ -330,10 +306,10 @@ class TFFormState extends State<TFForm> {
     for (var field in _fieldMap[TFValidationType.reallySimpleChars]!) {
       if (_needValidate(field)) {
         if (TFFormValidator.validateReallySimpleChars(field.val)) {
-          field.setErrorMessage();
+          field._setErrorMessage();
         } else {
           errors++;
-          field.setErrorMessage(val: widget.reallySimpleCharsErrorMessage);
+          field._setErrorMessage(val: widget.reallySimpleCharsErrorMessage);
         }
       }
     }
@@ -346,10 +322,10 @@ class TFFormState extends State<TFForm> {
     for (var field in _fieldMap[TFValidationType.href]!) {
       if (_needValidate(field)) {
         if (TFFormValidator.validateHref(field.val)) {
-          field.setErrorMessage();
+          field._setErrorMessage();
         } else {
           errors++;
-          field.setErrorMessage(val: widget.hrefErrorMessage);
+          field._setErrorMessage(val: widget.hrefErrorMessage);
         }
       }
     }
@@ -362,10 +338,10 @@ class TFFormState extends State<TFForm> {
     for (var field in _fieldMap[TFValidationType.interger]!) {
       if (_needValidate(field)) {
         if (TFFormValidator.validateInteger(field.val)) {
-          field.setErrorMessage();
+          field._setErrorMessage();
         } else {
           errors++;
-          field.setErrorMessage(val: widget.integerErrorMessage);
+          field._setErrorMessage(val: widget.integerErrorMessage);
         }
       }
     }
@@ -378,10 +354,10 @@ class TFFormState extends State<TFForm> {
     for (var field in _fieldMap[TFValidationType.regex]!) {
       if (_needValidate(field)) {
         if (TFFormValidator.validateRegex(field.val, field.widget.regex!)) {
-          field.setErrorMessage();
+          field._setErrorMessage();
         } else {
           errors++;
-          field.setErrorMessage();
+          field._setErrorMessage();
         }
       }
     }
@@ -394,10 +370,10 @@ class TFFormState extends State<TFForm> {
     for (var field in _fieldMap[TFValidationType.phone]!) {
       if (_needValidate(field)) {
         if (TFFormValidator.validatePhone(field.val)) {
-          field.setErrorMessage();
+          field._setErrorMessage();
         } else {
           errors++;
-          field.setErrorMessage(val: widget.phoneErrorMessage);
+          field._setErrorMessage(val: widget.phoneErrorMessage);
         }
       }
     }
@@ -512,7 +488,10 @@ class TFFormState extends State<TFForm> {
       formState: this,
       child: Column(
         children: [
-          _buildError(),
+          Visibility(
+            visible: widget.visibleError && _errorMessages.isNotEmpty,
+            child: _buildError(),
+          ),
           widget.child,
         ],
       ),
@@ -520,31 +499,41 @@ class TFFormState extends State<TFForm> {
   }
 
   Widget _buildError() {
-    return Visibility(
-      visible: _errorMessages.isNotEmpty,
-      child: Container(
-        margin: const EdgeInsets.all(10),
-        padding: const EdgeInsets.all(20),
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: Colors.red.shade100,
-          border: Border.all(width: 1, color: Colors.red.shade500),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: List.generate(_errorMessages.length, (index) {
-            return Padding(
-              padding: EdgeInsets.only(
-                bottom: index == _errorMessages.length - 1 ? 0 : 5,
-              ),
-              child: Text(
-                "- ${_errorMessages[index]}",
-                style: const TextStyle(color: Colors.red),
-              ),
-            );
-          }),
-        ),
+    return Container(
+      margin: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(20),
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Colors.red.shade100,
+        border: Border.all(width: 1, color: Colors.red),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: List.generate(_errorMessages.length, (index) {
+          return Padding(
+            padding: EdgeInsets.only(
+              bottom: index == _errorMessages.length - 1 ? 0 : 5,
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Icon(
+                  Icons.error_outline,
+                  size: 18,
+                  color: Colors.red,
+                ),
+                const SizedBox(width: 5),
+                Expanded(
+                  child: Text(
+                    _errorMessages[index],
+                    style: const TextStyle(color: Colors.red),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }),
       ),
     );
   }
@@ -593,7 +582,7 @@ class _TFFormScope extends InheritedWidget {
 /// This widget maintains the current state of the form field, so that updates
 /// and validation errors are visually reflected in the UI.
 ///
-/// A [Form] ancestor is required. The [Form] simply makes it easier to
+/// A [TFForm] ancestor is required. The [TFForm] simply makes it easier to
 /// validate multiple fields at once.
 class TFFormField extends StatefulWidget {
   final TextEditingController controller;
@@ -704,8 +693,10 @@ class _TFFormFieldState extends State<TFFormField> {
 
   List<TFValidationType> get validationTypes => widget.validationTypes;
   String get val => widget.controller.text.trim();
+  String get requiredErrorMessage =>
+      "Please enter a ${widget.label.toLowerCase()}";
 
-  void setErrorMessage({String val = ""}) {
+  void _setErrorMessage({String val = ""}) {
     setState(() {
       _errorMessage = val;
     });
@@ -719,13 +710,13 @@ class _TFFormFieldState extends State<TFFormField> {
       String errorMessage = "";
       if (validationTypes.contains(TFValidationType.required)) {
         if (!TFFormValidator.validateRequired(val)) {
-          errorMessage = "Please enter a ${widget.label.toLowerCase()}";
+          errorMessage = requiredErrorMessage;
         }
       }
       if (errorMessage.isEmpty && _needValidate(this)) {
         errorMessage = _validate();
       }
-      setErrorMessage(val: errorMessage);
+      _setErrorMessage(val: errorMessage);
     }
 
     if (widget.onChanged != null) {
@@ -851,7 +842,8 @@ class _TFFormFieldState extends State<TFFormField> {
   Widget _buildLabelText() {
     return Text(
       widget.label,
-      style: widget.labelStyle ?? const TextStyle(fontSize: 16),
+      style: widget.labelStyle ??
+          const TextStyle(fontSize: 16, color: Color(0xFF595858)),
     );
   }
 
@@ -965,7 +957,6 @@ class _TFFormFieldState extends State<TFFormField> {
               },
               child: const Icon(
                 Icons.clear,
-                size: 18,
                 color: Colors.grey,
               ),
             ),

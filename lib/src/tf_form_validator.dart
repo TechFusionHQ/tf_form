@@ -38,12 +38,10 @@ class TFFormValidator {
   }
 
   static bool validateDate(String val) {
-    final dateFormat1 = DateFormat("DD-MM-YYYY");
-    final dateFormat2 = DateFormat("DD-MM-YYYY HH:mm");
+    final dateFormat = DateFormat("dd-MM-yyyy");
 
     try {
-      dateFormat1.parse(val);
-      dateFormat2.parse(val);
+      dateFormat.parse(val);
       return true;
     } catch (e) {
       return false;
