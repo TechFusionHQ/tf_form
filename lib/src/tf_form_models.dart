@@ -19,6 +19,25 @@ enum TFValidationType {
   phone,
 }
 
+extension TFValidationTypeExt on TFValidationType {
+  bool get isUniqueType => [
+        TFValidationType.emailAddress,
+        TFValidationType.emailName,
+        TFValidationType.date,
+        TFValidationType.password,
+        TFValidationType.confirmPassword,
+        TFValidationType.simpleChars,
+        TFValidationType.slugChars,
+        TFValidationType.simpleSlugChars,
+        TFValidationType.domainChars,
+        TFValidationType.reallySimpleChars,
+        TFValidationType.reallySimpleChars,
+        TFValidationType.href,
+        TFValidationType.interger,
+        TFValidationType.phone,
+      ].contains(this);
+}
+
 /// Validation result object that will be returned when calling [TFFormState.validate]
 class TFFormValidationResult {
   /// Number of errors
