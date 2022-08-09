@@ -3,11 +3,11 @@
 TechFusion form builder and validator
   
 ## Usage  
-### 1. Create a Form with a GlobalKey
+### Create a `TFForm` with a GlobalKey
+First, create a `TFForm`. The `TFForm` widget acts as a container for grouping and validating multiple form fields.
 
-First, create a TFForm. The TFForm widget acts as a container for grouping and validating multiple form fields.
+When creating the form, provide a `GlobalKey`. This uniquely identifies the `TFForm`, and allows validation of the form in a later step.
 
-When creating the form, provide a GlobalKey. This uniquely identifies the TFForm, and allows validation of the form in a later step.
 ```dart  
     final _formKey = GlobalKey<TFFormState>();
 
@@ -25,7 +25,12 @@ When creating the form, provide a GlobalKey. This uniquely identifies the TFForm
     }
 ```  
   
-### 2. Add a TFTextField with validation types and controller
+### Add a `TFTextField` with validation types and controller
+`TFTextField` maintains the current state of the form field, so that updates
+and validation errors are visually reflected in the UI.
+
+A `TFForm` ancestor is required. The `TFForm` simply makes it easier to
+validate multiple fields at once.
 
 ```dart  
     TFTextField(
@@ -52,9 +57,10 @@ When creating the form, provide a GlobalKey. This uniquely identifies the TFForm
         ],
     ),
  ```
+ 
 ### 3. Create a button to validate and submit the form
+
 ```dart
-    // The validation result is an object containing the number of errors and the error messages
     ElevatedButton(
         onPressed: () {
             _formKey.currentState!.validate();

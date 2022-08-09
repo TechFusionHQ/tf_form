@@ -1,5 +1,9 @@
+/// Validation result object that will be returned when calling [TFForm.validate]
 class TFFormValidationResult {
+  /// Number of errors
   int errors;
+
+  /// List of error messages
   List<String> errorMessages;
 
   TFFormValidationResult({
@@ -10,18 +14,42 @@ class TFFormValidationResult {
   factory TFFormValidationResult.empty() => TFFormValidationResult();
 }
 
+/// Password policy object is the set of rules for the password field in [TFForm] widget.
 class TFFormPasswordPolicy {
+  /// Maximum length
   final int maxlength;
+
+  /// Minimum length
   final int minLength;
+
+  /// Minimum number of uppercase characters
   final int? minUpper;
+
+  /// Minimum number of lowercase characters
   final int? minLower;
+
+  /// Minimum number of special characters
   final int? minSpecial;
+
+  /// Minimum number of alphabet characters
   final int minAlpha;
+
+  /// Minimum number of digit characters
   final int minNumberic;
+
+  /// List of words not allowed in password
   final List<String> badWords;
+
+  /// Minimum number of sequential characters
   final int badSequenceLength;
+
+  /// Multiple sequential characters are not allowed
   final bool noQwertySequences;
+
+  /// Sequential characters are not allowed
   final bool noSequential;
+
+  /// Custom rule
   final RegExp? custom;
 
   const TFFormPasswordPolicy({
@@ -33,7 +61,7 @@ class TFFormPasswordPolicy {
     this.minAlpha = 1,
     this.minNumberic = 1,
     this.badWords = const <String>[],
-    this.badSequenceLength = 6,
+    this.badSequenceLength = 0,
     this.noQwertySequences = false,
     this.noSequential = false,
     this.custom,

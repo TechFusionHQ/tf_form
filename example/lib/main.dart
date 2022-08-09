@@ -80,35 +80,35 @@ class DemoFormPageState extends State<DemoFormPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 20),
-            TFTextField(
+            TFFormField(
               label: "Nickname",
               controller: nicknameController,
-              types: const [
-                TFTextFieldType.required,
+              validationTypes: const [
+                TFValidationType.required,
               ],
             ),
             const SizedBox(height: 10),
-            TFTextField(
+            TFFormField(
               label: "Email",
               controller: emailController,
-              types: const [
-                TFTextFieldType.required,
-                TFTextFieldType.emailAddress,
+              validationTypes: const [
+                TFValidationType.required,
+                TFValidationType.emailAddress,
               ],
             ),
             const SizedBox(height: 10),
-            TFTextField(
+            TFFormField(
               label: "Name",
               controller: nameController,
-              types: const [],
+              validationTypes: const [],
             ),
             const SizedBox(height: 10),
-            TFTextField(
+            TFFormField(
               label: "Phone",
               controller: phoneController,
-              types: const [
-                TFTextFieldType.required,
-                TFTextFieldType.phone,
+              validationTypes: const [
+                TFValidationType.required,
+                TFValidationType.phone,
               ],
             ),
             const SizedBox(height: 10),
@@ -133,24 +133,24 @@ class DemoFormPageState extends State<DemoFormPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 20),
-            TFTextField(
+            TFFormField(
               label: "Type",
               controller: addressTypeController,
-              types: const [],
+              validationTypes: const [],
             ),
             const SizedBox(height: 10),
-            TFTextField(
+            TFFormField(
               label: "Address 1",
               controller: address1Controller,
-              types: const [
-                TFTextFieldType.required,
+              validationTypes: const [
+                TFValidationType.required,
               ],
             ),
             const SizedBox(height: 10),
-            TFTextField(
+            TFFormField(
               label: "Address 2",
               controller: address2Controller,
-              types: const [],
+              validationTypes: const [],
             ),
             const SizedBox(height: 10),
             ElevatedButton(
@@ -174,22 +174,22 @@ class DemoFormPageState extends State<DemoFormPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 20),
-            TFTextField(
+            TFFormField(
               label: "New password",
               controller: passwordController,
-              types: const [
-                TFTextFieldType.required,
-                TFTextFieldType.password,
+              validationTypes: const [
+                TFValidationType.required,
+                TFValidationType.password,
               ],
             ),
             const SizedBox(height: 10),
-            TFTextField(
+            TFFormField(
               label: "Confirm",
               controller: confirmPasswordController,
               passwordController: passwordController,
-              types: const [
-                TFTextFieldType.required,
-                TFTextFieldType.confirmPassword,
+              validationTypes: const [
+                TFValidationType.required,
+                TFValidationType.confirmPassword,
               ],
             ),
             const SizedBox(height: 10),
