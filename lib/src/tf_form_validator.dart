@@ -28,16 +28,19 @@ class TFFormValidator {
     return val.isNotEmpty && emailRegex.hasMatch(val);
   }
 
-  static bool validateDate(String val) {
+  static DateFormat getCurrentDateFormat() {
     String locale = Intl.getCurrentLocale();
     String dateFormatPattern = "dd/MM/yyyy";
     if (locale == "en_US") {
       dateFormatPattern = "MM/dd/yyyy";
     }
     final dateFormat = DateFormat(dateFormatPattern);
+    return dateFormat;
+  }
 
+  static bool validateDate(String val) {
     try {
-      dateFormat.parse(val);
+      getCurrentDateFormat().parse(val);
       return true;
     } catch (e) {
       return false;

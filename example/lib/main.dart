@@ -100,7 +100,7 @@ class DemoFormPageState extends State<DemoFormPage> {
             const SizedBox(height: 10),
             TFFormField(
               label: "Birthday",
-              hintText: "dd-mm-yyyy",
+              hintText: TFFormValidator.getCurrentDateFormat().pattern,
               controller: birthdayController,
               validationTypes: const [],
               suffix: const Icon(Icons.arrow_drop_down),
@@ -113,7 +113,7 @@ class DemoFormPageState extends State<DemoFormPage> {
                   lastDate: DateTime.now().add(const Duration(days: 200)),
                 );
                 if (result != null) {
-                  birthdayController.text = "${result.day}-${result.month}-${result.year}";
+                  birthdayController.text = TFFormValidator.getCurrentDateFormat().format(result);
                 }
               },
             ),
