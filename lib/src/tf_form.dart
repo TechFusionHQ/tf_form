@@ -646,6 +646,14 @@ class TFFormField extends StatefulWidget {
     this.passwordController,
     this.regex,
   }) : super(key: key) {
+    int uniqueTypeCount = 0;
+    for (var type in validationTypes) { 
+      if(type.isUniqueType) uniqueTypeCount++;
+    }
+    if(uniqueTypeCount > 1){
+      throw ArgumentError("each form field can only contain 1 unique validation type.");
+    }
+    
     if (validationTypes.contains(TFValidationType.regex) && regex == null) {
       throw ArgumentError("regex type and regex should both be set.");
     }
