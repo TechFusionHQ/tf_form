@@ -1,3 +1,5 @@
+// Copyright (c) 2022 TechFusion Ltd (https://www.techfusion.dev).
+
 import 'package:intl/intl.dart';
 import 'package:tf_form/src/tf_form_models.dart';
 
