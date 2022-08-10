@@ -1,4 +1,4 @@
-// ignore_for_file: no_leading_underscores_for_local_identifiers
+// Copyright (c) 2022 TechFusion Ltd (https://www.techfusion.dev).
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

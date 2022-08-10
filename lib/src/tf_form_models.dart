@@ -1,3 +1,5 @@
+// Copyright (c) 2022 TechFusion Ltd (https://www.techfusion.dev).
+
 /// Used to configure the validation type of [TFTextField] and [TFForm] widgets.
 enum TFValidationType {
   required,
