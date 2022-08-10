@@ -1,4 +1,4 @@
-/// Used to configure the validation type of [TFFormField] and [TFForm] widgets.
+/// Used to configure the validation type of [TFTextField] and [TFForm] widgets.
 enum TFValidationType {
   required,
   requiredIf,
@@ -120,4 +120,26 @@ class TFFormPasswordPolicy {
       'noSequential': noSequential,
     };
   }
+}
+
+/// Checkbox item object is used for [TFCheckboxGroup]
+class TFCheckboxItem {
+  final String title;
+  bool isChecked;
+
+  TFCheckboxItem({
+    required this.title,
+    this.isChecked = false,
+  });
+}
+
+/// Radio item object is used for [TFRadioGroup]
+class TFRadioItem<T> {
+  final String title;
+  final T value;
+
+  TFRadioItem({
+    required this.title,
+    required this.value,
+  });
 }

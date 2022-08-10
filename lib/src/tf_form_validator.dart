@@ -28,7 +28,7 @@ class TFFormValidator {
     return val.isNotEmpty && emailRegex.hasMatch(val);
   }
 
-  static DateFormat getCurrentDateFormat() {
+  static DateFormat getDateFormat() {
     String locale = Intl.getCurrentLocale();
     String dateFormatPattern = "dd/MM/yyyy";
     if (locale == "en_US") {
@@ -40,7 +40,7 @@ class TFFormValidator {
 
   static bool validateDate(String val) {
     try {
-      getCurrentDateFormat().parse(val);
+      getDateFormat().parse(val);
       return true;
     } catch (e) {
       return false;

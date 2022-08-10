@@ -34,6 +34,7 @@ class DemoFormPageState extends State<DemoFormPage> {
   final emailController = TextEditingController();
   final birthdayController = TextEditingController();
   final phoneController = TextEditingController();
+  final cityController = TextEditingController();
 
   final _addressesFormKey = GlobalKey<TFFormState>();
   final address1Controller = TextEditingController();
@@ -72,69 +73,89 @@ class DemoFormPageState extends State<DemoFormPage> {
   }
 
   Widget _buildPersonalInfoTab() {
-    return TFForm(
-      key: _personalFormKey,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TFFormField(
-              label: "Nickname",
-              hintText: "Enter a nickname",
-              controller: nicknameController,
-              validationTypes: const [
-                TFValidationType.required,
-              ],
-            ),
-            const SizedBox(height: 10),
-            TFFormField(
-              label: "Email",
-              hintText: "ben@somewhere.com",
-              controller: emailController,
-              validationTypes: const [
-                TFValidationType.required,
-                TFValidationType.emailAddress,
-              ],
-            ),
-            const SizedBox(height: 10),
-            TFFormField(
-              label: "Birthday",
-              hintText: TFFormValidator.getCurrentDateFormat().pattern,
-              controller: birthdayController,
-              validationTypes: const [],
-              suffix: const Icon(Icons.arrow_drop_down),
-              readOnly: true,
-              onTap: () async {
-                final result = await showDatePicker(
-                  context: context,
-                  initialDate: DateTime.now(),
-                  firstDate: DateTime.now().subtract(const Duration(days: 200)),
-                  lastDate: DateTime.now().add(const Duration(days: 200)),
-                );
-                if (result != null) {
-                  birthdayController.text = TFFormValidator.getCurrentDateFormat().format(result);
-                }
-              },
-            ),
-            const SizedBox(height: 10),
-            TFFormField(
-              label: "Phone",
-              hintText: "Enter a phone",
-              controller: phoneController,
-              validationTypes: const [
-                TFValidationType.required,
-                TFValidationType.phone,
-              ],
-            ),
-            const SizedBox(height: 40),
-            ElevatedButton(
-              onPressed: () {
-                _personalFormKey.currentState!.validate();
-              },
-              child: const Text('Submit'),
-            ),
-          ],
+    return SingleChildScrollView(
+      child: TFForm(
+        key: _personalFormKey,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TFTextField(
+                label: "Nickname",
+                hintText: "Enter a nickname",
+                controller: nicknameController,
+                validationTypes: const [
+                  TFValidationType.required,
+                ],
+              ),
+              const SizedBox(height: 15),
+              TFTextField(
+                label: "Email",
+                hintText: "ben@somewhere.com",
+                controller: emailController,
+                validationTypes: const [
+                  TFValidationType.required,
+                  TFValidationType.emailAddress,
+                ],
+              ),
+              const SizedBox(height: 15),
+              TFDateField(
+                label: "Birthday",
+                controller: birthdayController,
+              ),
+              const SizedBox(height: 15),
+              TFDropdownField(
+                label: "City",
+                items: const [
+                  "Hà Nội",
+                  "Hồ Chí Minh",
+                  "Đà Nẵng",
+                  "Lào Cai",
+                ],
+                controller: cityController,
+              ),
+              const SizedBox(height: 15),
+              TFTextField(
+                label: "Phone",
+                hintText: "Enter a phone",
+                controller: phoneController,
+                validationTypes: const [
+                  TFValidationType.required,
+                  TFValidationType.phone,
+                ],
+              ),
+              const SizedBox(height: 20),
+              TFCheckboxGroup(
+                title: "Which social network do you usually use ?",
+                items: [
+                  TFCheckboxItem(title: "Facebook"),
+                  TFCheckboxItem(title: "Zalo"),
+                  TFCheckboxItem(title: "Twitter"),
+                  TFCheckboxItem(title: "Linkedin"),
+                  TFCheckboxItem(title: "Telegram"),
+                ],
+                onChanged: (checkedItemIndexes) {},
+              ),
+              const SizedBox(height: 20),
+              TFRadioGroup<String>(
+                title: "Gender",
+                items: [
+                  TFRadioItem<String>(title: "Male", value: "male"),
+                  TFRadioItem<String>(title: "Female", value: "female"),
+                  TFRadioItem<String>(title: "Other", value: "other"),
+                ],
+                onChanged: (selectedItem) {},
+              ),
+              const SizedBox(height: 40),
+              ElevatedButton(
+                onPressed: () {
+                  _personalFormKey.currentState!.validate();
+                },
+                child: const Text('Submit'),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -148,13 +169,13 @@ class DemoFormPageState extends State<DemoFormPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TFFormField(
+            TFTextField(
               label: "Type",
               controller: addressTypeController,
               validationTypes: const [],
             ),
             const SizedBox(height: 10),
-            TFFormField(
+            TFTextField(
               label: "Address 1",
               controller: address1Controller,
               validationTypes: const [
@@ -162,7 +183,7 @@ class DemoFormPageState extends State<DemoFormPage> {
               ],
             ),
             const SizedBox(height: 10),
-            TFFormField(
+            TFTextField(
               label: "Address 2",
               controller: address2Controller,
               validationTypes: const [],
@@ -188,7 +209,7 @@ class DemoFormPageState extends State<DemoFormPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TFFormField(
+            TFTextField(
               label: "New password",
               controller: passwordController,
               validationTypes: const [
@@ -197,7 +218,7 @@ class DemoFormPageState extends State<DemoFormPage> {
               ],
             ),
             const SizedBox(height: 10),
-            TFFormField(
+            TFTextField(
               label: "Confirm",
               controller: confirmPasswordController,
               passwordController: passwordController,

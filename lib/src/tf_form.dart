@@ -1,9 +1,12 @@
+// ignore_for_file: no_leading_underscores_for_local_identifiers
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:tf_form/src/tf_form_common.dart';
 import 'package:tf_form/src/tf_form_models.dart';
 import 'package:tf_form/src/tf_form_validator.dart';
 
-/// An optional container for grouping together multiple [TFFormField] widgets
+/// An optional container for grouping together multiple [TFTextField] widgets
 ///
 /// To obtain the [TFFormState], you may use [TFForm.of]
 /// with a context whose ancestor is the [TFForm], or pass a [GlobalKey] to the
@@ -13,7 +16,7 @@ class TFForm extends StatefulWidget {
   /// This is the root of the widget hierarchy that contains this form.
   final Widget child;
 
-  /// Used to enable/disable [TFFormField] auto validation and update its error text
+  /// Used to enable/disable [TFTextField] auto validation and update its error text
   final bool autoValidate;
 
   /// Used to show or not show the error widget
@@ -73,16 +76,22 @@ class TFForm extends StatefulWidget {
     this.visibleError = true,
     this.passwordPolicy = const TFFormPasswordPolicy(),
     this.requiredErrorMessage = 'Please enter all required fields',
-    this.emailErrorMessage = 'Please check the format of your email address, it should read like ben@somewhere.com',
+    this.emailErrorMessage =
+        'Please check the format of your email address, it should read like ben@somewhere.com',
     this.dateErrorMessage = 'Please enter a valid date',
-    this.passwordErrorMessage = 'Your password must be at least 6 characters and it must contain numbers and letters',
+    this.passwordErrorMessage =
+        'Your password must be at least 6 characters and it must contain numbers and letters',
     this.confirmPasswordErrorMessage = 'Please confirm your password',
-    this.simpleCharsErrorMessage = 'Please use only letters, numbers, underscores, dots, dashes and spaces',
-    this.slugCharsErrorMessage = 'Please use only letters, numbers, underscores, dots, dashes and spaces',
+    this.simpleCharsErrorMessage =
+        'Please use only letters, numbers, underscores, dots, dashes and spaces',
+    this.slugCharsErrorMessage =
+        'Please use only letters, numbers, underscores, dots, dashes and spaces',
     this.simpleSlugCharsErrorMessage =
         'Please use only letters, numbers, underscores, dashes. Please do not use underscores or dashes at the start and/or end',
-    this.domainCharsErrorMessage = 'Please use only letters, numbers, dashes and dots. Please do not use dashes or dots at the start and/or end',
-    this.reallySimpleCharsErrorMessage = 'Please use only letters and numbers, no punctuation, dots, spaces, etc',
+    this.domainCharsErrorMessage =
+        'Please use only letters, numbers, dashes and dots. Please do not use dashes or dots at the start and/or end',
+    this.reallySimpleCharsErrorMessage =
+        'Please use only letters and numbers, no punctuation, dots, spaces, etc',
     this.numberErrorMessage = 'Please enter only numeric digits',
     this.integerErrorMessage = 'Please enter only integer',
     this.hrefErrorMessage = 'Please enter a valid URL',
@@ -95,7 +104,8 @@ class TFForm extends StatefulWidget {
   /// _TFFormState form = TFForm.of(context);
   /// ```
   static TFFormState? of(BuildContext context) {
-    final _TFFormScope? scope = context.dependOnInheritedWidgetOfExactType<_TFFormScope>();
+    final _TFFormScope? scope =
+        context.dependOnInheritedWidgetOfExactType<_TFFormScope>();
     return scope?._formState;
   }
 
@@ -106,14 +116,17 @@ class TFForm extends StatefulWidget {
 /// State associated with a [TFForm] widget.
 ///
 /// A [TFFormState] object can be used to [validate] every
-/// [TFFormField] that is a descendant of the associated [Form].
+/// [TFTextField] that is a descendant of the associated [Form].
 ///
 /// Typically obtained via [TFForm.of].
 class TFFormState extends State<TFForm> {
-  final _fieldMap = <TFValidationType, List<_TFFormFieldState>>{};
+  final _fieldMap = <TFValidationType, List<_TFTextFieldState>>{};
+  final _checkboxGroups = <_TFCheckboxGroupState>[];
+  final _raidoGroups = <_TFRadioGroupState>[];
+
   List<String> _errorMessages = [];
 
-  void _register(_TFFormFieldState field) {
+  void _registerField(_TFTextFieldState field) {
     for (var type in field.validationTypes) {
       if (_fieldMap.containsKey(type)) {
         _fieldMap[type]!.add(field);
@@ -123,12 +136,28 @@ class TFFormState extends State<TFForm> {
     }
   }
 
-  void _unregister(_TFFormFieldState field) {
+  void _registerCheckboxGroup(_TFCheckboxGroupState group) {
+    _checkboxGroups.add(group);
+  }
+
+  void _registerRadioGroup(_TFRadioGroupState group) {
+    _raidoGroups.add(group);
+  }
+
+  void _unregisterField(_TFTextFieldState field) {
     for (var type in field.validationTypes) {
       if (_fieldMap.containsKey(type)) {
         _fieldMap[type]!.remove(field);
       }
     }
+  }
+
+  void _unregisterCheckboxGroup(_TFCheckboxGroupState group) {
+    _checkboxGroups.remove(group);
+  }
+
+  void _unregisterRadioGroup(_TFRadioGroupState group) {
+    _raidoGroups.remove(group);
   }
 
   int _validateRequiredFields() {
@@ -143,12 +172,34 @@ class TFFormState extends State<TFForm> {
         }
       }
     }
+    if (_checkboxGroups.isNotEmpty) {
+      for (var group in _checkboxGroups) {
+        if (group._checkedItemIndexes.isNotEmpty) {
+          group._setValid(true);
+        } else {
+          errors++;
+          group._setValid(false);
+        }
+      }
+    }
+    if (_raidoGroups.isNotEmpty) {
+      for (var group in _raidoGroups) {
+        if (group._groupValue != null) {
+          group._setValid(true);
+        } else {
+          errors++;
+          group._setValid(false);
+        }
+      }
+    }
     return errors;
   }
 
   int _validateEmailAddressFields() {
     int errors = 0;
-    if (!_fieldMap.containsKey(TFValidationType.emailAddress)) return errors;
+    if (!_fieldMap.containsKey(TFValidationType.emailAddress)) {
+      return errors;
+    }
     for (var field in _fieldMap[TFValidationType.emailAddress]!) {
       if (_needValidate(field)) {
         if (TFFormValidator.validateEmailAddress(field.val)) {
@@ -164,7 +215,9 @@ class TFFormState extends State<TFForm> {
 
   int _validateDateFields() {
     int errors = 0;
-    if (!_fieldMap.containsKey(TFValidationType.date)) return errors;
+    if (!_fieldMap.containsKey(TFValidationType.date)) {
+      return errors;
+    }
     for (var field in _fieldMap[TFValidationType.date]!) {
       if (_needValidate(field)) {
         if (TFFormValidator.validateDate(field.val)) {
@@ -180,7 +233,9 @@ class TFFormState extends State<TFForm> {
 
   int _validatePasswordFields() {
     int errors = 0;
-    if (!_fieldMap.containsKey(TFValidationType.password)) return errors;
+    if (!_fieldMap.containsKey(TFValidationType.password)) {
+      return errors;
+    }
     for (var field in _fieldMap[TFValidationType.password]!) {
       if (_needValidate(field)) {
         if (TFFormValidator.validatePassword(
@@ -200,7 +255,9 @@ class TFFormState extends State<TFForm> {
 
   int _validateConfirmPasswordFields() {
     int errors = 0;
-    if (!_fieldMap.containsKey(TFValidationType.confirmPassword)) return errors;
+    if (!_fieldMap.containsKey(TFValidationType.confirmPassword)) {
+      return errors;
+    }
     for (var field in _fieldMap[TFValidationType.confirmPassword]!) {
       if (_needValidate(field)) {
         if (field.val == field.widget.passwordController!.text) {
@@ -216,7 +273,9 @@ class TFFormState extends State<TFForm> {
 
   int _validateSimpleCharsFields() {
     int errors = 0;
-    if (!_fieldMap.containsKey(TFValidationType.simpleChars)) return errors;
+    if (!_fieldMap.containsKey(TFValidationType.simpleChars)) {
+      return errors;
+    }
     for (var field in _fieldMap[TFValidationType.simpleChars]!) {
       if (_needValidate(field)) {
         if (TFFormValidator.validateSimpleChars(field.val)) {
@@ -232,7 +291,9 @@ class TFFormState extends State<TFForm> {
 
   int _validateSlugCharsFields() {
     int errors = 0;
-    if (!_fieldMap.containsKey(TFValidationType.simpleChars)) return errors;
+    if (!_fieldMap.containsKey(TFValidationType.simpleChars)) {
+      return errors;
+    }
     for (var field in _fieldMap[TFValidationType.simpleChars]!) {
       if (_needValidate(field)) {
         if (TFFormValidator.validateSlugChars(field.val)) {
@@ -248,7 +309,9 @@ class TFFormState extends State<TFForm> {
 
   int _validateSimpleSlugCharsFields() {
     int errors = 0;
-    if (!_fieldMap.containsKey(TFValidationType.simpleSlugChars)) return errors;
+    if (!_fieldMap.containsKey(TFValidationType.simpleSlugChars)) {
+      return errors;
+    }
     for (var field in _fieldMap[TFValidationType.simpleSlugChars]!) {
       if (_needValidate(field)) {
         if (TFFormValidator.validateSimpleSlugChars(field.val)) {
@@ -264,7 +327,9 @@ class TFFormState extends State<TFForm> {
 
   int _validateDomainCharsFields() {
     int errors = 0;
-    if (!_fieldMap.containsKey(TFValidationType.domainChars)) return errors;
+    if (!_fieldMap.containsKey(TFValidationType.domainChars)) {
+      return errors;
+    }
     for (var field in _fieldMap[TFValidationType.domainChars]!) {
       if (_needValidate(field)) {
         if (TFFormValidator.validateDomainChars(field.val)) {
@@ -298,7 +363,9 @@ class TFFormState extends State<TFForm> {
 
   int _validateHrefFields() {
     int errors = 0;
-    if (!_fieldMap.containsKey(TFValidationType.href)) return errors;
+    if (!_fieldMap.containsKey(TFValidationType.href)) {
+      return errors;
+    }
     for (var field in _fieldMap[TFValidationType.href]!) {
       if (_needValidate(field)) {
         if (TFFormValidator.validateHref(field.val)) {
@@ -314,7 +381,9 @@ class TFFormState extends State<TFForm> {
 
   int _validateIntegerFields() {
     int errors = 0;
-    if (!_fieldMap.containsKey(TFValidationType.integer)) return errors;
+    if (!_fieldMap.containsKey(TFValidationType.integer)) {
+      return errors;
+    }
     for (var field in _fieldMap[TFValidationType.integer]!) {
       if (_needValidate(field)) {
         if (TFFormValidator.validateInteger(field.val)) {
@@ -330,7 +399,9 @@ class TFFormState extends State<TFForm> {
 
   int _validateRegexFields() {
     int errors = 0;
-    if (!_fieldMap.containsKey(TFValidationType.regex)) return errors;
+    if (!_fieldMap.containsKey(TFValidationType.regex)) {
+      return errors;
+    }
     for (var field in _fieldMap[TFValidationType.regex]!) {
       if (_needValidate(field)) {
         if (TFFormValidator.validateRegex(field.val, field.widget.regex!)) {
@@ -346,7 +417,9 @@ class TFFormState extends State<TFForm> {
 
   int _validatePhoneFields() {
     int errors = 0;
-    if (!_fieldMap.containsKey(TFValidationType.phone)) return errors;
+    if (!_fieldMap.containsKey(TFValidationType.phone)) {
+      return errors;
+    }
     for (var field in _fieldMap[TFValidationType.phone]!) {
       if (_needValidate(field)) {
         if (TFFormValidator.validatePhone(field.val)) {
@@ -360,7 +433,7 @@ class TFFormState extends State<TFForm> {
     return errors;
   }
 
-  /// Validates every [TFFormField] that is a descendant of this [TFForm], and
+  /// Validates every [TFTextField] that is a descendant of this [TFForm], and
   /// returns [TFFormValidationResult].
   ///
   /// The form will rebuild.
@@ -479,7 +552,7 @@ class TFFormState extends State<TFForm> {
       width: double.infinity,
       decoration: BoxDecoration(
         color: Colors.red.shade100,
-        border: Border.all(width: 1, color: Colors.red),
+        border: Border.all(width: 1, color: TFFormColors.errorColor),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
@@ -495,13 +568,13 @@ class TFFormState extends State<TFForm> {
                 const Icon(
                   Icons.error_outline,
                   size: 18,
-                  color: Colors.red,
+                  color: TFFormColors.errorColor,
                 ),
                 const SizedBox(width: 5),
                 Expanded(
                   child: Text(
                     _errorMessages[index],
-                    style: const TextStyle(color: Colors.red),
+                    style: const TextStyle(color: TFFormColors.errorColor),
                   ),
                 ),
               ],
@@ -513,10 +586,10 @@ class TFFormState extends State<TFForm> {
   }
 }
 
-/// Check if a [TFFormField] needs validation
+/// Check if a [TFTextField] needs validation
 ///
-/// returns [true] if this [TFFormField] needs validation.
-bool _needValidate(_TFFormFieldState field) {
+/// returns [true] if this [TFTextField] needs validation.
+bool _needValidate(_TFTextFieldState field) {
   if (field.validationTypes.contains(TFValidationType.required)) {
     return true;
   }
@@ -558,15 +631,16 @@ class _TFFormScope extends InheritedWidget {
 ///
 /// A [TFForm] ancestor is required. The [TFForm] simply makes it easier to
 /// validate multiple fields at once.
-class TFFormField extends StatefulWidget {
+class TFTextField extends StatefulWidget {
   final TextEditingController controller;
+  final FocusNode? focusNode;
   final bool readOnly;
   final bool autoFocus;
   final bool obscureText;
   final bool expand;
-  final FocusNode? focusNode;
   final Function()? onTap;
   final Function(String)? onChanged;
+  final Function(bool)? onFocusChanged;
   final Function()? onEditingComplete;
   final String label;
   final String? hintText;
@@ -587,9 +661,6 @@ class TFFormField extends StatefulWidget {
   final TextStyle? contentStyle;
   final TextStyle? hintStyle;
   final Color borderColor;
-  final Color focusBorderColor;
-  final Color errorBorderColor;
-  final Color backgroundColor;
   final BoxDecoration? decoration;
 
   /// For validation
@@ -604,17 +675,18 @@ class TFFormField extends StatefulWidget {
   /// For regex type
   final RegExp? regex;
 
-  TFFormField({
+  TFTextField({
     Key? key,
     required this.label,
     required this.controller,
+    this.focusNode,
     this.readOnly = false,
     this.autoFocus = false,
     this.obscureText = false,
     this.expand = false,
     this.onTap,
     this.onChanged,
-    this.focusNode,
+    this.onFocusChanged,
     this.hintText = "",
     this.height,
     this.keyboardType,
@@ -633,38 +705,40 @@ class TFFormField extends StatefulWidget {
     this.contentStyle,
     this.hintStyle,
     this.borderColor = const Color(0x1F000000),
-    this.focusBorderColor = const Color(0xFF0084FF),
-    this.errorBorderColor = const Color(0xFFE82C2B),
-    this.backgroundColor = const Color(0xFFFFFFFF),
     required this.validationTypes,
     this.relatedController,
     this.passwordController,
     this.regex,
   }) : super(key: key) {
     int uniqueTypeCount = 0;
-    for (var type in validationTypes) { 
-      if(type.isUniqueType) uniqueTypeCount++;
+    for (var type in validationTypes) {
+      if (type.isUniqueType) uniqueTypeCount++;
     }
-    if(uniqueTypeCount > 1){
-      throw ArgumentError("each form field can only contain 1 unique validation type.");
+    if (uniqueTypeCount > 1) {
+      throw ArgumentError(
+          "each form field can only contain 1 unique validation type.");
     }
-    
+
     if (validationTypes.contains(TFValidationType.regex) && regex == null) {
       throw ArgumentError("regex type and regex should both be set.");
     }
-    if (validationTypes.contains(TFValidationType.requiredIfHas) && relatedController == null) {
-      throw ArgumentError("requiredIfHas type and relatedController should both be set.");
+    if (validationTypes.contains(TFValidationType.requiredIfHas) &&
+        relatedController == null) {
+      throw ArgumentError(
+          "requiredIfHas type and relatedController should both be set.");
     }
-    if (validationTypes.contains(TFValidationType.confirmPassword) && passwordController == null) {
-      throw ArgumentError("confirmPassword type and passwordController should both be set.");
+    if (validationTypes.contains(TFValidationType.confirmPassword) &&
+        passwordController == null) {
+      throw ArgumentError(
+          "confirmPassword type and passwordController should both be set.");
     }
   }
 
   @override
-  State<TFFormField> createState() => _TFFormFieldState();
+  State<TFTextField> createState() => _TFTextFieldState();
 }
 
-class _TFFormFieldState extends State<TFFormField> {
+class _TFTextFieldState extends State<TFTextField> {
   late FocusNode _focusNode;
   String _errorMessage = "";
   bool _hasFocus = false;
@@ -773,13 +847,16 @@ class _TFFormFieldState extends State<TFFormField> {
     setState(() {
       _hasFocus = _focusNode.hasFocus;
     });
+    if (widget.onFocusChanged != null) {
+      widget.onFocusChanged!(_focusNode.hasFocus);
+    }
   }
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      TFForm.of(context)?._register(this);
+      TFForm.of(context)?._registerField(this);
     });
 
     _focusNode = widget.focusNode ?? FocusNode();
@@ -788,7 +865,7 @@ class _TFFormFieldState extends State<TFFormField> {
 
   @override
   void deactivate() {
-    TFForm.of(context)?._unregister(this);
+    TFForm.of(context)?._unregisterField(this);
     super.deactivate();
   }
 
@@ -804,19 +881,17 @@ class _TFFormFieldState extends State<TFFormField> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildLabelText(),
+        TitleTextWidget(
+          title: widget.label,
+          style: widget.labelStyle,
+        ),
         const SizedBox(height: 8),
         _buildFieldContainer(),
-        const SizedBox(height: 8),
-        _buildErrorText(),
+        ErrorTextWidget(
+          error: _errorMessage,
+          visible: _errorMessage.isNotEmpty,
+        ),
       ],
-    );
-  }
-
-  Widget _buildLabelText() {
-    return Text(
-      widget.label,
-      style: widget.labelStyle ?? const TextStyle(fontSize: 16, color: Color(0xFF595858)),
     );
   }
 
@@ -828,7 +903,9 @@ class _TFFormFieldState extends State<TFFormField> {
       decoration: widget.decoration ?? defaultDecoration,
       child: Row(
         mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: widget.expand ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+        crossAxisAlignment: widget.expand
+            ? CrossAxisAlignment.start
+            : CrossAxisAlignment.center,
         children: [
           if (widget.prefix != null) widget.prefix!,
           if (widget.prefix != null) const SizedBox(width: 10),
@@ -871,31 +948,6 @@ class _TFFormFieldState extends State<TFFormField> {
     );
   }
 
-  Widget _buildErrorText() {
-    return Visibility(
-      visible: _errorMessage.isNotEmpty,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(
-            Icons.error,
-            size: 16,
-            color: widget.errorBorderColor,
-          ),
-          const SizedBox(width: 5),
-          Expanded(
-            child: Text(
-              _errorMessage,
-              style: TextStyle(
-                color: widget.errorBorderColor,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   EdgeInsets get defaultInsetPadding => const EdgeInsets.only(
         left: 10,
         right: 10,
@@ -904,14 +956,14 @@ class _TFFormFieldState extends State<TFFormField> {
       );
 
   BoxDecoration get defaultDecoration => BoxDecoration(
-        color: widget.backgroundColor,
+        color: TFFormColors.backgroundColor,
         borderRadius: BorderRadius.circular(widget.borderRadius ?? 10),
         border: Border.all(
           width: 1,
           color: _errorMessage.isNotEmpty
-              ? widget.errorBorderColor
+              ? TFFormColors.errorColor
               : _hasFocus
-                  ? widget.focusBorderColor
+                  ? TFFormColors.activeColor
                   : widget.borderColor,
         ),
       );
@@ -934,4 +986,401 @@ class _TFFormFieldState extends State<TFFormField> {
           );
         },
       );
+}
+
+/// [TFDropdownField] widget allows the user to pick a value from a dropdown list
+class TFDropdownField extends StatefulWidget {
+  final String label;
+  final List<String> items;
+  final TextEditingController controller;
+
+  const TFDropdownField({
+    Key? key,
+    required this.label,
+    required this.items,
+    required this.controller,
+  }) : super(key: key);
+
+  @override
+  State<TFDropdownField> createState() => _TFDropdownFieldState();
+}
+
+class _TFDropdownFieldState extends State<TFDropdownField> {
+  OverlayEntry? _dropListOverlay;
+  final FocusNode _focusNode = FocusNode();
+  final LayerLink _layerLink = LayerLink();
+
+  void _showDropList() {
+    if (_dropListOverlay == null) {
+      _dropListOverlay = _buildDropListOverlay();
+      Future.microtask(() {
+        Overlay.of(context)?.insert(_dropListOverlay!);
+      });
+    }
+  }
+
+  void _removeDropList() {
+    if (_dropListOverlay != null) {
+      _dropListOverlay!.remove();
+      _dropListOverlay = null;
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    widget.controller.text = widget.items[0];
+  }
+
+  @override
+  void dispose() {
+    _dropListOverlay?.remove();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return CompositedTransformTarget(
+      link: _layerLink,
+      child: TFTextField(
+        label: widget.label,
+        controller: widget.controller,
+        focusNode: _focusNode,
+        onTap: _showDropList,
+        onFocusChanged: (hasFocus) {
+          if (!hasFocus) _removeDropList();
+        },
+        readOnly: true,
+        validationTypes: const [],
+        suffix: const Icon(
+          Icons.arrow_drop_down,
+          color: Colors.grey,
+        ),
+      ),
+    );
+  }
+
+  OverlayEntry _buildDropListOverlay() {
+    RenderBox renderBox = context.findRenderObject()! as RenderBox;
+    Size size = renderBox.size;
+    return OverlayEntry(
+      builder: (context) => Positioned(
+        width: size.width,
+        child: CompositedTransformFollower(
+          link: _layerLink,
+          showWhenUnlinked: false,
+          offset: Offset(0.0, size.height + 5.0),
+          child: Material(
+            elevation: 2,
+            color: TFFormColors.backgroundColor,
+            child: Column(
+              children: List.generate(widget.items.length, (index) {
+                final item = widget.items[index];
+                return ListTile(
+                  title: Text(item),
+                  onTap: () {
+                    widget.controller.text = item;
+                    _removeDropList();
+                  },
+                );
+              }),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// [TFDateField] widget allows the user to pick a DateTime from an input field
+class TFDateField extends StatefulWidget {
+  final String label;
+  final TextEditingController controller;
+  final DateTime? initialDate;
+  final DateTime? firstDate;
+  final DateTime? lastDate;
+  final bool isRequired;
+
+  const TFDateField({
+    Key? key,
+    required this.label,
+    required this.controller,
+    this.initialDate,
+    this.firstDate,
+    this.lastDate,
+    this.isRequired = true,
+  }) : super(key: key);
+
+  @override
+  State<TFDateField> createState() => _TFDateFieldState();
+}
+
+class _TFDateFieldState extends State<TFDateField> {
+  void _showDatePicker() async {
+    final now = DateTime.now();
+    const range = Duration(days: 365 * 40);
+    final result = await showDatePicker(
+      context: context,
+      initialDate: widget.initialDate ?? now,
+      firstDate: widget.firstDate ?? now.subtract(range),
+      lastDate: widget.lastDate ?? now.add(range),
+    );
+    if (result != null) {
+      widget.controller.text = TFFormValidator.getDateFormat().format(result);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initialDate != null) {
+      widget.controller.text = TFFormValidator.getDateFormat().format(
+        widget.initialDate!,
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return TFTextField(
+      label: widget.label,
+      hintText: TFFormValidator.getDateFormat().pattern,
+      controller: widget.controller,
+      validationTypes:
+          widget.isRequired ? const [TFValidationType.required] : [],
+      suffix: const Icon(
+        Icons.arrow_drop_down,
+        color: Colors.grey,
+      ),
+      readOnly: true,
+      onTap: _showDatePicker,
+    );
+  }
+}
+
+/// [TFCheckboxGroup] widget allows user to select multiple items.
+/// The checkbox is displayed before the item name,
+/// which you can check/uncheck to make/remove the selection.
+class TFCheckboxGroup extends StatefulWidget {
+  final String title;
+  final List<TFCheckboxItem> items;
+  final Function(List<int>) onChanged;
+  final bool isRequired;
+  final TextStyle? titleStyle;
+  final TextStyle? itemTitleStyle;
+
+  const TFCheckboxGroup({
+    Key? key,
+    required this.title,
+    required this.items,
+    required this.onChanged,
+    this.titleStyle,
+    this.itemTitleStyle,
+    this.isRequired = true,
+  }) : super(key: key);
+
+  @override
+  State<TFCheckboxGroup> createState() => _TFCheckboxGroupState();
+}
+
+class _TFCheckboxGroupState extends State<TFCheckboxGroup> {
+  List<int> _checkedItemIndexes = [];
+  bool _isValid = true;
+
+  void _setValid(bool val) {
+    setState(() {
+      _isValid = val;
+    });
+  }
+
+  void _onItemChanged(int index, bool value) {
+    final checkedItemIndexes = List.of(_checkedItemIndexes);
+    if (value) {
+      checkedItemIndexes.add(index);
+    } else {
+      checkedItemIndexes.remove(index);
+    }
+    checkedItemIndexes.sort();
+    widget.onChanged(checkedItemIndexes);
+    setState(() {
+      _checkedItemIndexes = List.of(checkedItemIndexes);
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if (widget.isRequired) {
+        TFForm.of(context)?._registerCheckboxGroup(this);
+      }
+    });
+  }
+
+  @override
+  void deactivate() {
+    if (widget.isRequired) {
+      TFForm.of(context)?._unregisterCheckboxGroup(this);
+    }
+    super.deactivate();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TitleTextWidget(
+          title: widget.title,
+          style: widget.titleStyle,
+        ),
+        ErrorTextWidget(
+          error: "This field is required",
+          visible: !_isValid,
+        ),
+        const SizedBox(height: 8),
+        ...List.generate(widget.items.length, (index) {
+          return _buildCheckboxTile(widget.items[index], index);
+        }),
+      ],
+    );
+  }
+
+  Widget _buildCheckboxTile(TFCheckboxItem item, int index) {
+    return CheckboxListTile(
+      title: Text(item.title, style: _itemTitleStyle()),
+      value: _checkedItemIndexes.contains(index),
+      controlAffinity: ListTileControlAffinity.leading,
+      activeColor: TFFormColors.activeColor,
+      contentPadding: EdgeInsets.zero,
+      checkboxShape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(2),
+      ),
+      side: BorderSide(
+        width: 1.5,
+        color: _isValid ? Colors.black : TFFormColors.errorColor,
+      ),
+      onChanged: (value) {
+        _onItemChanged(index, value ?? false);
+      },
+    );
+  }
+
+  TextStyle _itemTitleStyle() {
+    TextStyle style = widget.itemTitleStyle ?? const TextStyle(fontSize: 16);
+    if (!_isValid) {
+      style = style.copyWith(color: TFFormColors.errorColor);
+    }
+    return style;
+  }
+}
+
+/// [TFRadioGroup] widget allows user to select one option from multiple selections.
+class TFRadioGroup<T> extends StatefulWidget {
+  final String title;
+  final List<TFRadioItem<T>> items;
+  final T? groupValue;
+  final Function(T?) onChanged;
+  final bool isRequired;
+  final TextStyle? titleStyle;
+  final TextStyle? itemTitleStyle;
+
+  const TFRadioGroup({
+    Key? key,
+    required this.title,
+    required this.items,
+    required this.onChanged,
+    this.groupValue,
+    this.titleStyle,
+    this.itemTitleStyle,
+    this.isRequired = true,
+  }) : super(key: key);
+
+  @override
+  State<TFRadioGroup<T>> createState() => _TFRadioGroupState<T>();
+}
+
+class _TFRadioGroupState<T> extends State<TFRadioGroup<T>> {
+  T? _groupValue;
+  bool _isValid = true;
+
+  void _setValid(bool val) {
+    setState(() {
+      _isValid = val;
+    });
+  }
+
+  void _onItemChanged(T? val) {
+    widget.onChanged(val);
+    setState(() {
+      _groupValue = val;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if (widget.isRequired) {
+        TFForm.of(context)?._registerRadioGroup(this);
+      }
+    });
+    _groupValue = widget.groupValue;
+  }
+
+  @override
+  void deactivate() {
+    if (widget.isRequired) {
+      TFForm.of(context)?._unregisterRadioGroup(this);
+    }
+    super.deactivate();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Theme(
+      data: Theme.of(context).copyWith(
+        unselectedWidgetColor:
+            _isValid ? Colors.black : TFFormColors.errorColor,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          TitleTextWidget(
+            title: widget.title,
+            style: widget.titleStyle,
+          ),
+          ErrorTextWidget(
+            error: "This field is required",
+            visible: !_isValid,
+          ),
+          const SizedBox(height: 8),
+          ...List.generate(widget.items.length, (index) {
+            return _buildRadioTile(widget.items[index], index);
+          }),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRadioTile(TFRadioItem<T> item, int index) {
+    return ListTile(
+      title: Text(item.title, style: _itemTitleStyle()),
+      contentPadding: EdgeInsets.zero,
+      leading: Radio<T>(
+        value: item.value,
+        groupValue: _groupValue,
+        onChanged: _onItemChanged,
+        activeColor: TFFormColors.activeColor,
+      ),
+    );
+  }
+
+  TextStyle _itemTitleStyle() {
+    TextStyle style = widget.itemTitleStyle ?? const TextStyle(fontSize: 16);
+    if (!_isValid) {
+      style = style.copyWith(color: TFFormColors.errorColor);
+    }
+    return style;
+  }
 }
