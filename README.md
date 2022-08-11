@@ -1,6 +1,8 @@
 # tf_form  
   
-TechFusion form builder and validator
+### TechFusion's form builder and validator
+
+Copyright (c) 2022 TechFusion Ltd (https://www.techfusion.dev)
   
 ## Usage  
 ### Create a `TFForm` with a GlobalKey
