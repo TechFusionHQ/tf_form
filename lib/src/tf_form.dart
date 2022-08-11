@@ -851,9 +851,7 @@ class _TFTextFieldState extends State<TFTextField> {
   @override
   void dispose() {
     widget.controller.removeListener(_onTextChanged);
-    widget.controller.dispose();
     _focusNode.removeListener(_onFocusChanged);
-    _focusNode.dispose();
     super.dispose();
   }
 
