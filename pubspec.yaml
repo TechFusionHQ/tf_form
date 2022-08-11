@@ -1,7 +1,7 @@
 name: tf_form
 description: TechFusion's form builder and validator
-version: 0.0.2
-homepage: https://www.techfusion.dev
+version: 0.0.3
+homepage: https://github.com/TechFusionHQ/tf_form
 
 environment:
   sdk: ">=2.17.0 <3.0.0"
