@@ -76,13 +76,14 @@ class DemoFormPageState extends State<DemoFormPage> {
     return SingleChildScrollView(
       child: TFForm(
         key: _personalFormKey,
+        style: TFFormStyle(activeColor: Colors.green),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TFTextField(
-                label: "Nickname",
+                title: "Nickname",
                 hintText: "Enter a nickname",
                 controller: nicknameController,
                 validationTypes: const [
@@ -91,7 +92,7 @@ class DemoFormPageState extends State<DemoFormPage> {
               ),
               const SizedBox(height: 15),
               TFTextField(
-                label: "Email",
+                title: "Email",
                 hintText: "ben@somewhere.com",
                 controller: emailController,
                 validationTypes: const [
@@ -101,23 +102,29 @@ class DemoFormPageState extends State<DemoFormPage> {
               ),
               const SizedBox(height: 15),
               TFDateField(
-                label: "Birthday",
+                title: "Birthday",
                 controller: birthdayController,
+                initialDate: DateTime.now(),
+                firstDate: DateTime.now().subtract(const Duration(days: 365)),
+                lastDate: DateTime.now().add(const Duration(days: 365)),
+                isRequired: true,
               ),
               const SizedBox(height: 15),
               TFDropdownField(
-                label: "City",
+                title: "City",
                 items: const [
-                  "Hà Nội",
-                  "Hồ Chí Minh",
-                  "Đà Nẵng",
-                  "Lào Cai",
+                  "A",
+                  "B",
+                  "C",
+                  "D",
                 ],
                 controller: cityController,
+                selectedItem: "",
+                isRequired: true,
               ),
               const SizedBox(height: 15),
               TFTextField(
-                label: "Phone",
+                title: "Phone",
                 hintText: "Enter a phone",
                 controller: phoneController,
                 validationTypes: const [
@@ -170,13 +177,13 @@ class DemoFormPageState extends State<DemoFormPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TFTextField(
-              label: "Type",
+              title: "Type",
               controller: addressTypeController,
               validationTypes: const [],
             ),
             const SizedBox(height: 10),
             TFTextField(
-              label: "Address 1",
+              title: "Address 1",
               controller: address1Controller,
               validationTypes: const [
                 TFValidationType.required,
@@ -184,7 +191,7 @@ class DemoFormPageState extends State<DemoFormPage> {
             ),
             const SizedBox(height: 10),
             TFTextField(
-              label: "Address 2",
+              title: "Address 2",
               controller: address2Controller,
               validationTypes: const [],
             ),
@@ -210,7 +217,7 @@ class DemoFormPageState extends State<DemoFormPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TFTextField(
-              label: "New password",
+              title: "New password",
               controller: passwordController,
               validationTypes: const [
                 TFValidationType.required,
@@ -219,7 +226,7 @@ class DemoFormPageState extends State<DemoFormPage> {
             ),
             const SizedBox(height: 10),
             TFTextField(
-              label: "Confirm",
+              title: "Confirm",
               controller: confirmPasswordController,
               passwordController: passwordController,
               validationTypes: const [

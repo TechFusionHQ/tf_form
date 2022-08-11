@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:tf_form/src/tf_form_common.dart';
 import 'package:tf_form/src/tf_form_models.dart';
 import 'package:tf_form/src/tf_form_validator.dart';
 
@@ -67,14 +66,8 @@ class TFForm extends StatefulWidget {
   /// The error message when phone fields are invalid
   final String phoneErrorMessage;
 
-  /// The color is used for background color
-  final Color backgroundColor;
-
-  /// The color is used used when the user interacts
-  final Color activeColor;
-
-  /// The color is used when form is related to an error
-  final Color errorColor;
+  /// The style
+  final TFFormStyle style;
 
   /// Constructor
   /// The [child] argument must not be null.
@@ -84,9 +77,7 @@ class TFForm extends StatefulWidget {
     this.autoValidate = true,
     this.visibleError = true,
     this.passwordPolicy = const TFFormPasswordPolicy(),
-    this.backgroundColor = TFFormColors.defaultBackground,
-    this.activeColor = TFFormColors.defaultActive,
-    this.errorColor = TFFormColors.defaultError,
+    this.style = const TFFormStyle(),
     this.requiredErrorMessage = 'Please enter all required fields',
     this.emailErrorMessage ='Please check the format of your email address, it should read like ben@somewhere.com',
     this.dateErrorMessage = 'Please enter a valid date',
@@ -101,6 +92,7 @@ class TFForm extends StatefulWidget {
     this.integerErrorMessage = 'Please enter only integer',
     this.hrefErrorMessage = 'Please enter a valid URL',
     this.phoneErrorMessage = 'Please enter a valid phone number',
+
   }) : super(key: key);
 
   /// Returns the closest [TFFormState] which encloses the given context.
@@ -556,7 +548,7 @@ class TFFormState extends State<TFForm> {
       width: double.infinity,
       decoration: BoxDecoration(
         color: Colors.red.shade100,
-        border: Border.all(width: 1, color: widget.errorColor),
+        border: Border.all(width: 1, color: widget.style.errorColor),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
@@ -572,13 +564,13 @@ class TFFormState extends State<TFForm> {
                 Icon(
                   Icons.error_outline,
                   size: 18,
-                  color: widget.errorColor,
+                  color: widget.style.errorColor,
                 ),
                 const SizedBox(width: 5),
                 Expanded(
                   child: Text(
                     _errorMessages[index],
-                    style: TextStyle(color: widget.errorColor),
+                    style: TextStyle(color: widget.style.errorColor),
                   ),
                 ),
               ],
@@ -646,7 +638,7 @@ class TFTextField extends StatefulWidget {
   final Function(String)? onChanged;
   final Function(bool)? onFocusChanged;
   final Function()? onEditingComplete;
-  final String label;
+  final String title;
   final String? hintText;
   final int? maxLength;
   final int? maxLines;
@@ -656,14 +648,6 @@ class TFTextField extends StatefulWidget {
   final TextInputType? keyboardType;
   final TextInputAction? textInputAction;
   final List<TextInputFormatter>? inputFormatters;
-  final double? height;
-  final double? borderRadius;
-  final EdgeInsets? insetPadding;
-  final TextStyle? labelStyle;
-  final TextStyle? contentStyle;
-  final TextStyle? hintStyle;
-  final Color borderColor;
-  final BoxDecoration? decoration;
 
   /// For validation
   final List<TFValidationType> validationTypes;
@@ -679,7 +663,7 @@ class TFTextField extends StatefulWidget {
 
   TFTextField({
     Key? key,
-    required this.label,
+    required this.title,
     required this.controller,
     this.focusNode,
     this.readOnly = false,
@@ -690,7 +674,6 @@ class TFTextField extends StatefulWidget {
     this.onChanged,
     this.onFocusChanged,
     this.hintText = "",
-    this.height,
     this.keyboardType,
     this.prefix,
     this.textInputAction,
@@ -700,13 +683,6 @@ class TFTextField extends StatefulWidget {
     this.inputFormatters,
     this.onEditingComplete,
     this.maxLines,
-    this.decoration,
-    this.borderRadius,
-    this.insetPadding,
-    this.labelStyle,
-    this.contentStyle,
-    this.hintStyle,
-    this.borderColor = const Color(0x1F000000),
     required this.validationTypes,
     this.relatedController,
     this.passwordController,
@@ -714,7 +690,7 @@ class TFTextField extends StatefulWidget {
   }) : super(key: key) {
     int uniqueTypeCount = 0;
     for (var type in validationTypes) {
-      if (type.isUniqueType) uniqueTypeCount++;
+      if (type.isUnique) uniqueTypeCount++;
     }
     if (uniqueTypeCount > 1) {
       throw ArgumentError(
@@ -742,6 +718,7 @@ class TFTextField extends StatefulWidget {
 class _TFTextFieldState extends State<TFTextField> {
   late FocusNode _focusNode;
   String _errorMessage = "";
+  String _preVal = "";
   bool _hasFocus = false;
 
   List<TFValidationType> get validationTypes => widget.validationTypes;
@@ -754,11 +731,15 @@ class _TFTextFieldState extends State<TFTextField> {
     });
   }
 
-  void _onChanged(String val) {
-    final form = TFForm.of(context);
-    if (form == null) return;
+  void _onTextChanged() {
+    if (val != _preVal) {
+      _preVal = val;
+    } else {
+      return;
+    }
 
-    if (form.widget.autoValidate) {
+    // for autoValidate
+    if (TFForm.of(context)?.widget.autoValidate ?? false) {
       String errorMessage = "";
       if (validationTypes.contains(TFValidationType.required)) {
         if (!TFFormValidator.validateRequired(val)) {
@@ -770,7 +751,6 @@ class _TFTextFieldState extends State<TFTextField> {
       }
       _setErrorMessage(val: errorMessage);
     }
-
     if (widget.onChanged != null) {
       widget.onChanged!(val);
     }
@@ -857,7 +837,7 @@ class _TFTextFieldState extends State<TFTextField> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       TFForm.of(context)?._registerField(this);
     });
-
+    widget.controller.addListener(_onTextChanged);
     _focusNode = widget.focusNode ?? FocusNode();
     _focusNode.addListener(_onFocusChanged);
   }
@@ -870,8 +850,8 @@ class _TFTextFieldState extends State<TFTextField> {
 
   @override
   void dispose() {
+    widget.controller.removeListener(_onTextChanged);
     _focusNode.removeListener(_onFocusChanged);
-    _focusNode.dispose();
     super.dispose();
   }
 
@@ -880,13 +860,62 @@ class _TFTextFieldState extends State<TFTextField> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        TitleWidget(
-          title: widget.label,
-          style: widget.labelStyle,
+        Text(
+          widget.title,
+          style: TFFormStyle.of(context).titleStyle,
         ),
         const SizedBox(height: 8),
-        _buildFieldContainer(),
-        TFErrorWidget(
+        Container(
+          width: double.infinity,
+          height:
+              widget.expand ? null : TFFormStyle.of(context).fieldStyle.height,
+          padding: TFFormStyle.of(context).fieldStyle.contentPadding,
+          decoration: defaultDecoration,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: widget.expand
+                ? CrossAxisAlignment.start
+                : CrossAxisAlignment.center,
+            children: [
+              if (widget.prefix != null) widget.prefix!,
+              if (widget.prefix != null) const SizedBox(width: 10),
+              Expanded(
+                child: TextField(
+                  focusNode: _focusNode,
+                  controller: widget.controller,
+                  autofocus: widget.autoFocus,
+                  readOnly: widget.readOnly,
+                  obscureText: widget.obscureText,
+                  keyboardType: widget.keyboardType ?? TextInputType.text,
+                  textInputAction: widget.textInputAction,
+                  onEditingComplete: widget.onEditingComplete,
+                  onTap: widget.onTap,
+                  inputFormatters: widget.inputFormatters,
+                  textAlign: widget.textAlign ?? TextAlign.start,
+                  textAlignVertical: TextAlignVertical.center,
+                  maxLines: widget.expand ? widget.maxLines : 1,
+                  maxLength: widget.maxLength,
+                  style: TFFormStyle.of(context).fieldStyle.contentStyle,
+                  decoration: InputDecoration(
+                    hintText: widget.hintText,
+                    hintStyle: TFFormStyle.of(context).fieldStyle.hintStyle,
+                    isDense: true,
+                    border: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    errorBorder: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    disabledBorder: InputBorder.none,
+                    focusedErrorBorder: InputBorder.none,
+                    counterText: "",
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              widget.suffix ?? clearButton,
+            ],
+          ),
+        ),
+        TFErrorText(
           error: _errorMessage,
           visible: _errorMessage.isNotEmpty,
         ),
@@ -894,76 +923,18 @@ class _TFTextFieldState extends State<TFTextField> {
     );
   }
 
-  Widget _buildFieldContainer() {
-    return Container(
-      width: double.infinity,
-      height: widget.expand ? null : widget.height ?? 48,
-      padding: widget.insetPadding ?? defaultInsetPadding,
-      decoration: widget.decoration ?? defaultDecoration,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: widget.expand
-            ? CrossAxisAlignment.start
-            : CrossAxisAlignment.center,
-        children: [
-          if (widget.prefix != null) widget.prefix!,
-          if (widget.prefix != null) const SizedBox(width: 10),
-          Expanded(
-            child: TextField(
-              focusNode: _focusNode,
-              controller: widget.controller,
-              autofocus: widget.autoFocus,
-              readOnly: widget.readOnly,
-              obscureText: widget.obscureText,
-              keyboardType: widget.keyboardType ?? TextInputType.text,
-              textInputAction: widget.textInputAction,
-              onEditingComplete: widget.onEditingComplete,
-              onTap: widget.onTap,
-              onChanged: _onChanged,
-              inputFormatters: widget.inputFormatters,
-              textAlign: widget.textAlign ?? TextAlign.start,
-              textAlignVertical: TextAlignVertical.center,
-              maxLines: widget.expand ? widget.maxLines : 1,
-              maxLength: widget.maxLength,
-              style: widget.contentStyle,
-              decoration: InputDecoration(
-                hintText: widget.hintText,
-                hintStyle: widget.hintStyle,
-                isDense: true,
-                border: InputBorder.none,
-                focusedBorder: InputBorder.none,
-                errorBorder: InputBorder.none,
-                enabledBorder: InputBorder.none,
-                disabledBorder: InputBorder.none,
-                focusedErrorBorder: InputBorder.none,
-                counterText: "",
-              ),
-            ),
-          ),
-          const SizedBox(width: 10),
-          widget.suffix ?? clearButton,
-        ],
-      ),
-    );
-  }
-
-  EdgeInsets get defaultInsetPadding => const EdgeInsets.only(
-        left: 10,
-        right: 10,
-        top: 5,
-        bottom: 5,
-      );
-
   BoxDecoration get defaultDecoration => BoxDecoration(
-        color: TFFormColors.backgroundColor(context),
-        borderRadius: BorderRadius.circular(widget.borderRadius ?? 10),
+        color: TFFormStyle.of(context).backgroundColor,
+        borderRadius: BorderRadius.circular(
+          TFFormStyle.of(context).fieldStyle.borderRadius,
+        ),
         border: Border.all(
-          width: 1,
+          width: TFFormStyle.of(context).fieldStyle.borderWidth,
           color: _errorMessage.isNotEmpty
-              ? TFFormColors.errorColor(context)
+              ? TFFormStyle.of(context).errorColor
               : _hasFocus
-                  ? TFFormColors.activeColor(context)
-                  : widget.borderColor,
+                  ? TFFormStyle.of(context).activeColor
+                  : TFFormStyle.of(context).fieldStyle.borderColor,
         ),
       );
 
@@ -973,10 +944,7 @@ class _TFTextFieldState extends State<TFTextField> {
           return Visibility(
             visible: snapshot.text.isNotEmpty,
             child: InkWell(
-              onTap: () {
-                widget.controller.clear();
-                _onChanged(val);
-              },
+              onTap: widget.controller.clear,
               child: const Icon(
                 Icons.clear,
                 color: Colors.grey,
@@ -989,15 +957,19 @@ class _TFTextFieldState extends State<TFTextField> {
 
 /// [TFDropdownField] widget allows the user to pick a value from a dropdown list
 class TFDropdownField extends StatefulWidget {
-  final String label;
+  final String title;
   final List<String> items;
+  final String? selectedItem;
   final TextEditingController controller;
+  final bool isRequired;
 
   const TFDropdownField({
     Key? key,
-    required this.label,
+    required this.title,
     required this.items,
     required this.controller,
+    this.selectedItem,
+    this.isRequired = true,
   }) : super(key: key);
 
   @override
@@ -1005,50 +977,53 @@ class TFDropdownField extends StatefulWidget {
 }
 
 class _TFDropdownFieldState extends State<TFDropdownField> {
-  final LayerLink __dropListOverlayLink = LayerLink();
-  OverlayEntry? _dropListOverlay;
+  final LayerLink __dropdownLink = LayerLink();
+  OverlayEntry? _dropdownOverlay;
 
-  void _showDropList() {
-    if (_dropListOverlay == null) {
-      _dropListOverlay = _buildDropListOverlay();
-      Future.microtask(() {
-        Overlay.of(context)?.insert(_dropListOverlay!);
-      });
-    }
+  void _showDropdown() {
+    _dropdownOverlay = _buildDropListOverlay();
+    Overlay.of(context)?.insert(_dropdownOverlay!);
   }
 
-  void _removeDropList() {
-    if (_dropListOverlay != null) {
-      _dropListOverlay!.remove();
-      _dropListOverlay = null;
-    }
+  void _hideDropdown() {
+    _dropdownOverlay?.remove();
+    _dropdownOverlay = null;
   }
 
   @override
   void initState() {
     super.initState();
-    widget.controller.text = widget.items[0];
+    if (widget.selectedItem != null) {
+      widget.controller.text = widget.selectedItem!;
+    }
   }
 
   @override
   void dispose() {
-    _dropListOverlay?.remove();
+    _dropdownOverlay?.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return CompositedTransformTarget(
-      link: __dropListOverlayLink,
+      link: __dropdownLink,
       child: TFTextField(
-        label: widget.label,
+        title: widget.title,
         controller: widget.controller,
-        onTap: _showDropList,
+        onTap: () {
+          if (_dropdownOverlay == null) {
+            _showDropdown();
+          } else {
+            _hideDropdown();
+          }
+        },
         onFocusChanged: (hasFocus) {
-          if (!hasFocus) _removeDropList();
+          if (!hasFocus) _hideDropdown();
         },
         readOnly: true,
-        validationTypes: const [],
+        validationTypes:
+            widget.isRequired ? const [TFValidationType.required] : [],
         suffix: const Icon(
           Icons.arrow_drop_down,
           color: Colors.grey,
@@ -1058,26 +1033,36 @@ class _TFDropdownFieldState extends State<TFDropdownField> {
   }
 
   OverlayEntry _buildDropListOverlay() {
-    RenderBox renderBox = context.findRenderObject()! as RenderBox;
-    Size size = renderBox.size;
+    final renderBox = context.findRenderObject() as RenderBox;
+    final size = renderBox.size;
     return OverlayEntry(
       builder: (context) => Positioned(
         width: size.width,
         child: CompositedTransformFollower(
-          link: __dropListOverlayLink,
+          link: __dropdownLink,
           showWhenUnlinked: false,
           offset: Offset(0.0, size.height + 5.0),
           child: Material(
             elevation: 2,
-            color: TFFormColors.backgroundColor(context),
+            color: TFFormStyle.of(context).backgroundColor,
             child: Column(
               children: List.generate(widget.items.length, (index) {
                 final item = widget.items[index];
+                final isSelected = widget.controller.text == item;
                 return ListTile(
                   title: Text(item),
+                  selected: isSelected,
+                  selectedColor: Colors.white,
+                  selectedTileColor: TFFormStyle.of(context).activeColor,
+                  trailing: isSelected
+                      ? const Icon(
+                          Icons.check,
+                          size: 18,
+                        )
+                      : null,
                   onTap: () {
                     widget.controller.text = item;
-                    _removeDropList();
+                    _hideDropdown();
                   },
                 );
               }),
@@ -1091,7 +1076,7 @@ class _TFDropdownFieldState extends State<TFDropdownField> {
 
 /// [TFDateField] widget allows the user to pick a DateTime from an input field
 class TFDateField extends StatefulWidget {
-  final String label;
+  final String title;
   final TextEditingController controller;
   final DateTime? initialDate;
   final DateTime? firstDate;
@@ -1100,7 +1085,7 @@ class TFDateField extends StatefulWidget {
 
   const TFDateField({
     Key? key,
-    required this.label,
+    required this.title,
     required this.controller,
     this.initialDate,
     this.firstDate,
@@ -1140,7 +1125,7 @@ class _TFDateFieldState extends State<TFDateField> {
   @override
   Widget build(BuildContext context) {
     return TFTextField(
-      label: widget.label,
+      title: widget.title,
       hintText: TFFormValidator.getDateFormat().pattern,
       controller: widget.controller,
       validationTypes:
@@ -1163,16 +1148,12 @@ class TFCheckboxGroup extends StatefulWidget {
   final List<TFCheckboxItem> items;
   final Function(List<int>) onChanged;
   final bool isRequired;
-  final TextStyle? titleStyle;
-  final TextStyle? itemTitleStyle;
 
   const TFCheckboxGroup({
     Key? key,
     required this.title,
     required this.items,
     required this.onChanged,
-    this.titleStyle,
-    this.itemTitleStyle,
     this.isRequired = true,
   }) : super(key: key);
 
@@ -1202,6 +1183,11 @@ class _TFCheckboxGroupState extends State<TFCheckboxGroup> {
     setState(() {
       _checkedItemIndexes = List.of(checkedItemIndexes);
     });
+
+    // for autoValidate
+    if (TFForm.of(context)?.widget.autoValidate ?? false) {
+      _setValid(_checkedItemIndexes.isNotEmpty);
+    }
   }
 
   @override
@@ -1227,11 +1213,11 @@ class _TFCheckboxGroupState extends State<TFCheckboxGroup> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        TitleWidget(
-          title: widget.title,
-          style: widget.titleStyle,
+        Text(
+          widget.title,
+          style: TFFormStyle.of(context).titleStyle,
         ),
-        TFErrorWidget(
+        TFErrorText(
           error: "This field is required",
           visible: !_isValid,
         ),
@@ -1245,30 +1231,29 @@ class _TFCheckboxGroupState extends State<TFCheckboxGroup> {
 
   Widget _buildCheckboxTile(TFCheckboxItem item, int index) {
     return CheckboxListTile(
-      title: Text(item.title, style: _itemTitleStyle()),
+      title: Text(
+        item.title,
+        style: TFFormStyle.of(context).groupStyle.itemTitleStyle.copyWith(
+              color: _isValid ? null : TFFormStyle.of(context).errorColor,
+            ),
+      ),
       value: _checkedItemIndexes.contains(index),
       controlAffinity: ListTileControlAffinity.leading,
-      activeColor: TFFormColors.activeColor(context),
+      activeColor: TFFormStyle.of(context).activeColor,
       contentPadding: EdgeInsets.zero,
       checkboxShape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(2),
       ),
       side: BorderSide(
         width: 1.5,
-        color: _isValid ? Colors.black : TFFormColors.errorColor(context),
+        color: _isValid
+            ? TFFormStyle.of(context).groupStyle.unselectedColor
+            : TFFormStyle.of(context).errorColor,
       ),
       onChanged: (value) {
         _onItemChanged(index, value ?? false);
       },
     );
-  }
-
-  TextStyle _itemTitleStyle() {
-    TextStyle style = widget.itemTitleStyle ?? const TextStyle(fontSize: 16);
-    if (!_isValid) {
-      style = style.copyWith(color: TFFormColors.errorColor(context));
-    }
-    return style;
   }
 }
 
@@ -1279,8 +1264,6 @@ class TFRadioGroup<T> extends StatefulWidget {
   final T? groupValue;
   final Function(T?) onChanged;
   final bool isRequired;
-  final TextStyle? titleStyle;
-  final TextStyle? itemTitleStyle;
 
   const TFRadioGroup({
     Key? key,
@@ -1288,8 +1271,6 @@ class TFRadioGroup<T> extends StatefulWidget {
     required this.items,
     required this.onChanged,
     this.groupValue,
-    this.titleStyle,
-    this.itemTitleStyle,
     this.isRequired = true,
   }) : super(key: key);
 
@@ -1312,6 +1293,11 @@ class _TFRadioGroupState<T> extends State<TFRadioGroup<T>> {
     setState(() {
       _groupValue = val;
     });
+
+    // for autoValidate
+    if (TFForm.of(context)?.widget.autoValidate ?? false) {
+      _setValid(_groupValue != null);
+    }
   }
 
   @override
@@ -1337,17 +1323,18 @@ class _TFRadioGroupState<T> extends State<TFRadioGroup<T>> {
   Widget build(BuildContext context) {
     return Theme(
       data: Theme.of(context).copyWith(
-        unselectedWidgetColor:
-            _isValid ? Colors.black : TFFormColors.errorColor(context),
+        unselectedWidgetColor: _isValid
+            ? TFFormStyle.of(context).groupStyle.unselectedColor
+            : TFFormStyle.of(context).errorColor,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          TitleWidget(
-            title: widget.title,
-            style: widget.titleStyle,
+          Text(
+            widget.title,
+            style: TFFormStyle.of(context).titleStyle,
           ),
-          TFErrorWidget(
+          TFErrorText(
             error: "This field is required",
             visible: !_isValid,
           ),
@@ -1362,22 +1349,60 @@ class _TFRadioGroupState<T> extends State<TFRadioGroup<T>> {
 
   Widget _buildRadioTile(TFRadioItem<T> item, int index) {
     return ListTile(
-      title: Text(item.title, style: _itemTitleStyle()),
+      title: Text(
+        item.title,
+        style: TFFormStyle.of(context).groupStyle.itemTitleStyle.copyWith(
+              color: _isValid ? null : TFFormStyle.of(context).errorColor,
+            ),
+      ),
       contentPadding: EdgeInsets.zero,
       leading: Radio<T>(
         value: item.value,
         groupValue: _groupValue,
         onChanged: _onItemChanged,
-        activeColor: TFFormColors.activeColor(context),
+        activeColor: TFFormStyle.of(context).activeColor,
       ),
     );
   }
+}
 
-  TextStyle _itemTitleStyle() {
-    TextStyle style = widget.itemTitleStyle ?? const TextStyle(fontSize: 16);
-    if (!_isValid) {
-      style = style.copyWith(color: TFFormColors.errorColor(context));
-    }
-    return style;
+///
+class TFErrorText extends StatelessWidget {
+  final String error;
+  final bool visible;
+
+  const TFErrorText({
+    Key? key,
+    required this.error,
+    required this.visible,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Visibility(
+      visible: visible,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 8),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(
+              Icons.error,
+              size: 16,
+              color: TFFormStyle.of(context).errorColor,
+            ),
+            const SizedBox(width: 5),
+            Expanded(
+              child: Text(
+                error,
+                style: TextStyle(
+                  color: TFFormStyle.of(context).errorColor,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

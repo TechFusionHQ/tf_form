@@ -35,93 +35,72 @@ A `TFForm` ancestor is required. The `TFForm` simply makes it easier to
 validate multiple fields at once.
 
 ```dart  
-    TFForm(
-        key: _personalFormKey,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TFTextField(
-                label: "Nickname",
-                hintText: "Enter a nickname",
-                controller: nicknameController,
-                validationTypes: const [
-                  TFValidationType.required,
-                ],
-              ),
-              const SizedBox(height: 15),
-              TFTextField(
-                label: "Email",
-                hintText: "ben@somewhere.com",
-                controller: emailController,
-                validationTypes: const [
-                  TFValidationType.required,
-                  TFValidationType.emailAddress,
-                ],
-              ),
-              const SizedBox(height: 15),
-              TFDateField(
-                label: "Birthday",
-                controller: birthdayController,
-              ),
-              const SizedBox(height: 15),
-              TFDropdownField(
-                label: "City",
-                items: const [
-                  "Hà Nội",
-                  "Hồ Chí Minh",
-                  "Đà Nẵng",
-                  "Lào Cai",
-                ],
-                controller: cityController,
-              ),
-              const SizedBox(height: 15),
-              TFTextField(
-                label: "Phone",
-                hintText: "Enter a phone",
-                controller: phoneController,
-                validationTypes: const [
-                  TFValidationType.required,
-                  TFValidationType.phone,
-                ],
-              ),
-              const SizedBox(height: 20),
-              TFCheckboxGroup(
-                title: "Which social network do you usually use ?",
-                items: [
-                  TFCheckboxItem(title: "Facebook"),
-                  TFCheckboxItem(title: "Zalo"),
-                  TFCheckboxItem(title: "Twitter"),
-                  TFCheckboxItem(title: "Linkedin"),
-                  TFCheckboxItem(title: "Telegram"),
-                ],
-                onChanged: (checkedItemIndexes) {},
-              ),
-              const SizedBox(height: 20),
-              TFRadioGroup<String>(
-                title: "Gender",
-                items: [
-                  TFRadioItem<String>(title: "Male", value: "male"),
-                  TFRadioItem<String>(title: "Female", value: "female"),
-                  TFRadioItem<String>(title: "Other", value: "other"),
-                ],
-                onChanged: (selectedItem) {},
-              ),
-              const SizedBox(height: 40),
-              ElevatedButton(
-                onPressed: () {
-                  _personalFormKey.currentState!.validate();
-                },
-                child: const Text('Submit'),
-              ),
-            ],
-          ),
-        ),
-      ),
+    TFTextField(
+        label: "Nickname",
+        controller: nicknameController,
+        types: const [
+            TFTextFieldType.required,
+        ],
+    ),
+    TFTextField(
+        label: "Email",
+        controller: emailController,
+        types: const [
+        TFTextFieldType.required,
+            TFTextFieldType.emailAddress,
+        ],
+    ),
+    TFTextField(
+        label: "Phone",
+        controller: phoneController,
+        types: const [
+        TFTextFieldType.required,
+            TFTextFieldType.phone,
+        ],
+    ),
+     TFDateField(
+        title: "Birthday",
+        controller: birthdayController,
+        initialDate: DateTime.now(),
+        firstDate: DateTime.now().subtract(const Duration(days: 365)),
+        lastDate: DateTime.now().add(const Duration(days: 365)),
+        isRequired: true,
+    ),
+     TFDropdownField(
+        title: "City",
+        items: const [
+            "A",
+            "B",
+            "C",
+            "D",
+        ],
+        controller: cityController,
+        selectedItem: "",
+        isRequired: true,
+    ),
+     TFCheckboxGroup(
+        title: "Which social network do you usually use ?",
+        items: [
+            TFCheckboxItem(title: "Facebook"),
+            TFCheckboxItem(title: "Zalo"),
+            TFCheckboxItem(title: "Twitter"),
+            TFCheckboxItem(title: "Linkedin"),
+            TFCheckboxItem(title: "Telegram"),
+        ],
+        onChanged: (checkedItemIndexes) {},
+    ),
+    TFRadioGroup<String>(
+        title: "Gender",
+        items: [
+            TFRadioItem<String>(title: "Male", value: "male"),
+            TFRadioItem<String>(title: "Female", value: "female"),
+            TFRadioItem<String>(title: "Other", value: "other"),
+        ],
+        onChanged: (selectedItem) {},
+    ),
  ```
  
-### 3. Create a button to validate and submit the form
+### Create a button to validate and submit the form
 
 ```dart
     ElevatedButton(
