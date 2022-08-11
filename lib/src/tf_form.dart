@@ -92,7 +92,6 @@ class TFForm extends StatefulWidget {
     this.integerErrorMessage = 'Please enter only integer',
     this.hrefErrorMessage = 'Please enter a valid URL',
     this.phoneErrorMessage = 'Please enter a valid phone number',
-
   }) : super(key: key);
 
   /// Returns the closest [TFFormState] which encloses the given context.
@@ -118,8 +117,8 @@ class TFForm extends StatefulWidget {
 /// Typically obtained via [TFForm.of].
 class TFFormState extends State<TFForm> {
   final _fieldMap = <TFValidationType, List<_TFTextFieldState>>{};
-  final _checkboxGroups = <_TFCheckboxGroupState>[];
-  final _raidoGroups = <_TFRadioGroupState>[];
+  final _checkboxGroupMap = <TFValidationType, List<_TFCheckboxGroupState>>{};
+  final _raidoGroupMap = <TFValidationType, List<_TFRadioGroupState>>{};
 
   List<String> _errorMessages = [];
 
@@ -134,11 +133,23 @@ class TFFormState extends State<TFForm> {
   }
 
   void _registerCheckboxGroup(_TFCheckboxGroupState group) {
-    _checkboxGroups.add(group);
+    for (var type in group.validationTypes) {
+      if (_checkboxGroupMap.containsKey(type)) {
+        _checkboxGroupMap[type]!.add(group);
+      } else {
+        _checkboxGroupMap[type] = [group];
+      }
+    }
   }
 
   void _registerRadioGroup(_TFRadioGroupState group) {
-    _raidoGroups.add(group);
+    for (var type in group.validationTypes) {
+      if (_raidoGroupMap.containsKey(type)) {
+        _raidoGroupMap[type]!.add(group);
+      } else {
+        _raidoGroupMap[type] = [group];
+      }
+    }
   }
 
   void _unregisterField(_TFTextFieldState field) {
@@ -150,18 +161,26 @@ class TFFormState extends State<TFForm> {
   }
 
   void _unregisterCheckboxGroup(_TFCheckboxGroupState group) {
-    _checkboxGroups.remove(group);
+    for (var type in group.validationTypes) {
+      if (_checkboxGroupMap.containsKey(type)) {
+        _checkboxGroupMap[type]!.remove(group);
+      }
+    }
   }
 
   void _unregisterRadioGroup(_TFRadioGroupState group) {
-    _raidoGroups.remove(group);
+    for (var type in group.validationTypes) {
+      if (_raidoGroupMap.containsKey(type)) {
+        _raidoGroupMap[type]!.remove(group);
+      }
+    }
   }
 
   int _validateRequiredFields() {
     int errors = 0;
     if (_fieldMap.containsKey(TFValidationType.required)) {
       for (var field in _fieldMap[TFValidationType.required]!) {
-        if (TFFormValidator.validateRequired(field.val)) {
+        if (field.val.isNotEmpty) {
           field._setErrorMessage();
         } else {
           errors++;
@@ -169,8 +188,8 @@ class TFFormState extends State<TFForm> {
         }
       }
     }
-    if (_checkboxGroups.isNotEmpty) {
-      for (var group in _checkboxGroups) {
+    if (_checkboxGroupMap.containsKey(TFValidationType.required)) {
+      for (var group in _checkboxGroupMap[TFValidationType.required]!) {
         if (group._checkedItemIndexes.isNotEmpty) {
           group._setValid(true);
         } else {
@@ -179,13 +198,51 @@ class TFFormState extends State<TFForm> {
         }
       }
     }
-    if (_raidoGroups.isNotEmpty) {
-      for (var group in _raidoGroups) {
+    if (_raidoGroupMap.containsKey(TFValidationType.required)) {
+      for (var group in _raidoGroupMap[TFValidationType.required]!) {
         if (group._groupValue != null) {
           group._setValid(true);
         } else {
           errors++;
           group._setValid(false);
+        }
+      }
+    }
+    return errors;
+  }
+
+  int _validateRequiredIfHasFields() {
+    int errors = 0;
+    if (_fieldMap.containsKey(TFValidationType.requiredIfHas)) {
+      for (var field in _fieldMap[TFValidationType.requiredIfHas]!) {
+        final relatedVal = field.widget.relatedController!.text;
+        if (relatedVal.isNotEmpty && field.val.isEmpty) {
+          errors++;
+          field._setErrorMessage(val: field.requiredErrorMessage);
+        } else {
+          field._setErrorMessage();
+        }
+      }
+    }
+    if (_checkboxGroupMap.containsKey(TFValidationType.requiredIfHas)) {
+      for (var group in _checkboxGroupMap[TFValidationType.requiredIfHas]!) {
+        final relatedVal = group.widget.relatedController!.text;
+        if (relatedVal.isNotEmpty && group._checkedItemIndexes.isEmpty) {
+          errors++;
+          group._setValid(false);
+        } else {
+          group._setValid(true);
+        }
+      }
+    }
+    if (_raidoGroupMap.containsKey(TFValidationType.requiredIfHas)) {
+      for (var group in _raidoGroupMap[TFValidationType.requiredIfHas]!) {
+        final relatedVal = group.widget.relatedController!.text;
+        if (relatedVal.isNotEmpty && group._groupValue == null) {
+          errors++;
+          group._setValid(false);
+        } else {
+          group._setValid(true);
         }
       }
     }
@@ -437,81 +494,93 @@ class TFFormState extends State<TFForm> {
     int errors = 0;
     List<String> errorMessages = [];
 
-    final resultRequired = _validateRequiredFields();
-    if (resultRequired > 0) {
-      errors += resultRequired;
+    final errorRequired = _validateRequiredFields();
+    if (errorRequired > 0) {
+      errors += errorRequired;
       errorMessages.add(widget.requiredErrorMessage);
     } else {
-      final resultEmailAddress = _validateEmailAddressFields();
-      if (resultEmailAddress > 0) {
-        errors += resultEmailAddress;
+      final errorRequiredIfHas = _validateRequiredIfHasFields();
+      if (errorRequiredIfHas > 0) {
+        errors += errorRequiredIfHas;
+        errorMessages.add(widget.requiredErrorMessage);
+      }
+
+      final errorEmailAddress = _validateEmailAddressFields();
+      if (errorEmailAddress > 0) {
+        errors += errorEmailAddress;
         errorMessages.add(widget.emailErrorMessage);
       }
 
-      final resultDate = _validateDateFields();
-      if (resultDate > 0) {
-        errors += resultDate;
+      final errorDate = _validateDateFields();
+      if (errorDate > 0) {
+        errors += errorDate;
         errorMessages.add(widget.dateErrorMessage);
       }
 
-      final resultPassword = _validatePasswordFields();
-      if (resultPassword > 0) {
-        errors += resultPassword;
+      final errorPassword = _validatePasswordFields();
+      if (errorPassword > 0) {
+        errors += errorPassword;
         errorMessages.add(widget.passwordErrorMessage);
       }
 
-      final resultConfirmPassword = _validateConfirmPasswordFields();
-      if (resultConfirmPassword > 0) {
-        errors += resultConfirmPassword;
+      final errorConfirmPassword = _validateConfirmPasswordFields();
+      if (errorConfirmPassword > 0) {
+        errors += errorConfirmPassword;
         errorMessages.add(widget.confirmPasswordErrorMessage);
       }
 
-      final resultSimpleChar = _validateSimpleCharsFields();
-      if (resultSimpleChar > 0) {
-        errors += resultSimpleChar;
+      final errorSimpleChar = _validateSimpleCharsFields();
+      if (errorSimpleChar > 0) {
+        errors += errorSimpleChar;
         errorMessages.add(widget.simpleCharsErrorMessage);
       }
 
-      final resultSlugChar = _validateSlugCharsFields();
-      if (resultSlugChar > 0) {
-        errors += resultSlugChar;
+      final errorSlugChar = _validateSlugCharsFields();
+      if (errorSlugChar > 0) {
+        errors += errorSlugChar;
         errorMessages.add(widget.slugCharsErrorMessage);
       }
 
-      final resultSimpleSlugChar = _validateSimpleSlugCharsFields();
-      if (resultSimpleSlugChar > 0) {
-        errors += resultSimpleSlugChar;
+      final errorSimpleSlugChar = _validateSimpleSlugCharsFields();
+      if (errorSimpleSlugChar > 0) {
+        errors += errorSimpleSlugChar;
         errorMessages.add(widget.simpleSlugCharsErrorMessage);
       }
 
-      final resultReallySimpleChar = _validateReallySimpleCharsFields();
-      if (resultReallySimpleChar > 0) {
-        errors += resultReallySimpleChar;
+      final errorReallySimpleChar = _validateReallySimpleCharsFields();
+      if (errorReallySimpleChar > 0) {
+        errors += errorReallySimpleChar;
         errorMessages.add(widget.reallySimpleCharsErrorMessage);
       }
 
-      final resultDomainChar = _validateDomainCharsFields();
-      if (resultDomainChar > 0) {
-        errors += resultDomainChar;
+      final errorDomainChar = _validateDomainCharsFields();
+      if (errorDomainChar > 0) {
+        errors += errorDomainChar;
         errorMessages.add(widget.domainCharsErrorMessage);
       }
 
-      final resultHref = _validateHrefFields();
-      if (resultHref > 0) {
-        errors += resultHref;
+      final errorHref = _validateHrefFields();
+      if (errorHref > 0) {
+        errors += errorHref;
         errorMessages.add(widget.hrefErrorMessage);
       }
 
-      final resultInteger = _validateIntegerFields();
-      if (resultInteger > 0) {
-        errors += resultInteger;
+      final errorInteger = _validateIntegerFields();
+      if (errorInteger > 0) {
+        errors += errorInteger;
         errorMessages.add(widget.integerErrorMessage);
       }
 
-      final resultPhone = _validatePhoneFields();
-      if (resultPhone > 0) {
-        errors += resultPhone;
+      final errorPhone = _validatePhoneFields();
+      if (errorPhone > 0) {
+        errors += errorPhone;
         errorMessages.add(widget.phoneErrorMessage);
+      }
+
+      final errorRegex = _validateRegexFields();
+      if (errorRegex > 0) {
+        errors += errorRegex;
+        errorMessages.add("");
       }
     }
 
@@ -595,8 +664,8 @@ bool _needValidate(_TFTextFieldState field) {
     }
   }
   if (field.validationTypes.contains(TFValidationType.requiredIfHas)) {
-    final relatedInputVal = field.widget.relatedController!.text.trim();
-    if (relatedInputVal.isNotEmpty) {
+    final relatedVal = field.widget.relatedController!.text.trim();
+    if (relatedVal.isNotEmpty) {
       return true;
     }
   }
@@ -683,19 +752,11 @@ class TFTextField extends StatefulWidget {
     this.inputFormatters,
     this.onEditingComplete,
     this.maxLines,
-    required this.validationTypes,
+    this.validationTypes = const <TFValidationType>[],
     this.relatedController,
     this.passwordController,
     this.regex,
   }) : super(key: key) {
-    int uniqueTypeCount = 0;
-    for (var type in validationTypes) {
-      if (type.isUnique) uniqueTypeCount++;
-    }
-    if (uniqueTypeCount > 1) {
-      throw ArgumentError(
-          "each form field can only contain 1 unique validation type.");
-    }
     if (validationTypes.contains(TFValidationType.regex) && regex == null) {
       throw ArgumentError("regex type and regex should both be set.");
     }
@@ -738,19 +799,11 @@ class _TFTextFieldState extends State<TFTextField> {
       return;
     }
 
-    // for autoValidate
     if (TFForm.of(context)?.widget.autoValidate ?? false) {
-      String errorMessage = "";
-      if (validationTypes.contains(TFValidationType.required)) {
-        if (!TFFormValidator.validateRequired(val)) {
-          errorMessage = requiredErrorMessage;
-        }
-      }
-      if (errorMessage.isEmpty && _needValidate(this)) {
-        errorMessage = _validate();
-      }
+      final errorMessage = _validate();
       _setErrorMessage(val: errorMessage);
     }
+
     if (widget.onChanged != null) {
       widget.onChanged!(val);
     }
@@ -759,66 +812,81 @@ class _TFTextFieldState extends State<TFTextField> {
   String _validate() {
     final form = TFForm.of(context)!;
 
-    if (validationTypes.contains(TFValidationType.emailAddress)) {
-      if (!TFFormValidator.validateEmailAddress(val)) {
-        return form.widget.emailErrorMessage;
+    if (validationTypes.contains(TFValidationType.required)) {
+      if (val.isEmpty) {
+        return requiredErrorMessage;
+      }
+    } else if (validationTypes.contains(TFValidationType.requiredIfHas)) {
+      final relatedVal = widget.relatedController!.text;
+      if (relatedVal.isNotEmpty && val.isEmpty) {
+        return requiredErrorMessage;
       }
     }
-    if (validationTypes.contains(TFValidationType.date)) {
-      if (!TFFormValidator.validateDate(val)) {
-        return form.widget.dateErrorMessage;
+
+    if (_needValidate(this)) {
+      if (validationTypes.contains(TFValidationType.emailAddress)) {
+        if (!TFFormValidator.validateEmailAddress(val)) {
+          return form.widget.emailErrorMessage;
+        }
+      }
+      if (validationTypes.contains(TFValidationType.date)) {
+        if (!TFFormValidator.validateDate(val)) {
+          return form.widget.dateErrorMessage;
+        }
+      }
+      if (validationTypes.contains(TFValidationType.password)) {
+        if (!TFFormValidator.validatePassword(
+            val, form.widget.passwordPolicy)) {
+          return form.widget.passwordErrorMessage;
+        }
+      }
+      if (validationTypes.contains(TFValidationType.confirmPassword)) {
+        if (val != widget.passwordController!.text) {
+          return form.widget.confirmPasswordErrorMessage;
+        }
+      }
+      if (validationTypes.contains(TFValidationType.simpleChars)) {
+        if (!TFFormValidator.validateSimpleChars(val)) {
+          return form.widget.simpleCharsErrorMessage;
+        }
+      }
+      if (validationTypes.contains(TFValidationType.slugChars)) {
+        if (!TFFormValidator.validateSlugChars(val)) {
+          return form.widget.slugCharsErrorMessage;
+        }
+      }
+      if (validationTypes.contains(TFValidationType.domainChars)) {
+        if (!TFFormValidator.validateDomainChars(val)) {
+          return form.widget.domainCharsErrorMessage;
+        }
+      }
+      if (validationTypes.contains(TFValidationType.simpleSlugChars)) {
+        if (!TFFormValidator.validateSimpleSlugChars(val)) {
+          return form.widget.simpleSlugCharsErrorMessage;
+        }
+      }
+      if (validationTypes.contains(TFValidationType.reallySimpleChars)) {
+        if (!TFFormValidator.validateReallySimpleChars(val)) {
+          return form.widget.reallySimpleCharsErrorMessage;
+        }
+      }
+      if (validationTypes.contains(TFValidationType.href)) {
+        if (!TFFormValidator.validateHref(val)) {
+          return form.widget.hrefErrorMessage;
+        }
+      }
+      if (validationTypes.contains(TFValidationType.integer)) {
+        if (!TFFormValidator.validateInteger(val)) {
+          return form.widget.hrefErrorMessage;
+        }
+      }
+      if (validationTypes.contains(TFValidationType.phone)) {
+        if (!TFFormValidator.validatePhone(val)) {
+          return form.widget.phoneErrorMessage;
+        }
       }
     }
-    if (validationTypes.contains(TFValidationType.password)) {
-      if (!TFFormValidator.validatePassword(val, form.widget.passwordPolicy)) {
-        return form.widget.passwordErrorMessage;
-      }
-    }
-    if (validationTypes.contains(TFValidationType.confirmPassword)) {
-      if (val != widget.passwordController!.text) {
-        return form.widget.confirmPasswordErrorMessage;
-      }
-    }
-    if (validationTypes.contains(TFValidationType.simpleChars)) {
-      if (!TFFormValidator.validateSimpleChars(val)) {
-        return form.widget.simpleCharsErrorMessage;
-      }
-    }
-    if (validationTypes.contains(TFValidationType.slugChars)) {
-      if (!TFFormValidator.validateSlugChars(val)) {
-        return form.widget.slugCharsErrorMessage;
-      }
-    }
-    if (validationTypes.contains(TFValidationType.domainChars)) {
-      if (!TFFormValidator.validateDomainChars(val)) {
-        return form.widget.domainCharsErrorMessage;
-      }
-    }
-    if (validationTypes.contains(TFValidationType.simpleSlugChars)) {
-      if (!TFFormValidator.validateSimpleSlugChars(val)) {
-        return form.widget.simpleSlugCharsErrorMessage;
-      }
-    }
-    if (validationTypes.contains(TFValidationType.reallySimpleChars)) {
-      if (!TFFormValidator.validateReallySimpleChars(val)) {
-        return form.widget.reallySimpleCharsErrorMessage;
-      }
-    }
-    if (validationTypes.contains(TFValidationType.href)) {
-      if (!TFFormValidator.validateHref(val)) {
-        return form.widget.hrefErrorMessage;
-      }
-    }
-    if (validationTypes.contains(TFValidationType.integer)) {
-      if (!TFFormValidator.validateInteger(val)) {
-        return form.widget.hrefErrorMessage;
-      }
-    }
-    if (validationTypes.contains(TFValidationType.phone)) {
-      if (!TFFormValidator.validatePhone(val)) {
-        return form.widget.phoneErrorMessage;
-      }
-    }
+
     return "";
   }
 
@@ -835,7 +903,9 @@ class _TFTextFieldState extends State<TFTextField> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      TFForm.of(context)?._registerField(this);
+      if (validationTypes.isNotEmpty) {
+        TFForm.of(context)?._registerField(this);
+      }
     });
     widget.controller.addListener(_onTextChanged);
     _focusNode = widget.focusNode ?? FocusNode();
@@ -844,7 +914,9 @@ class _TFTextFieldState extends State<TFTextField> {
 
   @override
   void deactivate() {
-    TFForm.of(context)?._unregisterField(this);
+    if (validationTypes.isNotEmpty) {
+      TFForm.of(context)?._unregisterField(this);
+    }
     super.deactivate();
   }
 
@@ -959,19 +1031,26 @@ class _TFTextFieldState extends State<TFTextField> {
 class TFDropdownField extends StatefulWidget {
   final String title;
   final List<String> items;
-  final String? selectedItem;
+  final String? initialItem;
   final TextEditingController controller;
-  final bool isRequired;
+  final List<TFValidationType> validationTypes;
+  final TextEditingController? relatedController;
 
-  const TFDropdownField({
+  TFDropdownField({
     Key? key,
     required this.title,
     required this.items,
     required this.controller,
-    this.selectedItem,
-    this.isRequired = true,
-  }) : super(key: key);
-
+    this.initialItem,
+    this.validationTypes = const <TFValidationType>[],
+    this.relatedController,
+  }) : super(key: key) {
+    if (validationTypes.contains(TFValidationType.requiredIfHas) &&
+        relatedController == null) {
+      throw ArgumentError(
+          "requiredIfHas type and relatedController should both be set.");
+    }
+  }
   @override
   State<TFDropdownField> createState() => _TFDropdownFieldState();
 }
@@ -993,8 +1072,8 @@ class _TFDropdownFieldState extends State<TFDropdownField> {
   @override
   void initState() {
     super.initState();
-    if (widget.selectedItem != null) {
-      widget.controller.text = widget.selectedItem!;
+    if (widget.initialItem != null) {
+      widget.controller.text = widget.initialItem!;
     }
   }
 
@@ -1011,6 +1090,13 @@ class _TFDropdownFieldState extends State<TFDropdownField> {
       child: TFTextField(
         title: widget.title,
         controller: widget.controller,
+        validationTypes: widget.validationTypes,
+        relatedController: widget.relatedController,
+        readOnly: true,
+        suffix: const Icon(
+          Icons.arrow_drop_down,
+          color: Colors.grey,
+        ),
         onTap: () {
           if (_dropdownOverlay == null) {
             _showDropdown();
@@ -1021,13 +1107,6 @@ class _TFDropdownFieldState extends State<TFDropdownField> {
         onFocusChanged: (hasFocus) {
           if (!hasFocus) _hideDropdown();
         },
-        readOnly: true,
-        validationTypes:
-            widget.isRequired ? const [TFValidationType.required] : [],
-        suffix: const Icon(
-          Icons.arrow_drop_down,
-          color: Colors.grey,
-        ),
       ),
     );
   }
@@ -1082,17 +1161,25 @@ class TFDateField extends StatefulWidget {
   final DateTime? initialDate;
   final DateTime? firstDate;
   final DateTime? lastDate;
-  final bool isRequired;
+  final List<TFValidationType> validationTypes;
+  final TextEditingController? relatedController;
 
-  const TFDateField({
+  TFDateField({
     Key? key,
     required this.title,
     required this.controller,
     this.initialDate,
     this.firstDate,
     this.lastDate,
-    this.isRequired = true,
-  }) : super(key: key);
+    this.validationTypes = const <TFValidationType>[],
+    this.relatedController,
+  }) : super(key: key) {
+    if (validationTypes.contains(TFValidationType.requiredIfHas) &&
+        relatedController == null) {
+      throw ArgumentError(
+          "requiredIfHas type and relatedController should both be set.");
+    }
+  }
 
   @override
   State<TFDateField> createState() => _TFDateFieldState();
@@ -1129,13 +1216,13 @@ class _TFDateFieldState extends State<TFDateField> {
       title: widget.title,
       hintText: TFFormValidator.getDateFormat().pattern,
       controller: widget.controller,
-      validationTypes:
-          widget.isRequired ? const [TFValidationType.required] : [],
+      validationTypes: widget.validationTypes,
+      relatedController: widget.relatedController,
+      readOnly: true,
       suffix: const Icon(
         Icons.arrow_drop_down,
         color: Colors.grey,
       ),
-      readOnly: true,
       onTap: _showDatePicker,
     );
   }
@@ -1148,15 +1235,23 @@ class TFCheckboxGroup extends StatefulWidget {
   final String title;
   final List<TFCheckboxItem> items;
   final Function(List<int>) onChanged;
-  final bool isRequired;
+  final List<TFValidationType> validationTypes;
+  final TextEditingController? relatedController;
 
-  const TFCheckboxGroup({
+  TFCheckboxGroup({
     Key? key,
     required this.title,
     required this.items,
     required this.onChanged,
-    this.isRequired = true,
-  }) : super(key: key);
+    this.validationTypes = const <TFValidationType>[],
+    this.relatedController,
+  }) : super(key: key) {
+    if (validationTypes.contains(TFValidationType.requiredIfHas) &&
+        relatedController == null) {
+      throw ArgumentError(
+          "requiredIfHas type and relatedController should both be set.");
+    }
+  }
 
   @override
   State<TFCheckboxGroup> createState() => _TFCheckboxGroupState();
@@ -1165,6 +1260,8 @@ class TFCheckboxGroup extends StatefulWidget {
 class _TFCheckboxGroupState extends State<TFCheckboxGroup> {
   List<int> _checkedItemIndexes = [];
   bool _isValid = true;
+
+  List<TFValidationType> get validationTypes => widget.validationTypes;
 
   void _setValid(bool val) {
     setState(() {
@@ -1187,15 +1284,30 @@ class _TFCheckboxGroupState extends State<TFCheckboxGroup> {
 
     // for autoValidate
     if (TFForm.of(context)?.widget.autoValidate ?? false) {
-      _setValid(_checkedItemIndexes.isNotEmpty);
+      final isValid = _validate();
+      _setValid(isValid);
     }
+  }
+
+  bool _validate() {
+    if (validationTypes.contains(TFValidationType.required)) {
+      if (_checkedItemIndexes.isEmpty) {
+        return false;
+      }
+    } else if (validationTypes.contains(TFValidationType.requiredIfHas)) {
+      final relatedVal = widget.relatedController!.text;
+      if (relatedVal.isNotEmpty && _checkedItemIndexes.isEmpty) {
+        return false;
+      }
+    }
+    return true;
   }
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      if (widget.isRequired) {
+      if (validationTypes.isNotEmpty) {
         TFForm.of(context)?._registerCheckboxGroup(this);
       }
     });
@@ -1203,7 +1315,7 @@ class _TFCheckboxGroupState extends State<TFCheckboxGroup> {
 
   @override
   void deactivate() {
-    if (widget.isRequired) {
+    if (validationTypes.isNotEmpty) {
       TFForm.of(context)?._unregisterCheckboxGroup(this);
     }
     super.deactivate();
@@ -1264,16 +1376,24 @@ class TFRadioGroup<T> extends StatefulWidget {
   final List<TFRadioItem<T>> items;
   final T? groupValue;
   final Function(T?) onChanged;
-  final bool isRequired;
+  final List<TFValidationType> validationTypes;
+  final TextEditingController? relatedController;
 
-  const TFRadioGroup({
+  TFRadioGroup({
     Key? key,
     required this.title,
     required this.items,
     required this.onChanged,
     this.groupValue,
-    this.isRequired = true,
-  }) : super(key: key);
+    this.validationTypes = const <TFValidationType>[],
+    this.relatedController,
+  }) : super(key: key) {
+    if (validationTypes.contains(TFValidationType.requiredIfHas) &&
+        relatedController == null) {
+      throw ArgumentError(
+          "requiredIfHas type and relatedController should both be set.");
+    }
+  }
 
   @override
   State<TFRadioGroup<T>> createState() => _TFRadioGroupState<T>();
@@ -1282,6 +1402,8 @@ class TFRadioGroup<T> extends StatefulWidget {
 class _TFRadioGroupState<T> extends State<TFRadioGroup<T>> {
   T? _groupValue;
   bool _isValid = true;
+
+  List<TFValidationType> get validationTypes => widget.validationTypes;
 
   void _setValid(bool val) {
     setState(() {
@@ -1297,15 +1419,30 @@ class _TFRadioGroupState<T> extends State<TFRadioGroup<T>> {
 
     // for autoValidate
     if (TFForm.of(context)?.widget.autoValidate ?? false) {
-      _setValid(_groupValue != null);
+      final isValid = _validate();
+      _setValid(isValid);
     }
+  }
+
+  bool _validate() {
+    if (validationTypes.contains(TFValidationType.required)) {
+      if (_groupValue == null) {
+        return false;
+      }
+    } else if (validationTypes.contains(TFValidationType.requiredIfHas)) {
+      final relatedVal = widget.relatedController!.text;
+      if (relatedVal.isNotEmpty && _groupValue == null) {
+        return false;
+      }
+    }
+    return true;
   }
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      if (widget.isRequired) {
+      if (validationTypes.isNotEmpty) {
         TFForm.of(context)?._registerRadioGroup(this);
       }
     });
@@ -1314,7 +1451,7 @@ class _TFRadioGroupState<T> extends State<TFRadioGroup<T>> {
 
   @override
   void deactivate() {
-    if (widget.isRequired) {
+    if (validationTypes.isNotEmpty) {
       TFForm.of(context)?._unregisterRadioGroup(this);
     }
     super.deactivate();
@@ -1367,7 +1504,7 @@ class _TFRadioGroupState<T> extends State<TFRadioGroup<T>> {
   }
 }
 
-///
+/// Error text widget
 class TFErrorText extends StatelessWidget {
   final String error;
   final bool visible;

@@ -22,10 +22,6 @@ class TFFormValidator {
   static final RegExp sequentialRegex = RegExp(r'([\S\s])\1');
 
   /////////////////////////////////////////////////////////////////
-  static bool validateRequired(String val) {
-    return val.isNotEmpty;
-  }
-
   static bool validateEmailAddress(String val) {
     return val.isNotEmpty && emailRegex.hasMatch(val);
   }

@@ -70,9 +70,11 @@ A dropdown field allows the user to pick a value from a dropdown list
             "Seller",
             "Admin",
         ],
-        selectedItem: "Member",
         controller: roleController,
-        isRequired: true,
+        initialItem: "Member",
+        validationTypes: const [
+            TFValidationType.required,
+        ],
     ),
 ```
 
@@ -87,29 +89,15 @@ A date field allows the user to pick a DateTime.=
         firstDate: DateTime.now().subtract(const Duration(days: 365)),
         lastDate: DateTime.now().add(const Duration(days: 365)),
         controller: birthdayController,
-        isRequired: true,
+        validationTypes: const [
+            TFValidationType.required,
+        ],
     ),
 ```
 
 ### TFRadioGroup
 
 A radio group allows user to select one option from multiple selections
-
-```dart
-    TFRadioGroup<String>(
-        title: "Gender",
-        items: [
-            TFRadioItem<String>(title: "Male", value: "male"),
-            TFRadioItem<String>(title: "Female", value: "female"),
-            TFRadioItem<String>(title: "Other", value: "other"),
-        ],
-        onChanged: (selectedItem) {},
-    ),
-```
-
-### TFCheckboxGroup
-
-A checkbox group allows user to select multiple items
 
 ```dart
     TFCheckboxGroup(
@@ -122,6 +110,29 @@ A checkbox group allows user to select multiple items
             TFCheckboxItem(title: "Telegram"),
         ],
         onChanged: (checkedItemIndexes) {},
+        validationTypes: const [
+            TFValidationType.required,
+        ],
+    ),
+```
+
+### TFCheckboxGroup
+
+A checkbox group allows user to select multiple items
+
+```dart
+    TFRadioGroup<String>(
+        title: "Gender",
+        items: [
+            TFRadioItem<String>(title: "Male", value: "male"),
+            TFRadioItem<String>(title: "Female", value: "female"),
+            TFRadioItem<String>(title: "Other", value: "other"),
+        ],
+        onChanged: (selectedItem) {},
+        validationTypes: const [
+            TFValidationType.requiredIfHas,
+        ],
+        relatedController: nicknameController,
     ),
 ```
 
@@ -129,7 +140,7 @@ A checkbox group allows user to select multiple items
 
 - First, create a `TFForm`
 
-- Add one of the above five types as children of `TFForm`. The `TFForm` simply makes it easier to validate all at once.
+- Add one of the above form widgets as children of `TFForm`. The `TFForm` simply makes it easier to validate all at once.
 
 - Finally, create a button to validate the form.
 

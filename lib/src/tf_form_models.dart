@@ -23,30 +23,9 @@ enum TFValidationType {
   phone,
 }
 
-extension TFValidationTypeExt on TFValidationType {
-  bool get isUnique => [
-        TFValidationType.emailAddress,
-        TFValidationType.date,
-        TFValidationType.password,
-        TFValidationType.confirmPassword,
-        TFValidationType.simpleChars,
-        TFValidationType.slugChars,
-        TFValidationType.simpleSlugChars,
-        TFValidationType.domainChars,
-        TFValidationType.reallySimpleChars,
-        TFValidationType.reallySimpleChars,
-        TFValidationType.href,
-        TFValidationType.integer,
-        TFValidationType.phone,
-      ].contains(this);
-}
-
 /// Validation result object that will be returned when calling [TFFormState.validate]
 class TFFormValidationResult {
-  /// Number of errors
   int errors;
-
-  /// List of error messages
   List<String> errorMessages;
 
   TFFormValidationResult({
@@ -59,25 +38,12 @@ class TFFormValidationResult {
 
 /// Password policy object is the set of rules for the password field in [TFForm] widget.
 class TFFormPasswordPolicy {
-  /// Maximum length
   final int maxlength;
-
-  /// Minimum length
   final int minLength;
-
-  /// Minimum number of uppercase characters
   final int? minUpper;
-
-  /// Minimum number of lowercase characters
   final int? minLower;
-
-  /// Minimum number of special characters
   final int? minSpecial;
-
-  /// Minimum number of alphabet characters
   final int minAlpha;
-
-  /// Minimum number of digit characters
   final int minNumeric;
 
   /// List of words not allowed in password
@@ -151,22 +117,11 @@ class TFRadioItem<T> {
 
 /// TFForm style object is used for styling
 class TFFormStyle {
-  /// The color is used for background color
   final Color backgroundColor;
-
-  /// The color is used when the user interacts
   final Color activeColor;
-
-  /// The color is used when form is related to an error
   final Color errorColor;
-
-  /// The title of field / group widgets
   final TextStyle? titleStyle;
-
-  /// The style of field widgets
   final TFFieldStyle fieldStyle;
-
-  /// The style of checkbox/raido group widgets
   final TFGroupStyle groupStyle;
 
   const TFFormStyle({

@@ -103,10 +103,12 @@ class DemoFormPageState extends State<DemoFormPage> {
               TFDateField(
                 title: "Birthday",
                 controller: birthdayController,
-                initialDate: DateTime.now(),
-                firstDate: DateTime.now().subtract(const Duration(days: 365)),
-                lastDate: DateTime.now().add(const Duration(days: 365)),
-                isRequired: true,
+                // initialDate: DateTime.now(),
+                // firstDate: DateTime.now().subtract(const Duration(days: 365)),
+                // lastDate: DateTime.now().add(const Duration(days: 365)),
+                validationTypes: const [
+                  TFValidationType.required,
+                ],
               ),
               const SizedBox(height: 15),
               TFDropdownField(
@@ -117,8 +119,10 @@ class DemoFormPageState extends State<DemoFormPage> {
                   "Admin",
                 ],
                 controller: roleController,
-                selectedItem: "Member",
-                isRequired: true,
+                initialItem: "Member",
+                validationTypes: const [
+                  TFValidationType.required,
+                ],
               ),
               const SizedBox(height: 15),
               TFTextField(
@@ -141,6 +145,9 @@ class DemoFormPageState extends State<DemoFormPage> {
                   TFCheckboxItem(title: "Telegram"),
                 ],
                 onChanged: (checkedItemIndexes) {},
+                validationTypes: const [
+                  TFValidationType.required,
+                ],
               ),
               const SizedBox(height: 20),
               TFRadioGroup<String>(
@@ -151,6 +158,10 @@ class DemoFormPageState extends State<DemoFormPage> {
                   TFRadioItem<String>(title: "Other", value: "other"),
                 ],
                 onChanged: (selectedItem) {},
+                validationTypes: const [
+                  TFValidationType.requiredIfHas,
+                ],
+                relatedController: nicknameController,
               ),
               const SizedBox(height: 40),
               ElevatedButton(
