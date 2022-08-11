@@ -56,9 +56,49 @@ validate multiple fields at once.
             TFTextFieldType.phone,
         ],
     ),
+     TFDateField(
+        title: "Birthday",
+        controller: birthdayController,
+        initialDate: DateTime.now(),
+        firstDate: DateTime.now().subtract(const Duration(days: 365)),
+        lastDate: DateTime.now().add(const Duration(days: 365)),
+        isRequired: true,
+    ),
+     TFDropdownField(
+        title: "City",
+        items: const [
+            "A",
+            "B",
+            "C",
+            "D",
+        ],
+        controller: cityController,
+        selectedItem: "",
+        isRequired: true,
+    ),
+     TFCheckboxGroup(
+        title: "Which social network do you usually use ?",
+        items: [
+            TFCheckboxItem(title: "Facebook"),
+            TFCheckboxItem(title: "Zalo"),
+            TFCheckboxItem(title: "Twitter"),
+            TFCheckboxItem(title: "Linkedin"),
+            TFCheckboxItem(title: "Telegram"),
+        ],
+        onChanged: (checkedItemIndexes) {},
+    ),
+    TFRadioGroup<String>(
+        title: "Gender",
+        items: [
+            TFRadioItem<String>(title: "Male", value: "male"),
+            TFRadioItem<String>(title: "Female", value: "female"),
+            TFRadioItem<String>(title: "Other", value: "other"),
+        ],
+        onChanged: (selectedItem) {},
+    ),
  ```
  
-### 3. Create a button to validate and submit the form
+### Create a button to validate and submit the form
 
 ```dart
     ElevatedButton(
