@@ -34,7 +34,7 @@ class DemoFormPageState extends State<DemoFormPage> {
   final emailController = TextEditingController();
   final birthdayController = TextEditingController();
   final phoneController = TextEditingController();
-  final cityController = TextEditingController();
+  final roleController = TextEditingController();
 
   final _addressesFormKey = GlobalKey<TFFormState>();
   final address1Controller = TextEditingController();
@@ -76,7 +76,6 @@ class DemoFormPageState extends State<DemoFormPage> {
     return SingleChildScrollView(
       child: TFForm(
         key: _personalFormKey,
-        style: TFFormStyle(activeColor: Colors.green),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -111,15 +110,14 @@ class DemoFormPageState extends State<DemoFormPage> {
               ),
               const SizedBox(height: 15),
               TFDropdownField(
-                title: "City",
+                title: "Role",
                 items: const [
-                  "A",
-                  "B",
-                  "C",
-                  "D",
+                  "Member",
+                  "Seller",
+                  "Admin",
                 ],
-                controller: cityController,
-                selectedItem: "",
+                controller: roleController,
+                selectedItem: "Member",
                 isRequired: true,
               ),
               const SizedBox(height: 15),

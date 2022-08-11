@@ -29,7 +29,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  tf_form:
+  tf_form: 
     path: ../
 
 

@@ -1035,6 +1035,7 @@ class _TFDropdownFieldState extends State<TFDropdownField> {
   OverlayEntry _buildDropListOverlay() {
     final renderBox = context.findRenderObject() as RenderBox;
     final size = renderBox.size;
+    final activeColor = TFFormStyle.of(context).activeColor;
     return OverlayEntry(
       builder: (context) => Positioned(
         width: size.width,
@@ -1053,7 +1054,7 @@ class _TFDropdownFieldState extends State<TFDropdownField> {
                   title: Text(item),
                   selected: isSelected,
                   selectedColor: Colors.white,
-                  selectedTileColor: TFFormStyle.of(context).activeColor,
+                  selectedTileColor: activeColor,
                   trailing: isSelected
                       ? const Icon(
                           Icons.check,
