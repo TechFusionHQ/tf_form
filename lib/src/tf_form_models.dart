@@ -1,5 +1,8 @@
 // Copyright (c) 2022 TechFusion Ltd (https://www.techfusion.dev).
 
+import 'package:flutter/material.dart';
+import 'package:tf_form/tf_form.dart';
+
 /// Used to configure the validation type of [TFTextField] and [TFForm] widgets.
 enum TFValidationType {
   required,
@@ -21,7 +24,7 @@ enum TFValidationType {
 }
 
 extension TFValidationTypeExt on TFValidationType {
-  bool get isUniqueType => [
+  bool get isUnique => [
         TFValidationType.emailAddress,
         TFValidationType.date,
         TFValidationType.password,
@@ -143,5 +146,79 @@ class TFRadioItem<T> {
   TFRadioItem({
     required this.title,
     required this.value,
+  });
+}
+
+/// TFForm style object is used for styling
+class TFFormStyle {
+  /// The color is used for background color
+  final Color backgroundColor;
+
+  /// The color is used when the user interacts
+  final Color activeColor;
+
+  /// The color is used when form is related to an error
+  final Color errorColor;
+
+  /// The title of field / group widgets
+  final TextStyle? titleStyle;
+
+  /// The style of field widgets
+  final TFFieldStyle fieldStyle;
+
+  /// The style of checkbox/raido group widgets
+  final TFGroupStyle groupStyle;
+
+  const TFFormStyle({
+    this.backgroundColor = Colors.white,
+    this.activeColor = const Color(0xFF0084FF),
+    this.errorColor = const Color(0xFFE82C2B),
+    this.titleStyle = const TextStyle(
+      fontSize: 16,
+      fontWeight: FontWeight.w500,
+    ),
+    this.fieldStyle = const TFFieldStyle(),
+    this.groupStyle = const TFGroupStyle(),
+  });
+
+  static TFFormStyle of(BuildContext context) {
+    return TFForm.of(context)?.widget.style ?? const TFFormStyle();
+  }
+}
+
+/// The style of field widgets
+class TFFieldStyle {
+  final double height;
+  final double borderRadius;
+  final double borderWidth;
+  final Color borderColor;
+  final EdgeInsets contentPadding;
+  final TextStyle? contentStyle;
+  final TextStyle? hintStyle;
+
+  const TFFieldStyle({
+    this.height = 48,
+    this.borderRadius = 10,
+    this.borderWidth = 1,
+    this.borderColor = const Color(0x1F000000),
+    this.contentPadding = const EdgeInsets.only(
+      left: 10,
+      right: 10,
+      top: 5,
+      bottom: 5,
+    ),
+    this.contentStyle,
+    this.hintStyle,
+  });
+}
+
+/// The style of checkbox/raido group widgets
+class TFGroupStyle {
+  final TextStyle itemTitleStyle;
+  final Color unselectedColor;
+
+  const TFGroupStyle({
+    this.itemTitleStyle = const TextStyle(fontSize: 16),
+    this.unselectedColor = Colors.black,
   });
 }
