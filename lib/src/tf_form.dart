@@ -88,8 +88,7 @@ class TFForm extends StatefulWidget {
     this.confirmPasswordErrorMessage = 'Please confirm your password',
     this.simpleCharsErrorMessage = 'Please use only letters, numbers, underscores, dots, dashes and spaces',
     this.slugCharsErrorMessage = 'Please use only letters, numbers, underscores, dots, dashes and spaces',
-    this.simpleSlugCharsErrorMessage =
-        'Please use only letters, numbers, underscores, dashes. Please do not use underscores or dashes at the start and/or end',
+    this.simpleSlugCharsErrorMessage = 'Please use only letters, numbers, underscores, dashes. Please do not use underscores or dashes at the start and/or end',
     this.domainCharsErrorMessage = 'Please use only letters, numbers, dashes and dots. Please do not use dashes or dots at the start and/or end',
     this.reallySimpleCharsErrorMessage = 'Please use only letters and numbers, no punctuation, dots, spaces, etc',
     this.numberErrorMessage = 'Please enter only numeric digits',
@@ -775,6 +774,7 @@ class TFTextField extends StatefulWidget {
   State<TFTextField> createState() => _TFTextFieldState();
 }
 
+
 class _TFTextFieldState extends State<TFTextField> {
   late FocusNode _focusNode;
   String _errorMessage = "";
@@ -786,12 +786,6 @@ class _TFTextFieldState extends State<TFTextField> {
   String get val => widget.controller.text.trim();
 
   String get requiredErrorMessage => "This field is required";
-
-  final List numberInputTypes = [
-    TextInputType.number,
-    TextInputType.phone,
-    const TextInputType.numberWithOptions(decimal: true),
-  ];
 
   void _setErrorMessage({String val = ""}) {
     setState(() {
@@ -902,7 +896,7 @@ class _TFTextFieldState extends State<TFTextField> {
     });
 
     // Add action bar for numeric keyboard in iOS
-    if (Platform.isIOS && numberInputTypes.contains(widget.keyboardType)) {
+    if (Platform.isIOS && numericKeyboardTypes.contains(widget.keyboardType)) {
       if (_hasFocus) {
         TFKeyboardActionBar.showOverlay(context);
       } else {

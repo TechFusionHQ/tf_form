@@ -23,6 +23,12 @@ enum TFValidationType {
   phone,
 }
 
+const numericKeyboardTypes = [
+  TextInputType.number,
+  TextInputType.phone,
+  TextInputType.numberWithOptions(decimal: true),
+];
+
 /// Validation result object that will be returned when calling [TFFormState.validate]
 class TFFormValidationResult {
   int errors;
