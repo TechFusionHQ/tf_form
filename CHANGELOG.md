@@ -1,7 +1,21 @@
 ## 0.0.1
 
-* TODO: initial release.
+### Released
+
+* Initial release
 
 ## 0.0.2
 
-* TODO: Lightly update arguments
+### Changed
+
+* Validation type arguments
+
+## 0.0.3
+
+### Added
+
+* Action bar for numeric keyboard type in iOS
+
+### Fixed
+
+* Update condition for auto validation
