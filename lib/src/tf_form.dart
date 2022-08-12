@@ -1,9 +1,12 @@
 // Copyright (c) 2022 TechFusion Ltd (https://www.techfusion.dev).
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tf_form/src/tf_form_models.dart';
 import 'package:tf_form/src/tf_form_validator.dart';
+import 'package:tf_form/src/tf_keyboard_actionbar.dart';
 
 /// An optional container for grouping together multiple [TFTextField] widgets
 ///
@@ -895,6 +898,16 @@ class _TFTextFieldState extends State<TFTextField> {
     setState(() {
       _hasFocus = _focusNode.hasFocus;
     });
+    
+    // Add action bar for numeric keyboard in iOS
+    if (Platform.isIOS && widget.keyboardType == TextInputType.number) {
+      if (_hasFocus) {
+        TFKeyboardActionBar.showOverlay(context);
+      } else {
+        TFKeyboardActionBar.removeOverlay();
+      }
+    }
+
     if (widget.onFocusChanged != null) {
       widget.onFocusChanged!(_hasFocus);
     }

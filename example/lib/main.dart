@@ -129,6 +129,7 @@ class DemoFormPageState extends State<DemoFormPage> {
                 title: "Phone",
                 hintText: "Enter a phone",
                 controller: phoneController,
+                keyboardType: TextInputType.number,
                 validationTypes: const [
                   TFValidationType.required,
                   TFValidationType.phone,
