@@ -82,15 +82,16 @@ class TFForm extends StatefulWidget {
     this.passwordPolicy = const TFFormPasswordPolicy(),
     this.style = const TFFormStyle(),
     this.requiredErrorMessage = 'Please enter all required fields',
-    this.emailErrorMessage ='Please check the format of your email address, it should read like ben@somewhere.com',
+    this.emailErrorMessage = 'Please check the format of your email address, it should read like ben@somewhere.com',
     this.dateErrorMessage = 'Please enter a valid date',
     this.passwordErrorMessage = 'Your password must be at least 6 characters and it must contain numbers and letters',
     this.confirmPasswordErrorMessage = 'Please confirm your password',
-    this.simpleCharsErrorMessage ='Please use only letters, numbers, underscores, dots, dashes and spaces',
-    this.slugCharsErrorMessage ='Please use only letters, numbers, underscores, dots, dashes and spaces',
-    this.simpleSlugCharsErrorMessage ='Please use only letters, numbers, underscores, dashes. Please do not use underscores or dashes at the start and/or end',
-    this.domainCharsErrorMessage ='Please use only letters, numbers, dashes and dots. Please do not use dashes or dots at the start and/or end',
-    this.reallySimpleCharsErrorMessage ='Please use only letters and numbers, no punctuation, dots, spaces, etc',
+    this.simpleCharsErrorMessage = 'Please use only letters, numbers, underscores, dots, dashes and spaces',
+    this.slugCharsErrorMessage = 'Please use only letters, numbers, underscores, dots, dashes and spaces',
+    this.simpleSlugCharsErrorMessage =
+        'Please use only letters, numbers, underscores, dashes. Please do not use underscores or dashes at the start and/or end',
+    this.domainCharsErrorMessage = 'Please use only letters, numbers, dashes and dots. Please do not use dashes or dots at the start and/or end',
+    this.reallySimpleCharsErrorMessage = 'Please use only letters and numbers, no punctuation, dots, spaces, etc',
     this.numberErrorMessage = 'Please enter only numeric digits',
     this.integerErrorMessage = 'Please enter only integer',
     this.hrefErrorMessage = 'Please enter a valid URL',
@@ -103,8 +104,7 @@ class TFForm extends StatefulWidget {
   /// _TFFormState form = TFForm.of(context);
   /// ```
   static TFFormState? of(BuildContext context) {
-    final _TFFormScope? scope =
-        context.dependOnInheritedWidgetOfExactType<_TFFormScope>();
+    final _TFFormScope? scope = context.dependOnInheritedWidgetOfExactType<_TFFormScope>();
     return scope?._formState;
   }
 
@@ -763,15 +763,11 @@ class TFTextField extends StatefulWidget {
     if (validationTypes.contains(TFValidationType.regex) && regex == null) {
       throw ArgumentError("regex type and regex should both be set.");
     }
-    if (validationTypes.contains(TFValidationType.requiredIfHas) &&
-        relatedController == null) {
-      throw ArgumentError(
-          "requiredIfHas type and relatedController should both be set.");
+    if (validationTypes.contains(TFValidationType.requiredIfHas) && relatedController == null) {
+      throw ArgumentError("requiredIfHas type and relatedController should both be set.");
     }
-    if (validationTypes.contains(TFValidationType.confirmPassword) &&
-        passwordController == null) {
-      throw ArgumentError(
-          "confirmPassword type and passwordController should both be set.");
+    if (validationTypes.contains(TFValidationType.confirmPassword) && passwordController == null) {
+      throw ArgumentError("confirmPassword type and passwordController should both be set.");
     }
   }
 
@@ -786,8 +782,18 @@ class _TFTextFieldState extends State<TFTextField> {
   bool _hasFocus = false;
 
   List<TFValidationType> get validationTypes => widget.validationTypes;
+
   String get val => widget.controller.text.trim();
+
   String get requiredErrorMessage => "This field is required";
+
+  final List numberInputTypes = [
+    TextInputType.number,
+    TextInputType.phone,
+    const TextInputType.numberWithOptions(signed: true, decimal: true),
+    const TextInputType.numberWithOptions(signed: true),
+    const TextInputType.numberWithOptions(decimal: true),
+  ];
 
   void _setErrorMessage({String val = ""}) {
     setState(() {
@@ -802,8 +808,7 @@ class _TFTextFieldState extends State<TFTextField> {
       return;
     }
 
-    if ((TFForm.of(context)?.widget.autoValidate ?? false) &&
-        validationTypes.isNotEmpty) {
+    if ((TFForm.of(context)?.widget.autoValidate ?? false) && validationTypes.isNotEmpty) {
       final errorMessage = _validate();
       _setErrorMessage(val: errorMessage);
     }
@@ -839,8 +844,7 @@ class _TFTextFieldState extends State<TFTextField> {
         }
       }
       if (validationTypes.contains(TFValidationType.password)) {
-        if (!TFFormValidator.validatePassword(
-            val, form.widget.passwordPolicy)) {
+        if (!TFFormValidator.validatePassword(val, form.widget.passwordPolicy)) {
           return form.widget.passwordErrorMessage;
         }
       }
@@ -898,9 +902,9 @@ class _TFTextFieldState extends State<TFTextField> {
     setState(() {
       _hasFocus = _focusNode.hasFocus;
     });
-    
+
     // Add action bar for numeric keyboard in iOS
-    if (Platform.isIOS && widget.keyboardType == TextInputType.number) {
+    if (Platform.isIOS && numberInputTypes.contains(widget.keyboardType)) {
       if (_hasFocus) {
         TFKeyboardActionBar.showOverlay(context);
       } else {
@@ -953,15 +957,12 @@ class _TFTextFieldState extends State<TFTextField> {
         const SizedBox(height: 8),
         Container(
           width: double.infinity,
-          height:
-              widget.expand ? null : TFFormStyle.of(context).fieldStyle.height,
+          height: widget.expand ? null : TFFormStyle.of(context).fieldStyle.height,
           padding: TFFormStyle.of(context).fieldStyle.contentPadding,
           decoration: defaultDecoration,
           child: Row(
             mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: widget.expand
-                ? CrossAxisAlignment.start
-                : CrossAxisAlignment.center,
+            crossAxisAlignment: widget.expand ? CrossAxisAlignment.start : CrossAxisAlignment.center,
             children: [
               if (widget.prefix != null) widget.prefix!,
               if (widget.prefix != null) const SizedBox(width: 10),
@@ -1059,12 +1060,11 @@ class TFDropdownField extends StatefulWidget {
     this.validationTypes = const <TFValidationType>[],
     this.relatedController,
   }) : super(key: key) {
-    if (validationTypes.contains(TFValidationType.requiredIfHas) &&
-        relatedController == null) {
-      throw ArgumentError(
-          "requiredIfHas type and relatedController should both be set.");
+    if (validationTypes.contains(TFValidationType.requiredIfHas) && relatedController == null) {
+      throw ArgumentError("requiredIfHas type and relatedController should both be set.");
     }
   }
+
   @override
   State<TFDropdownField> createState() => _TFDropdownFieldState();
 }
@@ -1188,10 +1188,8 @@ class TFDateField extends StatefulWidget {
     this.validationTypes = const <TFValidationType>[],
     this.relatedController,
   }) : super(key: key) {
-    if (validationTypes.contains(TFValidationType.requiredIfHas) &&
-        relatedController == null) {
-      throw ArgumentError(
-          "requiredIfHas type and relatedController should both be set.");
+    if (validationTypes.contains(TFValidationType.requiredIfHas) && relatedController == null) {
+      throw ArgumentError("requiredIfHas type and relatedController should both be set.");
     }
   }
 
@@ -1260,10 +1258,8 @@ class TFCheckboxGroup extends StatefulWidget {
     this.validationTypes = const <TFValidationType>[],
     this.relatedController,
   }) : super(key: key) {
-    if (validationTypes.contains(TFValidationType.requiredIfHas) &&
-        relatedController == null) {
-      throw ArgumentError(
-          "requiredIfHas type and relatedController should both be set.");
+    if (validationTypes.contains(TFValidationType.requiredIfHas) && relatedController == null) {
+      throw ArgumentError("requiredIfHas type and relatedController should both be set.");
     }
   }
 
@@ -1297,8 +1293,7 @@ class _TFCheckboxGroupState extends State<TFCheckboxGroup> {
     });
 
     // for autoValidate
-    if ((TFForm.of(context)?.widget.autoValidate ?? false) &&
-        validationTypes.isNotEmpty) {
+    if ((TFForm.of(context)?.widget.autoValidate ?? false) && validationTypes.isNotEmpty) {
       final isValid = _validate();
       _setValid(isValid);
     }
@@ -1374,9 +1369,7 @@ class _TFCheckboxGroupState extends State<TFCheckboxGroup> {
       ),
       side: BorderSide(
         width: 1.5,
-        color: _isValid
-            ? TFFormStyle.of(context).groupStyle.unselectedColor
-            : TFFormStyle.of(context).errorColor,
+        color: _isValid ? TFFormStyle.of(context).groupStyle.unselectedColor : TFFormStyle.of(context).errorColor,
       ),
       onChanged: (value) {
         _onItemChanged(index, value ?? false);
@@ -1403,10 +1396,8 @@ class TFRadioGroup<T> extends StatefulWidget {
     this.validationTypes = const <TFValidationType>[],
     this.relatedController,
   }) : super(key: key) {
-    if (validationTypes.contains(TFValidationType.requiredIfHas) &&
-        relatedController == null) {
-      throw ArgumentError(
-          "requiredIfHas type and relatedController should both be set.");
+    if (validationTypes.contains(TFValidationType.requiredIfHas) && relatedController == null) {
+      throw ArgumentError("requiredIfHas type and relatedController should both be set.");
     }
   }
 
@@ -1433,8 +1424,7 @@ class _TFRadioGroupState<T> extends State<TFRadioGroup<T>> {
     });
 
     // for autoValidate
-    if ((TFForm.of(context)?.widget.autoValidate ?? false) &&
-        validationTypes.isNotEmpty) {
+    if ((TFForm.of(context)?.widget.autoValidate ?? false) && validationTypes.isNotEmpty) {
       final isValid = _validate();
       _setValid(isValid);
     }
@@ -1477,9 +1467,7 @@ class _TFRadioGroupState<T> extends State<TFRadioGroup<T>> {
   Widget build(BuildContext context) {
     return Theme(
       data: Theme.of(context).copyWith(
-        unselectedWidgetColor: _isValid
-            ? TFFormStyle.of(context).groupStyle.unselectedColor
-            : TFFormStyle.of(context).errorColor,
+        unselectedWidgetColor: _isValid ? TFFormStyle.of(context).groupStyle.unselectedColor : TFFormStyle.of(context).errorColor,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

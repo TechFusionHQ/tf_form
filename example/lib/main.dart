@@ -34,6 +34,7 @@ class DemoFormPageState extends State<DemoFormPage> {
   final emailController = TextEditingController();
   final birthdayController = TextEditingController();
   final phoneController = TextEditingController();
+  final heightController = TextEditingController();
   final roleController = TextEditingController();
 
   final _addressesFormKey = GlobalKey<TFFormState>();
@@ -133,6 +134,16 @@ class DemoFormPageState extends State<DemoFormPage> {
                 validationTypes: const [
                   TFValidationType.required,
                   TFValidationType.phone,
+                ],
+              ),
+              const SizedBox(height: 15),
+              TFTextField(
+                title: "Height (cm)",
+                hintText: "Enter height",
+                controller: heightController,
+                keyboardType: const TextInputType.numberWithOptions(signed: true, decimal: true),
+                validationTypes: const [
+                  TFValidationType.required,
                 ],
               ),
               const SizedBox(height: 20),
