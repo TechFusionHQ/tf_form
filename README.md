@@ -11,7 +11,7 @@ In the `pubspec.yaml` of your flutter project, add the following dependency:
 ```yaml
 dependencies:
   ...
-  tf_form: ^0.0.1
+  tf_form: ^0.0.3
 ```
 
 In your library add the following import:
@@ -153,3 +153,5 @@ A checkbox group allows user to select multiple items
     ),
 
 ```
+
+Video example: https://cloud.techfusion.dev/9EIzr4pOMZ40aedOr9X8
