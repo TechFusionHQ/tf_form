@@ -4,6 +4,9 @@ A Flutter package for creating a form container to group multiple common form wi
 
 Copyright (c) 2022 TechFusion Ltd (<https://www.techfusion.dev>)
 
+## TL;DR
+Video example: https://cloud.techfusion.dev/9EIzr4pOMZ40aedOr9X8
+
 ## Installing
 
 In the `pubspec.yaml` of your flutter project, add the following dependency:
@@ -153,5 +156,3 @@ A checkbox group allows user to select multiple items
     ),
 
 ```
-
-Video example: https://cloud.techfusion.dev/9EIzr4pOMZ40aedOr9X8
