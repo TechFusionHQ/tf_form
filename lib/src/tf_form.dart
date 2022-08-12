@@ -790,8 +790,6 @@ class _TFTextFieldState extends State<TFTextField> {
   final List numberInputTypes = [
     TextInputType.number,
     TextInputType.phone,
-    const TextInputType.numberWithOptions(signed: true, decimal: true),
-    const TextInputType.numberWithOptions(signed: true),
     const TextInputType.numberWithOptions(decimal: true),
   ];
 

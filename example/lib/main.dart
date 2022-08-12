@@ -141,7 +141,7 @@ class DemoFormPageState extends State<DemoFormPage> {
                 title: "Height (cm)",
                 hintText: "Enter height",
                 controller: heightController,
-                keyboardType: const TextInputType.numberWithOptions(signed: true, decimal: true),
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
                 validationTypes: const [
                   TFValidationType.required,
                 ],
