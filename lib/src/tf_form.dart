@@ -713,9 +713,9 @@ class TFTextField extends StatefulWidget {
   final int? maxLines;
   final Widget? prefix;
   final Widget? suffix;
-  final TextAlign? textAlign;
-  final TextInputType? keyboardType;
-  final TextInputAction? textInputAction;
+  final TextAlign textAlign;
+  final TextInputType keyboardType;
+  final TextInputAction textInputAction;
   final List<TextInputFormatter>? inputFormatters;
 
   /// For validation
@@ -743,11 +743,11 @@ class TFTextField extends StatefulWidget {
     this.onChanged,
     this.onFocusChanged,
     this.hintText = "",
-    this.keyboardType,
     this.prefix,
-    this.textInputAction,
     this.suffix,
-    this.textAlign,
+    this.keyboardType = TextInputType.text,
+    this.textInputAction = TextInputAction.done,
+    this.textAlign = TextAlign.start,
     this.maxLength,
     this.inputFormatters,
     this.onEditingComplete,
@@ -799,7 +799,8 @@ class _TFTextFieldState extends State<TFTextField> {
       return;
     }
 
-    if (TFForm.of(context)?.widget.autoValidate ?? false) {
+    if ((TFForm.of(context)?.widget.autoValidate ?? false) &&
+        validationTypes.isNotEmpty) {
       final errorMessage = _validate();
       _setErrorMessage(val: errorMessage);
     }
@@ -958,12 +959,12 @@ class _TFTextFieldState extends State<TFTextField> {
                   autofocus: widget.autoFocus,
                   readOnly: widget.readOnly,
                   obscureText: widget.obscureText,
-                  keyboardType: widget.keyboardType ?? TextInputType.text,
+                  keyboardType: widget.keyboardType,
                   textInputAction: widget.textInputAction,
                   onEditingComplete: widget.onEditingComplete,
                   onTap: widget.onTap,
                   inputFormatters: widget.inputFormatters,
-                  textAlign: widget.textAlign ?? TextAlign.start,
+                  textAlign: widget.textAlign,
                   textAlignVertical: TextAlignVertical.center,
                   maxLines: widget.expand ? widget.maxLines : 1,
                   maxLength: widget.maxLength,
@@ -1283,7 +1284,8 @@ class _TFCheckboxGroupState extends State<TFCheckboxGroup> {
     });
 
     // for autoValidate
-    if (TFForm.of(context)?.widget.autoValidate ?? false) {
+    if ((TFForm.of(context)?.widget.autoValidate ?? false) &&
+        validationTypes.isNotEmpty) {
       final isValid = _validate();
       _setValid(isValid);
     }
@@ -1418,7 +1420,8 @@ class _TFRadioGroupState<T> extends State<TFRadioGroup<T>> {
     });
 
     // for autoValidate
-    if (TFForm.of(context)?.widget.autoValidate ?? false) {
+    if ((TFForm.of(context)?.widget.autoValidate ?? false) &&
+        validationTypes.isNotEmpty) {
       final isValid = _validate();
       _setValid(isValid);
     }
