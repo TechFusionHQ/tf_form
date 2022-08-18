@@ -1,6 +1,6 @@
 name: tf_form
 description: TechFusion's form builder and validator
-version: 0.0.3
+version: 0.0.4
 homepage: https://github.com/TechFusionHQ/tf_form
 
 environment:

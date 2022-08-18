@@ -114,13 +114,13 @@ class DemoFormPageState extends State<DemoFormPage> {
               const SizedBox(height: 15),
               TFDropdownField(
                 title: "Role",
-                items: const [
-                  "Member",
-                  "Seller",
-                  "Admin",
-                ],
+                options: const {
+                  "member": "Member",
+                  "seller": "Seller",
+                  "admin": "Administrator",
+                },
                 controller: roleController,
-                initialItem: "Member",
+                initialValue: "member",
                 validationTypes: const [
                   TFValidationType.required,
                 ],

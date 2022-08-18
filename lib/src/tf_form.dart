@@ -1037,8 +1037,8 @@ class _TFTextFieldState extends State<TFTextField> {
 /// [TFDropdownField] widget allows the user to pick a value from a dropdown list
 class TFDropdownField extends StatefulWidget {
   final String title;
-  final List<String> items;
-  final String? initialItem;
+  final Map<String, String> options;
+  final String? initialValue;
   final TextEditingController controller;
   final List<TFValidationType> validationTypes;
   final TextEditingController? relatedController;
@@ -1046,9 +1046,9 @@ class TFDropdownField extends StatefulWidget {
   TFDropdownField({
     Key? key,
     required this.title,
-    required this.items,
+    required this.options,
     required this.controller,
-    this.initialItem,
+    this.initialValue,
     this.validationTypes = const <TFValidationType>[],
     this.relatedController,
   }) : super(key: key) {
@@ -1063,6 +1063,7 @@ class TFDropdownField extends StatefulWidget {
 
 class _TFDropdownFieldState extends State<TFDropdownField> {
   final LayerLink __dropdownLink = LayerLink();
+  final TextEditingController _displayController = TextEditingController();
   OverlayEntry? _dropdownOverlay;
 
   void _showDropdown() {
@@ -1078,8 +1079,9 @@ class _TFDropdownFieldState extends State<TFDropdownField> {
   @override
   void initState() {
     super.initState();
-    if (widget.initialItem != null) {
-      widget.controller.text = widget.initialItem!;
+    if (widget.initialValue != null) {
+      _displayController.text = widget.options[widget.initialValue]!;
+      widget.controller.text = widget.initialValue!;
     }
   }
 
@@ -1095,7 +1097,7 @@ class _TFDropdownFieldState extends State<TFDropdownField> {
       link: __dropdownLink,
       child: TFTextField(
         title: widget.title,
-        controller: widget.controller,
+        controller: _displayController,
         validationTypes: widget.validationTypes,
         relatedController: widget.relatedController,
         readOnly: true,
@@ -1132,11 +1134,11 @@ class _TFDropdownFieldState extends State<TFDropdownField> {
             elevation: 2,
             color: TFFormStyle.of(context).backgroundColor,
             child: Column(
-              children: List.generate(widget.items.length, (index) {
-                final item = widget.items[index];
-                final isSelected = widget.controller.text == item;
+              children: List.generate(widget.options.length, (index) {
+                final item = widget.options.entries.elementAt(index);
+                final isSelected = widget.controller.text == item.key;
                 return ListTile(
-                  title: Text(item),
+                  title: Text(item.value),
                   selected: isSelected,
                   selectedColor: Colors.white,
                   selectedTileColor: activeColor,
@@ -1147,7 +1149,8 @@ class _TFDropdownFieldState extends State<TFDropdownField> {
                         )
                       : null,
                   onTap: () {
-                    widget.controller.text = item;
+                    widget.controller.text = item.key;
+                    _displayController.text = item.value;
                     _hideDropdown();
                   },
                 );

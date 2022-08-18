@@ -68,13 +68,13 @@ A dropdown field allows the user to pick a value from a dropdown list
 ```dart
     TFDropdownField(
         title: "Role",
-        items: const [
-            "Member",
-            "Seller",
-            "Admin",
-        ],
+        options: const {
+            "member": "Member",
+            "seller": "Seller",
+            "admin": "Administrator",
+        },
+        initialValue: "member",
         controller: roleController,
-        initialItem: "Member",
         validationTypes: const [
             TFValidationType.required,
         ],
