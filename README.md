@@ -16,7 +16,7 @@ In the `pubspec.yaml` of your flutter project, add the following dependency:
 ```yaml
 dependencies:
   ...
-  tf_form: ^0.0.3
+  tf_form: ^0.0.4
 ```
 
 In your library add the following import:
