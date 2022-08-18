@@ -5,6 +5,8 @@ A Flutter package for creating a form container to group multiple common form wi
 Copyright (c) 2022 TechFusion Ltd (<https://www.techfusion.dev>)
 
 ## TL;DR
+![image](https://user-images.githubusercontent.com/735555/185453640-49ebf733-a288-4aa0-b9c6-7d574fb964a1.png)
+
 Video example: https://cloud.techfusion.dev/9EIzr4pOMZ40aedOr9X8
 
 ## Installing
