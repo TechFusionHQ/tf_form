@@ -103,9 +103,9 @@ class DemoFormPageState extends State<DemoFormPage> {
               TFDateField(
                 title: "Birthday",
                 controller: birthdayController,
-                // initialDate: DateTime.now(),
-                // firstDate: DateTime.now().subtract(const Duration(days: 365)),
-                // lastDate: DateTime.now().add(const Duration(days: 365)),
+                initialDate: DateTime.now(),
+                firstDate: DateTime.now().subtract(const Duration(days: 50 * 365)),
+                lastDate: DateTime.now(),
                 validationTypes: const [
                   TFValidationType.required,
                 ],
@@ -113,11 +113,11 @@ class DemoFormPageState extends State<DemoFormPage> {
               const SizedBox(height: 15),
               TFDropdownField(
                 title: "Role",
-                options: const {
-                  "member": "Member",
-                  "seller": "Seller",
-                  "admin": "Administrator",
-                },
+                items: [
+                  TFOptionItem<String>(title: "Member", value: "member"),
+                  TFOptionItem<String>(title: "Administrator", value: "admin"),
+                  TFOptionItem<String>(title: "Manager", value: "manager")
+                ],
                 controller: roleController,
                 initialValue: "member",
                 validationTypes: const [
@@ -146,16 +146,18 @@ class DemoFormPageState extends State<DemoFormPage> {
                 ],
               ),
               const SizedBox(height: 20),
-              TFCheckboxGroup(
+              TFCheckboxGroup<String>(
                 title: "Which social network do you usually use ?",
+                initialValues: const ["fb", "telegram"],
                 items: [
-                  TFCheckboxItem(title: "Facebook"),
-                  TFCheckboxItem(title: "Zalo"),
-                  TFCheckboxItem(title: "Twitter"),
-                  TFCheckboxItem(title: "Linkedin"),
-                  TFCheckboxItem(title: "Telegram"),
+                  TFOptionItem<String>(title: "Facebook", value: "fb"),
+                  TFOptionItem<String>(title: "Twitter", value: "twitter"),
+                  TFOptionItem<String>(title: "Linkedin", value: "linkedin"),
+                  TFOptionItem<String>(title: "Telegram", value: "telegram"),
                 ],
-                onChanged: (checkedItemIndexes) {},
+                onChanged: (List<String> values) {
+                  print("$values");
+                },
                 validationTypes: const [
                   TFValidationType.required,
                 ],
@@ -163,12 +165,15 @@ class DemoFormPageState extends State<DemoFormPage> {
               const SizedBox(height: 20),
               TFRadioGroup<String>(
                 title: "Gender",
+                initialValue: "male",
                 items: [
-                  TFRadioItem<String>(title: "Male", value: "male"),
-                  TFRadioItem<String>(title: "Female", value: "female"),
-                  TFRadioItem<String>(title: "Other", value: "other"),
+                  TFOptionItem<String>(title: "Male", value: "male"),
+                  TFOptionItem<String>(title: "Female", value: "female"),
+                  TFOptionItem<String>(title: "Other", value: "other"),
                 ],
-                onChanged: (selectedItem) {},
+                onChanged: (selectedItem) {
+                  print("$selectedItem");
+                },
                 validationTypes: const [
                   TFValidationType.requiredIfHas,
                 ],

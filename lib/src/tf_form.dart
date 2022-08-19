@@ -88,7 +88,8 @@ class TFForm extends StatefulWidget {
     this.confirmPasswordErrorMessage = 'Please confirm your password',
     this.simpleCharsErrorMessage = 'Please use only letters, numbers, underscores, dots, dashes and spaces',
     this.slugCharsErrorMessage = 'Please use only letters, numbers, underscores, dots, dashes and spaces',
-    this.simpleSlugCharsErrorMessage = 'Please use only letters, numbers, underscores, dashes. Please do not use underscores or dashes at the start and/or end',
+    this.simpleSlugCharsErrorMessage =
+        'Please use only letters, numbers, underscores, dashes. Please do not use underscores or dashes at the start and/or end',
     this.domainCharsErrorMessage = 'Please use only letters, numbers, dashes and dots. Please do not use dashes or dots at the start and/or end',
     this.reallySimpleCharsErrorMessage = 'Please use only letters and numbers, no punctuation, dots, spaces, etc',
     this.numberErrorMessage = 'Please enter only numeric digits',
@@ -120,7 +121,7 @@ class TFForm extends StatefulWidget {
 class TFFormState extends State<TFForm> {
   final _fieldMap = <TFValidationType, List<_TFTextFieldState>>{};
   final _checkboxGroupMap = <TFValidationType, List<_TFCheckboxGroupState>>{};
-  final _raidoGroupMap = <TFValidationType, List<_TFRadioGroupState>>{};
+  final _radioGroupMap = <TFValidationType, List<_TFRadioGroupState>>{};
 
   List<String> _errorMessages = [];
 
@@ -146,10 +147,10 @@ class TFFormState extends State<TFForm> {
 
   void _registerRadioGroup(_TFRadioGroupState group) {
     for (var type in group.validationTypes) {
-      if (_raidoGroupMap.containsKey(type)) {
-        _raidoGroupMap[type]!.add(group);
+      if (_radioGroupMap.containsKey(type)) {
+        _radioGroupMap[type]!.add(group);
       } else {
-        _raidoGroupMap[type] = [group];
+        _radioGroupMap[type] = [group];
       }
     }
   }
@@ -172,8 +173,8 @@ class TFFormState extends State<TFForm> {
 
   void _unregisterRadioGroup(_TFRadioGroupState group) {
     for (var type in group.validationTypes) {
-      if (_raidoGroupMap.containsKey(type)) {
-        _raidoGroupMap[type]!.remove(group);
+      if (_radioGroupMap.containsKey(type)) {
+        _radioGroupMap[type]!.remove(group);
       }
     }
   }
@@ -192,7 +193,7 @@ class TFFormState extends State<TFForm> {
     }
     if (_checkboxGroupMap.containsKey(TFValidationType.required)) {
       for (var group in _checkboxGroupMap[TFValidationType.required]!) {
-        if (group._checkedItemIndexes.isNotEmpty) {
+        if (group._selectedValues.isNotEmpty) {
           group._setValid(true);
         } else {
           errors++;
@@ -200,8 +201,8 @@ class TFFormState extends State<TFForm> {
         }
       }
     }
-    if (_raidoGroupMap.containsKey(TFValidationType.required)) {
-      for (var group in _raidoGroupMap[TFValidationType.required]!) {
+    if (_radioGroupMap.containsKey(TFValidationType.required)) {
+      for (var group in _radioGroupMap[TFValidationType.required]!) {
         if (group._groupValue != null) {
           group._setValid(true);
         } else {
@@ -229,7 +230,7 @@ class TFFormState extends State<TFForm> {
     if (_checkboxGroupMap.containsKey(TFValidationType.requiredIfHas)) {
       for (var group in _checkboxGroupMap[TFValidationType.requiredIfHas]!) {
         final relatedVal = group.widget.relatedController!.text;
-        if (relatedVal.isNotEmpty && group._checkedItemIndexes.isEmpty) {
+        if (relatedVal.isNotEmpty && group._selectedValues.isEmpty) {
           errors++;
           group._setValid(false);
         } else {
@@ -237,8 +238,8 @@ class TFFormState extends State<TFForm> {
         }
       }
     }
-    if (_raidoGroupMap.containsKey(TFValidationType.requiredIfHas)) {
-      for (var group in _raidoGroupMap[TFValidationType.requiredIfHas]!) {
+    if (_radioGroupMap.containsKey(TFValidationType.requiredIfHas)) {
+      for (var group in _radioGroupMap[TFValidationType.requiredIfHas]!) {
         final relatedVal = group.widget.relatedController!.text;
         if (relatedVal.isNotEmpty && group._groupValue == null) {
           errors++;
@@ -774,7 +775,6 @@ class TFTextField extends StatefulWidget {
   State<TFTextField> createState() => _TFTextFieldState();
 }
 
-
 class _TFTextFieldState extends State<TFTextField> {
   late FocusNode _focusNode;
   String _errorMessage = "";
@@ -1037,7 +1037,7 @@ class _TFTextFieldState extends State<TFTextField> {
 /// [TFDropdownField] widget allows the user to pick a value from a dropdown list
 class TFDropdownField extends StatefulWidget {
   final String title;
-  final Map<String, String> options;
+  final List<TFOptionItem> items;
   final String? initialValue;
   final TextEditingController controller;
   final List<TFValidationType> validationTypes;
@@ -1046,7 +1046,7 @@ class TFDropdownField extends StatefulWidget {
   TFDropdownField({
     Key? key,
     required this.title,
-    required this.options,
+    required this.items,
     required this.controller,
     this.initialValue,
     this.validationTypes = const <TFValidationType>[],
@@ -1080,7 +1080,8 @@ class _TFDropdownFieldState extends State<TFDropdownField> {
   void initState() {
     super.initState();
     if (widget.initialValue != null) {
-      _displayController.text = widget.options[widget.initialValue]!;
+      TFOptionItem selectedItem = widget.items.where((element) => element.value == widget.initialValue!).first;
+      _displayController.text = selectedItem.title;
       widget.controller.text = widget.initialValue!;
     }
   }
@@ -1134,11 +1135,11 @@ class _TFDropdownFieldState extends State<TFDropdownField> {
             elevation: 2,
             color: TFFormStyle.of(context).backgroundColor,
             child: Column(
-              children: List.generate(widget.options.length, (index) {
-                final item = widget.options.entries.elementAt(index);
-                final isSelected = widget.controller.text == item.key;
+              children: List.generate(widget.items.length, (index) {
+                final item = widget.items[index];
+                final isSelected = widget.controller.text == item.value;
                 return ListTile(
-                  title: Text(item.value),
+                  title: Text(item.title),
                   selected: isSelected,
                   selectedColor: Colors.white,
                   selectedTileColor: activeColor,
@@ -1149,8 +1150,8 @@ class _TFDropdownFieldState extends State<TFDropdownField> {
                         )
                       : null,
                   onTap: () {
-                    widget.controller.text = item.key;
-                    _displayController.text = item.value;
+                    widget.controller.text = item.value;
+                    _displayController.text = item.title;
                     _hideDropdown();
                   },
                 );
@@ -1238,10 +1239,11 @@ class _TFDateFieldState extends State<TFDateField> {
 /// [TFCheckboxGroup] widget allows user to select multiple items.
 /// The checkbox is displayed before the item name,
 /// which you can check/uncheck to make/remove the selection.
-class TFCheckboxGroup extends StatefulWidget {
+class TFCheckboxGroup<T> extends StatefulWidget {
   final String title;
-  final List<TFCheckboxItem> items;
-  final Function(List<int>) onChanged;
+  final List<TFOptionItem<T>> items;
+  final List<T>? initialValues;
+  final void Function(List<T>) onChanged;
   final List<TFValidationType> validationTypes;
   final TextEditingController? relatedController;
 
@@ -1250,6 +1252,7 @@ class TFCheckboxGroup extends StatefulWidget {
     required this.title,
     required this.items,
     required this.onChanged,
+    this.initialValues,
     this.validationTypes = const <TFValidationType>[],
     this.relatedController,
   }) : super(key: key) {
@@ -1259,11 +1262,11 @@ class TFCheckboxGroup extends StatefulWidget {
   }
 
   @override
-  State<TFCheckboxGroup> createState() => _TFCheckboxGroupState();
+  State<TFCheckboxGroup<T>> createState() => _TFCheckboxGroupState();
 }
 
-class _TFCheckboxGroupState extends State<TFCheckboxGroup> {
-  List<int> _checkedItemIndexes = [];
+class _TFCheckboxGroupState<T> extends State<TFCheckboxGroup<T>> {
+  List<T> _selectedValues = <T>[];
   bool _isValid = true;
 
   List<TFValidationType> get validationTypes => widget.validationTypes;
@@ -1274,18 +1277,17 @@ class _TFCheckboxGroupState extends State<TFCheckboxGroup> {
     });
   }
 
-  void _onItemChanged(int index, bool value) {
-    final checkedItemIndexes = List.of(_checkedItemIndexes);
-    if (value) {
-      checkedItemIndexes.add(index);
+  void _onItemChanged(T value, bool isSelected) {
+    final selectedValues = List.of(_selectedValues);
+    if (isSelected) {
+      selectedValues.add(value);
     } else {
-      checkedItemIndexes.remove(index);
+      selectedValues.remove(value);
     }
-    checkedItemIndexes.sort();
-    widget.onChanged(checkedItemIndexes);
     setState(() {
-      _checkedItemIndexes = List.of(checkedItemIndexes);
+      _selectedValues = selectedValues;
     });
+    widget.onChanged(selectedValues);
 
     // for autoValidate
     if ((TFForm.of(context)?.widget.autoValidate ?? false) && validationTypes.isNotEmpty) {
@@ -1296,12 +1298,12 @@ class _TFCheckboxGroupState extends State<TFCheckboxGroup> {
 
   bool _validate() {
     if (validationTypes.contains(TFValidationType.required)) {
-      if (_checkedItemIndexes.isEmpty) {
+      if (_selectedValues.isEmpty) {
         return false;
       }
     } else if (validationTypes.contains(TFValidationType.requiredIfHas)) {
       final relatedVal = widget.relatedController!.text;
-      if (relatedVal.isNotEmpty && _checkedItemIndexes.isEmpty) {
+      if (relatedVal.isNotEmpty && _selectedValues.isEmpty) {
         return false;
       }
     }
@@ -1311,6 +1313,12 @@ class _TFCheckboxGroupState extends State<TFCheckboxGroup> {
   @override
   void initState() {
     super.initState();
+    if (widget.initialValues != null) {
+      setState(() {
+        _selectedValues = widget.initialValues!;
+      });
+    }
+
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       if (validationTypes.isNotEmpty) {
         TFForm.of(context)?._registerCheckboxGroup(this);
@@ -1341,13 +1349,13 @@ class _TFCheckboxGroupState extends State<TFCheckboxGroup> {
         ),
         const SizedBox(height: 8),
         ...List.generate(widget.items.length, (index) {
-          return _buildCheckboxTile(widget.items[index], index);
+          return _buildCheckboxTile(widget.items[index]);
         }),
       ],
     );
   }
 
-  Widget _buildCheckboxTile(TFCheckboxItem item, int index) {
+  Widget _buildCheckboxTile(TFOptionItem<T> item) {
     return CheckboxListTile(
       title: Text(
         item.title,
@@ -1355,7 +1363,7 @@ class _TFCheckboxGroupState extends State<TFCheckboxGroup> {
               color: _isValid ? null : TFFormStyle.of(context).errorColor,
             ),
       ),
-      value: _checkedItemIndexes.contains(index),
+      value: _selectedValues.contains(item.value),
       controlAffinity: ListTileControlAffinity.leading,
       activeColor: TFFormStyle.of(context).activeColor,
       contentPadding: EdgeInsets.zero,
@@ -1366,8 +1374,8 @@ class _TFCheckboxGroupState extends State<TFCheckboxGroup> {
         width: 1.5,
         color: _isValid ? TFFormStyle.of(context).groupStyle.unselectedColor : TFFormStyle.of(context).errorColor,
       ),
-      onChanged: (value) {
-        _onItemChanged(index, value ?? false);
+      onChanged: (bool? isSelected) {
+        _onItemChanged(item.value, isSelected ?? false);
       },
     );
   }
@@ -1376,8 +1384,8 @@ class _TFCheckboxGroupState extends State<TFCheckboxGroup> {
 /// [TFRadioGroup] widget allows user to select one option from multiple selections.
 class TFRadioGroup<T> extends StatefulWidget {
   final String title;
-  final List<TFRadioItem<T>> items;
-  final T? groupValue;
+  final List<TFOptionItem<T>> items;
+  final T? initialValue;
   final Function(T?) onChanged;
   final List<TFValidationType> validationTypes;
   final TextEditingController? relatedController;
@@ -1387,7 +1395,7 @@ class TFRadioGroup<T> extends StatefulWidget {
     required this.title,
     required this.items,
     required this.onChanged,
-    this.groupValue,
+    this.initialValue,
     this.validationTypes = const <TFValidationType>[],
     this.relatedController,
   }) : super(key: key) {
@@ -1447,7 +1455,7 @@ class _TFRadioGroupState<T> extends State<TFRadioGroup<T>> {
         TFForm.of(context)?._registerRadioGroup(this);
       }
     });
-    _groupValue = widget.groupValue;
+    _groupValue = widget.initialValue;
   }
 
   @override
@@ -1484,7 +1492,7 @@ class _TFRadioGroupState<T> extends State<TFRadioGroup<T>> {
     );
   }
 
-  Widget _buildRadioTile(TFRadioItem<T> item, int index) {
+  Widget _buildRadioTile(TFOptionItem<T> item, int index) {
     return ListTile(
       title: Text(
         item.title,
