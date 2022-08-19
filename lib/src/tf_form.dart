@@ -1262,11 +1262,11 @@ class TFCheckboxGroup<T> extends StatefulWidget {
   }
 
   @override
-  State<TFCheckboxGroup> createState() => _TFCheckboxGroupState();
+  State<TFCheckboxGroup<T>> createState() => _TFCheckboxGroupState();
 }
 
-class _TFCheckboxGroupState<T> extends State<TFCheckboxGroup> {
-  final List<T> _selectedValues = <T>[];
+class _TFCheckboxGroupState<T> extends State<TFCheckboxGroup<T>> {
+  List<T> _selectedValues = <T>[];
   bool _isValid = true;
 
   List<TFValidationType> get validationTypes => widget.validationTypes;
@@ -1278,15 +1278,16 @@ class _TFCheckboxGroupState<T> extends State<TFCheckboxGroup> {
   }
 
   void _onItemChanged(T value, bool isSelected) {
+    final selectedValues = List.of(_selectedValues);
+    if (isSelected) {
+      selectedValues.add(value);
+    } else {
+      selectedValues.remove(value);
+    }
     setState(() {
-      if (isSelected) {
-        _selectedValues.add(value);
-      } else {
-        _selectedValues.remove(value);
-      }
+      _selectedValues = selectedValues;
     });
-    widget.onChanged(_selectedValues);
-
+    widget.onChanged(selectedValues);
 
     // for autoValidate
     if ((TFForm.of(context)?.widget.autoValidate ?? false) && validationTypes.isNotEmpty) {
@@ -1313,10 +1314,8 @@ class _TFCheckboxGroupState<T> extends State<TFCheckboxGroup> {
   void initState() {
     super.initState();
     if (widget.initialValues != null) {
-      widget.initialValues?.forEach((element) {
-        setState(() {
-          _selectedValues.add(element as T);
-        });
+      setState(() {
+        _selectedValues = widget.initialValues!;
       });
     }
 
@@ -1356,7 +1355,7 @@ class _TFCheckboxGroupState<T> extends State<TFCheckboxGroup> {
     );
   }
 
-  Widget _buildCheckboxTile(TFOptionItem item) {
+  Widget _buildCheckboxTile(TFOptionItem<T> item) {
     return CheckboxListTile(
       title: Text(
         item.title,
