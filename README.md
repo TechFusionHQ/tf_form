@@ -70,17 +70,17 @@ A dropdown field allows the user to pick a value from a dropdown list
 ```dart
     TFDropdownField(
         title: "Role",
-        options: const {
-            "member": "Member",
-            "seller": "Seller",
-            "admin": "Administrator",
-        },
-        initialValue: "member",
-        controller: roleController,
-        validationTypes: const [
-            TFValidationType.required,
+        items: [
+          TFOptionItem<String>(title: "Member", value: "member"),
+          TFOptionItem<String>(title: "Administrator", value: "admin"),
+          TFOptionItem<String>(title: "Manager", value: "manager")
         ],
-    ),
+        controller: roleController,
+        initialValue: "member",
+        validationTypes: const [
+          TFValidationType.required,
+        ],
+      ),
 ```
 
 ### TFDateField
@@ -105,20 +105,22 @@ A date field allows the user to pick a DateTime.=
 A radio group allows user to select one option from multiple selections
 
 ```dart
-    TFCheckboxGroup(
+    TFCheckboxGroup<String>(
         title: "Which social network do you usually use ?",
+        initialValues: const ["fb", "telegram"],
         items: [
-            TFCheckboxItem(title: "Facebook"),
-            TFCheckboxItem(title: "Zalo"),
-            TFCheckboxItem(title: "Twitter"),
-            TFCheckboxItem(title: "Linkedin"),
-            TFCheckboxItem(title: "Telegram"),
+          TFOptionItem<String>(title: "Facebook", value: "fb"),
+          TFOptionItem<String>(title: "Twitter", value: "twitter"),
+          TFOptionItem<String>(title: "Linkedin", value: "linkedin"),
+          TFOptionItem<String>(title: "Telegram", value: "telegram"),
         ],
-        onChanged: (checkedItemIndexes) {},
+        onChanged: (List<String> values) {
+          print("$values");
+        },
         validationTypes: const [
-            TFValidationType.required,
+          TFValidationType.required,
         ],
-    ),
+      ),
 ```
 
 ### TFCheckboxGroup
@@ -128,17 +130,20 @@ A checkbox group allows user to select multiple items
 ```dart
     TFRadioGroup<String>(
         title: "Gender",
+        initialValue: "male",
         items: [
-            TFRadioItem<String>(title: "Male", value: "male"),
-            TFRadioItem<String>(title: "Female", value: "female"),
-            TFRadioItem<String>(title: "Other", value: "other"),
+          TFOptionItem<String>(title: "Male", value: "male"),
+          TFOptionItem<String>(title: "Female", value: "female"),
+          TFOptionItem<String>(title: "Other", value: "other"),
         ],
-        onChanged: (selectedItem) {},
+        onChanged: (selectedItem) {
+          print("$selectedItem");
+        },
         validationTypes: const [
-            TFValidationType.requiredIfHas,
+          TFValidationType.requiredIfHas,
         ],
         relatedController: nicknameController,
-    ),
+      ),
 ```
 
 ## Basic Usage
