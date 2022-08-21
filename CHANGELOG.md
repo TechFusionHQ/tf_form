@@ -31,3 +31,5 @@
 * Renamed `TFRadioGroup` property: `groupValue` 👉 `initialValue`)
 * Added `TFCheckboxGroup` property: `initialValues` (`List<T>`)
 
+## 0.0.6
+* Minor UI changes
