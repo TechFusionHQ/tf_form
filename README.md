@@ -16,7 +16,7 @@ In the `pubspec.yaml` of your flutter project, add the following dependency:
 ```yaml
 dependencies:
   ...
-  tf_form: ^0.0.5
+  tf_form: ^0.0.6
 ```
 
 In your library add the following import:
@@ -62,6 +62,17 @@ The `TFForm` widget acts as a container for grouping and validating multiple for
         ],
     ),
 ```
+
+This package supports ios number input with `Done` button out of the box. All you need to enable this feature is specify:
+`keyboardType` with one of those types:
+
+
+```dart
+  TextInputType.number,
+  TextInputType.phone,
+  TextInputType.numberWithOptions(decimal: true),
+```
+Preview: ![image](https://user-images.githubusercontent.com/735555/185785899-e616ed11-677c-4734-9dd6-46eb8f7ef5d4.png)
 
 ### TFDropdownField
 
