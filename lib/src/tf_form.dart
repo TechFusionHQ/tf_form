@@ -1228,7 +1228,7 @@ class _TFDateFieldState extends State<TFDateField> {
       relatedController: widget.relatedController,
       readOnly: true,
       suffix: const Icon(
-        Icons.arrow_drop_down,
+        Icons.calendar_month_outlined,
         color: Colors.grey,
       ),
       onTap: _showDatePicker,
@@ -1343,14 +1343,14 @@ class _TFCheckboxGroupState<T> extends State<TFCheckboxGroup<T>> {
           widget.title,
           style: TFFormStyle.of(context).titleStyle,
         ),
-        TFErrorText(
-          error: "This field is required",
-          visible: !_isValid,
-        ),
         const SizedBox(height: 8),
         ...List.generate(widget.items.length, (index) {
           return _buildCheckboxTile(widget.items[index]);
         }),
+        TFErrorText(
+          error: "Please select at least one option",
+          visible: !_isValid,
+        ),
       ],
     );
   }
@@ -1479,14 +1479,14 @@ class _TFRadioGroupState<T> extends State<TFRadioGroup<T>> {
             widget.title,
             style: TFFormStyle.of(context).titleStyle,
           ),
-          TFErrorText(
-            error: "This field is required",
-            visible: !_isValid,
-          ),
           const SizedBox(height: 8),
           ...List.generate(widget.items.length, (index) {
             return _buildRadioTile(widget.items[index], index);
           }),
+          TFErrorText(
+            error: "Please select one option",
+            visible: !_isValid,
+          ),
         ],
       ),
     );
