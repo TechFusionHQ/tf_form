@@ -23,14 +23,14 @@ class TFErrorText extends StatelessWidget {
             Icon(
               Icons.error,
               size: 16,
-              color: TFFormStyle.of(context).errorColor,
+              color: _tffStyle.errorColor,
             ),
             const SizedBox(width: 5),
             Expanded(
               child: Text(
                 error,
                 style: TextStyle(
-                  color: TFFormStyle.of(context).errorColor,
+                  color: _tffStyle.errorColor,
                 ),
               ),
             ),

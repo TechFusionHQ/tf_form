@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tf_form/src/components/tf_form.dart';
+
 
 /// TFForm style object is used for styling
 class TFFormStyle {
@@ -21,10 +21,6 @@ class TFFormStyle {
     this.fieldStyle = const TFFieldStyle(),
     this.groupStyle = const TFGroupStyle(),
   });
-
-  static TFFormStyle of(BuildContext context) {
-    return TFForm.of(context)?.widget.style ?? const TFFormStyle();
-  }
 }
 
 /// The style of field widgets

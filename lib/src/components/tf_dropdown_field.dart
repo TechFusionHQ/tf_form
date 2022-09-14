@@ -8,6 +8,7 @@ class TFDropdownField extends StatefulWidget {
   final TextEditingController controller;
   final List<TFValidationType> validationTypes;
   final TextEditingController? relatedController;
+  final TFFieldStyle? style;
 
   TFDropdownField({
     Key? key,
@@ -16,7 +17,8 @@ class TFDropdownField extends StatefulWidget {
     required this.controller,
     this.initialValue,
     this.validationTypes = const <TFValidationType>[],
-    this.relatedController,
+    this.relatedController, 
+    this.style,
   }) : super(key: key) {
     if (validationTypes.contains(TFValidationType.requiredIfHas) &&
         relatedController == null) {
@@ -72,6 +74,7 @@ class _TFDropdownFieldState extends State<TFDropdownField> {
         validationTypes: widget.validationTypes,
         relatedController: widget.relatedController,
         readOnly: true,
+        style: widget.style,
         suffix: const Icon(
           Icons.arrow_drop_down,
           color: Colors.grey,
@@ -93,7 +96,7 @@ class _TFDropdownFieldState extends State<TFDropdownField> {
   OverlayEntry _buildDropListOverlay() {
     final renderBox = context.findRenderObject() as RenderBox;
     final size = renderBox.size;
-    final activeColor = TFFormStyle.of(context).activeColor;
+    final activeColor = _tffStyle.activeColor;
     return OverlayEntry(
       builder: (context) => Positioned(
         width: size.width,
@@ -103,7 +106,7 @@ class _TFDropdownFieldState extends State<TFDropdownField> {
           offset: Offset(0.0, size.height + 5.0),
           child: Material(
             elevation: 2,
-            color: TFFormStyle.of(context).backgroundColor,
+            color: _tffStyle.backgroundColor,
             child: Column(
               children: List.generate(widget.items.length, (index) {
                 final item = widget.items[index];

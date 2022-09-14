@@ -1,3 +1,15 @@
+## 0.0.9
+
+* Flexible style editing for form
+
+### Added 
+* Added `TFForm` static function: `initStyle`
+* Added `TFTextField` property: `style` (`TFFieldStyle`)
+* Added `TFDropdownField` property: `style` (`TFFieldStyle`)
+* Added `TFDateField` property: `style` (`TFFieldStyle`)
+* Added `TFRadioGroup` property: `style` (`TFGroupStyle`)
+* Added `TFCheckboxGroup` property: `style` (`TFGroupStyle`)
+
 ## 0.0.8
 
 ### Added 

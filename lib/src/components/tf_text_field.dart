@@ -29,6 +29,7 @@ class TFTextField extends StatefulWidget {
   final TextInputType keyboardType;
   final TextInputAction textInputAction;
   final List<TextInputFormatter>? inputFormatters;
+  final TFFieldStyle? style;
 
   /// For validation
   final List<TFValidationType> validationTypes;
@@ -69,6 +70,7 @@ class TFTextField extends StatefulWidget {
     this.relatedController,
     this.passwordController,
     this.regex,
+    this.style,
   }) : super(key: key) {
     if (validationTypes.contains(TFValidationType.regex) && regex == null) {
       throw ArgumentError("regex type and regex should both be set.");
@@ -261,13 +263,13 @@ class _TFTextFieldState extends State<TFTextField> {
         if (widget.title != null)
           Text(
             widget.title!,
-            style: TFFormStyle.of(context).titleStyle,
+            style: _tffStyle.titleStyle,
           ),
         if (widget.title != null) const SizedBox(height: 8),
         Container(
           width: double.infinity,
-          height: widget.expand ? null : TFFormStyle.of(context).fieldStyle.height,
-          padding: TFFormStyle.of(context).fieldStyle.contentPadding,
+          height: widget.expand ? null : _height,
+          padding: _contentPadding,
           decoration: defaultDecoration,
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -293,10 +295,10 @@ class _TFTextFieldState extends State<TFTextField> {
                   textAlignVertical: TextAlignVertical.center,
                   maxLines: widget.expand ? widget.maxLines : 1,
                   maxLength: widget.maxLength,
-                  style: TFFormStyle.of(context).fieldStyle.contentStyle,
+                  style: _contentStyle,
                   decoration: InputDecoration(
                     hintText: widget.hintText,
-                    hintStyle: TFFormStyle.of(context).fieldStyle.hintStyle,
+                    hintStyle: _hintStyle,
                     isDense: true,
                     border: InputBorder.none,
                     focusedBorder: InputBorder.none,
@@ -322,20 +324,18 @@ class _TFTextFieldState extends State<TFTextField> {
   }
 
   BoxDecoration get defaultDecoration => BoxDecoration(
-        color: TFFormStyle.of(context).backgroundColor,
-        borderRadius: BorderRadius.circular(
-          TFFormStyle.of(context).fieldStyle.borderRadius,
-        ),
+        color: _tffStyle.backgroundColor,
+        borderRadius: BorderRadius.circular(_borderRadius),
         border: Border.all(
-          width: TFFormStyle.of(context).fieldStyle.borderWidth,
+          width: _borderWidth,
           color: _errorMessage.isNotEmpty
-              ? TFFormStyle.of(context).errorColor
+              ? _tffStyle.errorColor
               : _hasFocus
-                  ? TFFormStyle.of(context).activeColor
-                  : TFFormStyle.of(context).fieldStyle.borderColor,
+                  ? _tffStyle.activeColor
+                  : _borderColor,
         ),
       );
-      
+
   Widget clearButton() {
     if (widget.readOnly || !widget.enabled) return const SizedBox();
     return ValueListenableBuilder<TextEditingValue>(
@@ -345,13 +345,21 @@ class _TFTextFieldState extends State<TFTextField> {
           visible: snapshot.text.isNotEmpty,
           child: InkWell(
             onTap: widget.controller.clear,
-            child: const Icon(
+            child: Icon(
               Icons.clear,
-              color: Colors.grey,
+              color: _contentStyle?.color,
             ),
           ),
         );
       },
     );
   }
+
+  get _height => widget.style?.height ?? _tffStyle.fieldStyle.height;
+  get _contentPadding => widget.style?.contentPadding ?? _tffStyle.fieldStyle.contentPadding;
+  get _contentStyle => widget.style?.contentStyle ?? _tffStyle.fieldStyle.contentStyle;
+  get _hintStyle => widget.style?.hintStyle ?? _tffStyle.fieldStyle.hintStyle;
+  get _borderRadius => widget.style?.borderRadius ?? _tffStyle.fieldStyle.borderRadius;
+  get _borderWidth => widget.style?.borderWidth ?? _tffStyle.fieldStyle.borderWidth;
+  get _borderColor => widget.style?.borderColor ?? _tffStyle.fieldStyle.borderColor;
 }

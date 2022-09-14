@@ -8,6 +8,7 @@ class TFRadioGroup<T> extends StatefulWidget {
   final Function(T?) onChanged;
   final List<TFValidationType> validationTypes;
   final TextEditingController? relatedController;
+  final TFGroupStyle? style;
 
   TFRadioGroup({
     Key? key,
@@ -16,7 +17,8 @@ class TFRadioGroup<T> extends StatefulWidget {
     required this.onChanged,
     this.initialValue,
     this.validationTypes = const <TFValidationType>[],
-    this.relatedController,
+    this.relatedController, 
+    this.style,
   }) : super(key: key) {
     if (validationTypes.contains(TFValidationType.requiredIfHas) &&
         relatedController == null) {
@@ -93,15 +95,15 @@ class _TFRadioGroupState<T> extends State<TFRadioGroup<T>> {
     return Theme(
       data: Theme.of(context).copyWith(
         unselectedWidgetColor: _isValid
-            ? TFFormStyle.of(context).groupStyle.unselectedColor
-            : TFFormStyle.of(context).errorColor,
+            ? _unselectedColor
+            : _tffStyle.errorColor,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             widget.title,
-            style: TFFormStyle.of(context).titleStyle,
+            style: _tffStyle.titleStyle,
           ),
           const SizedBox(height: 8),
           ...List.generate(widget.items.length, (index) {
@@ -120,17 +122,20 @@ class _TFRadioGroupState<T> extends State<TFRadioGroup<T>> {
     return ListTile(
       title: Text(
         item.title,
-        style: TFFormStyle.of(context).groupStyle.itemTitleStyle.copyWith(
-              color: _isValid ? null : TFFormStyle.of(context).errorColor,
-            ),
+        style: _itemTitleStyle.copyWith(
+          color: _isValid ? null : _tffStyle.errorColor,
+        ),
       ),
       contentPadding: EdgeInsets.zero,
       leading: Radio<T>(
         value: item.value,
         groupValue: _groupValue,
         onChanged: _onItemChanged,
-        activeColor: TFFormStyle.of(context).activeColor,
+        activeColor: _tffStyle.activeColor,
       ),
     );
   }
+
+  get _itemTitleStyle => widget.style?.itemTitleStyle ?? _tffStyle.groupStyle.itemTitleStyle;
+  get _unselectedColor => widget.style?.unselectedColor ?? _tffStyle.groupStyle.unselectedColor;
 }

@@ -77,9 +77,6 @@ class TFForm extends StatefulWidget {
   /// The error message when phone fields are invalid
   final String phoneErrorMessage;
 
-  /// The style
-  final TFFormStyle style;
-
   /// Constructor
   /// The [child] argument must not be null.
   const TFForm({
@@ -88,7 +85,6 @@ class TFForm extends StatefulWidget {
     this.autoValidate = true,
     this.visibleError = true,
     this.passwordPolicy = const TFFormPasswordPolicy(),
-    this.style = const TFFormStyle(),
     this.requiredErrorMessage = 'Please enter all required fields',
     this.emailErrorMessage =
         'Please check the format of your email address, it should read like ben@somewhere.com',
@@ -121,6 +117,10 @@ class TFForm extends StatefulWidget {
     final _TFFormScope? scope =
         context.dependOnInheritedWidgetOfExactType<_TFFormScope>();
     return scope?._formState;
+  }
+
+  static void initStyle(TFFormStyle style) {
+    _tffStyle = style;
   }
 
   @override
@@ -635,7 +635,7 @@ class TFFormState extends State<TFForm> {
       width: double.infinity,
       decoration: BoxDecoration(
         color: Colors.red.shade100,
-        border: Border.all(width: 1, color: widget.style.errorColor),
+        border: Border.all(width: 1, color: _tffStyle.errorColor),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
@@ -651,13 +651,13 @@ class TFFormState extends State<TFForm> {
                 Icon(
                   Icons.error_outline,
                   size: 18,
-                  color: widget.style.errorColor,
+                  color: _tffStyle.errorColor,
                 ),
                 const SizedBox(width: 5),
                 Expanded(
                   child: Text(
                     _errorMessages[index],
-                    style: TextStyle(color: widget.style.errorColor),
+                    style: TextStyle(color: _tffStyle.errorColor),
                   ),
                 ),
               ],
@@ -706,3 +706,5 @@ class _TFFormScope extends InheritedWidget {
   @override
   bool updateShouldNotify(_TFFormScope old) => false;
 }
+
+TFFormStyle _tffStyle = const TFFormStyle();
