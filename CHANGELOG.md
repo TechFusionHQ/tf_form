@@ -33,3 +33,6 @@
 
 ## 0.0.6
 * Minor UI changes
+
+## 0.0.7
+* Minor Project Structure changes
