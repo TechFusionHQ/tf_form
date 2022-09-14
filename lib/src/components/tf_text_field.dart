@@ -285,6 +285,7 @@ class _TFTextFieldState extends State<TFTextField> {
                   controller: widget.controller,
                   autofocus: widget.autoFocus,
                   readOnly: widget.readOnly,
+                  enabled: widget.enabled,
                   obscureText: widget.obscureText,
                   keyboardType: widget.keyboardType,
                   textInputAction: widget.textInputAction,

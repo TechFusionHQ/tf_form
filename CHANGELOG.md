@@ -1,3 +1,9 @@
+## 0.1.0
+
+### Added 
+
+* Added `TFTextField` property: `enabled` (`bool`)
+
 ## 0.0.9
 
 * Flexible style editing for form
