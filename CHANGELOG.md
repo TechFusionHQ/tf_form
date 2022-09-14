@@ -1,24 +1,16 @@
-## 0.0.1
+## 0.0.8
 
-### Released
+### Added 
 
-* Initial release
+* Added `TFTextField` property: `enabled` (`bool`)
 
-## 0.0.2
+## 0.0.7
 
-### Changed
+* Minor Project Structure changes
 
-* Validation type arguments
+## 0.0.6
 
-## 0.0.3
-
-### Added
-
-* Action bar for numeric keyboard type in iOS
-
-### Fixed
-
-* Update condition for auto validation
+* Minor UI changes
 
 ## 0.0.5
 
@@ -31,8 +23,26 @@
 * Renamed `TFRadioGroup` property: `groupValue` 👉 `initialValue`)
 * Added `TFCheckboxGroup` property: `initialValues` (`List<T>`)
 
-## 0.0.6
-* Minor UI changes
+## 0.0.4
 
-## 0.0.7
-* Minor Project Structure changes
+### Fixed
+
+* Update condition for auto validation
+
+## 0.0.3
+
+### Added
+
+* Action bar for numeric keyboard type in iOS
+
+## 0.0.2
+
+### Changed
+
+* Validation type arguments
+
+## 0.0.1
+
+### Released
+
+* Initial release

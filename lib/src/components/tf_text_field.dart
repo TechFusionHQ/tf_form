@@ -14,6 +14,7 @@ class TFTextField extends StatefulWidget {
   final bool autoFocus;
   final bool obscureText;
   final bool expand;
+  final bool enabled;
   final Function()? onTap;
   final Function(String)? onChanged;
   final Function(bool)? onFocusChanged;
@@ -50,6 +51,7 @@ class TFTextField extends StatefulWidget {
     this.autoFocus = false,
     this.obscureText = false,
     this.expand = false,
+    this.enabled = true,
     this.onTap,
     this.onChanged,
     this.onFocusChanged,
@@ -307,7 +309,7 @@ class _TFTextFieldState extends State<TFTextField> {
                 ),
               ),
               const SizedBox(width: 10),
-              widget.suffix ?? clearButton,
+              widget.suffix ?? clearButton(),
             ],
           ),
         ),
@@ -333,20 +335,23 @@ class _TFTextFieldState extends State<TFTextField> {
                   : TFFormStyle.of(context).fieldStyle.borderColor,
         ),
       );
-
-  Widget get clearButton => ValueListenableBuilder<TextEditingValue>(
-        valueListenable: widget.controller,
-        builder: (context, snapshot, child) {
-          return Visibility(
-            visible: snapshot.text.isNotEmpty,
-            child: InkWell(
-              onTap: widget.controller.clear,
-              child: const Icon(
-                Icons.clear,
-                color: Colors.grey,
-              ),
+      
+  Widget clearButton() {
+    if (widget.readOnly || !widget.enabled) return const SizedBox();
+    return ValueListenableBuilder<TextEditingValue>(
+      valueListenable: widget.controller,
+      builder: (context, snapshot, child) {
+        return Visibility(
+          visible: snapshot.text.isNotEmpty,
+          child: InkWell(
+            onTap: widget.controller.clear,
+            child: const Icon(
+              Icons.clear,
+              color: Colors.grey,
             ),
-          );
-        },
-      );
+          ),
+        );
+      },
+    );
+  }
 }
