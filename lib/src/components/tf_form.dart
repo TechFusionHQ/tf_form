@@ -617,6 +617,7 @@ class TFFormState extends State<TFForm> {
     return _TFFormScope(
       formState: this,
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Visibility(
             visible: widget.visibleError && _errorMessages.isNotEmpty,

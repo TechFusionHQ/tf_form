@@ -9,6 +9,7 @@ class TFDropdownField extends StatefulWidget {
   final List<TFValidationType> validationTypes;
   final TextEditingController? relatedController;
   final TFFieldStyle? style;
+  final bool enabled;
 
   TFDropdownField({
     Key? key,
@@ -19,6 +20,7 @@ class TFDropdownField extends StatefulWidget {
     this.validationTypes = const <TFValidationType>[],
     this.relatedController, 
     this.style,
+    this.enabled = true,
   }) : super(key: key) {
     if (validationTypes.contains(TFValidationType.requiredIfHas) &&
         relatedController == null) {
@@ -75,6 +77,7 @@ class _TFDropdownFieldState extends State<TFDropdownField> {
         relatedController: widget.relatedController,
         readOnly: true,
         style: widget.style,
+        enabled: widget.enabled,
         suffix: const Icon(
           Icons.arrow_drop_down,
           color: Colors.grey,

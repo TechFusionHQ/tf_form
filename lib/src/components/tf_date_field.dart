@@ -10,6 +10,7 @@ class TFDateField extends StatefulWidget {
   final List<TFValidationType> validationTypes;
   final TextEditingController? relatedController;
   final TFFieldStyle? style;
+  final bool enabled;
 
   TFDateField({
     Key? key,
@@ -21,6 +22,7 @@ class TFDateField extends StatefulWidget {
     this.validationTypes = const <TFValidationType>[],
     this.relatedController, 
     this.style,
+    this.enabled = true,
   }) : super(key: key) {
     if (validationTypes.contains(TFValidationType.requiredIfHas) &&
         relatedController == null) {
@@ -68,6 +70,7 @@ class _TFDateFieldState extends State<TFDateField> {
       relatedController: widget.relatedController,
       readOnly: true,
       style: widget.style,
+      enabled: widget.enabled,
       suffix: const Icon(
         Icons.calendar_month_outlined,
         color: Colors.grey,
