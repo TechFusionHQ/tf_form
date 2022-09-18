@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 /// TFForm style object is used for styling
 class TFFormStyle {
   final Color backgroundColor;
@@ -25,25 +24,20 @@ class TFFormStyle {
 
 /// The style of field widgets
 class TFFieldStyle {
-  final double height;
-  final double borderRadius;
-  final double borderWidth;
-  final Color borderColor;
-  final EdgeInsets contentPadding;
+  final double? height;
+  final double? borderRadius;
+  final double? borderWidth;
+  final Color? borderColor;
+  final EdgeInsets? contentPadding;
   final TextStyle? contentStyle;
   final TextStyle? hintStyle;
 
   const TFFieldStyle({
-    this.height = 48,
-    this.borderRadius = 10,
-    this.borderWidth = 1,
-    this.borderColor = const Color(0x1F000000),
-    this.contentPadding = const EdgeInsets.only(
-      left: 10,
-      right: 10,
-      top: 5,
-      bottom: 5,
-    ),
+    this.height,
+    this.borderRadius,
+    this.borderWidth,
+    this.borderColor,
+    this.contentPadding,
     this.contentStyle,
     this.hintStyle,
   });
@@ -51,11 +45,11 @@ class TFFieldStyle {
 
 /// The style of checkbox/raido group widgets
 class TFGroupStyle {
-  final TextStyle itemTitleStyle;
-  final Color unselectedColor;
+  final TextStyle? itemTitleStyle;
+  final Color? unselectedColor;
 
   const TFGroupStyle({
-    this.itemTitleStyle = const TextStyle(fontSize: 16),
-    this.unselectedColor = Colors.black,
+    this.itemTitleStyle,
+    this.unselectedColor,
   });
 }
