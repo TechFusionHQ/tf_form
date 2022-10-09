@@ -18,7 +18,7 @@ class TFDropdownField extends StatefulWidget {
     required this.controller,
     this.initialValue,
     this.validationTypes = const <TFValidationType>[],
-    this.relatedController, 
+    this.relatedController,
     this.style,
     this.enabled = true,
   }) : super(key: key) {
@@ -34,7 +34,7 @@ class TFDropdownField extends StatefulWidget {
 }
 
 class _TFDropdownFieldState extends State<TFDropdownField> {
-  final LayerLink __dropdownLink = LayerLink();
+  final LayerLink _dropdownLink = LayerLink();
   final TextEditingController _displayController = TextEditingController();
   OverlayEntry? _dropdownOverlay;
 
@@ -69,7 +69,7 @@ class _TFDropdownFieldState extends State<TFDropdownField> {
   @override
   Widget build(BuildContext context) {
     return CompositedTransformTarget(
-      link: __dropdownLink,
+      link: _dropdownLink,
       child: TFTextField(
         title: widget.title,
         controller: _displayController,
@@ -99,40 +99,57 @@ class _TFDropdownFieldState extends State<TFDropdownField> {
   OverlayEntry _buildDropListOverlay() {
     final renderBox = context.findRenderObject() as RenderBox;
     final size = renderBox.size;
+    final offset = renderBox.localToGlobal(Offset.zero);
+    final topOffset = offset.dy + size.height + 5;
+
     final activeColor = _tffStyle.activeColor;
     return OverlayEntry(
-      builder: (context) => Positioned(
-        width: size.width,
-        child: CompositedTransformFollower(
-          link: __dropdownLink,
-          showWhenUnlinked: false,
-          offset: Offset(0.0, size.height + 5.0),
-          child: Material(
-            elevation: 2,
-            color: _tffStyle.backgroundColor,
-            child: Column(
-              children: List.generate(widget.items.length, (index) {
-                final item = widget.items[index];
-                final isSelected = widget.controller.text == item.value;
-                return ListTile(
-                  title: Text(item.title),
-                  selected: isSelected,
-                  selectedColor: Colors.white,
-                  selectedTileColor: activeColor,
-                  trailing: isSelected
-                      ? const Icon(
-                          Icons.check,
-                          size: 18,
-                        )
-                      : null,
-                  onTap: () {
-                    widget.controller.text = item.value;
-                    _displayController.text = item.title;
-                    _hideDropdown();
-                  },
-                );
-              }),
-            ),
+      builder: (context) => GestureDetector(
+        onTap: () => _hideDropdown(),
+        behavior: HitTestBehavior.translucent,
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          child: Stack(
+            children: [
+              Positioned(
+                left: offset.dx,
+                top: topOffset,
+                width: size.width,
+                child: CompositedTransformFollower(
+                  link: _dropdownLink,
+                  showWhenUnlinked: false,
+                  offset: Offset(0.0, size.height + 5.0),
+                  child: Material(
+                    elevation: 2,
+                    color: _tffStyle.backgroundColor,
+                    child: Column(
+                      children: List.generate(widget.items.length, (index) {
+                        final item = widget.items[index];
+                        final isSelected = widget.controller.text == item.value;
+                        return ListTile(
+                          title: Text(item.title),
+                          selected: isSelected,
+                          selectedColor: Colors.white,
+                          selectedTileColor: activeColor,
+                          trailing: isSelected
+                              ? const Icon(
+                                  Icons.check,
+                                  size: 18,
+                                )
+                              : null,
+                          onTap: () {
+                            widget.controller.text = item.value;
+                            _displayController.text = item.title;
+                            _hideDropdown();
+                          },
+                        );
+                      }),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
