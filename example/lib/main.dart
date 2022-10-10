@@ -34,7 +34,7 @@ class DemoFormPageState extends State<DemoFormPage> {
   final birthdayController = TextEditingController();
   final phoneController = TextEditingController();
   final heightController = TextEditingController();
-  final roleController = TextEditingController();
+  final roleController = TextEditingController(text: "member");
 
   final _addressesFormKey = GlobalKey<TFFormState>();
   final address1Controller = TextEditingController();
@@ -104,7 +104,8 @@ class DemoFormPageState extends State<DemoFormPage> {
                 title: "Birthday",
                 controller: birthdayController,
                 initialDate: DateTime.now(),
-                firstDate: DateTime.now().subtract(const Duration(days: 50 * 365)),
+                firstDate:
+                    DateTime.now().subtract(const Duration(days: 50 * 365)),
                 lastDate: DateTime.now(),
                 validationTypes: const [
                   TFValidationType.required,
@@ -118,8 +119,7 @@ class DemoFormPageState extends State<DemoFormPage> {
                   TFOptionItem<String>(title: "Administrator", value: "admin"),
                   TFOptionItem<String>(title: "Manager", value: "manager")
                 ],
-                controller: roleController,
-                initialValue: "member",
+                valueController: roleController,
                 validationTypes: const [
                   TFValidationType.required,
                 ],
@@ -140,7 +140,8 @@ class DemoFormPageState extends State<DemoFormPage> {
                 title: "Height (cm)",
                 hintText: "Enter height",
                 controller: heightController,
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
                 validationTypes: const [
                   TFValidationType.required,
                 ],

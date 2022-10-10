@@ -4,9 +4,8 @@ part of 'tf_form.dart';
 class TFDropdownField extends StatefulWidget {
   final String title;
   final List<TFOptionItem> items;
-  final String? initialValue;
-  final TextEditingController controller;
   final List<TFValidationType> validationTypes;
+  final TextEditingController valueController;
   final TextEditingController? relatedController;
   final TFFieldStyle? style;
   final bool enabled;
@@ -15,8 +14,7 @@ class TFDropdownField extends StatefulWidget {
     Key? key,
     required this.title,
     required this.items,
-    required this.controller,
-    this.initialValue,
+    required this.valueController,
     this.validationTypes = const <TFValidationType>[],
     this.relatedController,
     this.style,
@@ -35,8 +33,10 @@ class TFDropdownField extends StatefulWidget {
 
 class _TFDropdownFieldState extends State<TFDropdownField> {
   final LayerLink _dropdownLink = LayerLink();
-  final TextEditingController _displayController = TextEditingController();
+  final TextEditingController _titleController = TextEditingController();
   OverlayEntry? _dropdownOverlay;
+
+  TextEditingController get _valueController => widget.valueController;
 
   void _showDropdown() {
     _dropdownOverlay = _buildDropListOverlay();
@@ -48,20 +48,25 @@ class _TFDropdownFieldState extends State<TFDropdownField> {
     _dropdownOverlay = null;
   }
 
-  @override
-  void initState() {
-    super.initState();
-    if (widget.initialValue != null) {
-      TFOptionItem selectedItem = widget.items
-          .where((element) => element.value == widget.initialValue!)
-          .first;
-      _displayController.text = selectedItem.title;
-      widget.controller.text = widget.initialValue!;
+  void _valueControllerListener() {
+    if (_valueController.text.isNotEmpty) {
+      final initialValue = _valueController.text;
+      TFOptionItem selectedItem = widget.items.where((element) => element.value == initialValue).first;
+      _titleController.text = selectedItem.title;
     }
   }
 
   @override
+  void initState() {
+    super.initState();
+    _valueControllerListener();
+    _valueController.addListener(_valueControllerListener);
+  }
+
+  @override
   void dispose() {
+    _valueController.removeListener(_valueControllerListener);
+    _titleController.dispose();
     _dropdownOverlay?.dispose();
     super.dispose();
   }
@@ -72,7 +77,7 @@ class _TFDropdownFieldState extends State<TFDropdownField> {
       link: _dropdownLink,
       child: TFTextField(
         title: widget.title,
-        controller: _displayController,
+        controller: _titleController,
         validationTypes: widget.validationTypes,
         relatedController: widget.relatedController,
         readOnly: true,
@@ -126,7 +131,7 @@ class _TFDropdownFieldState extends State<TFDropdownField> {
                     child: Column(
                       children: List.generate(widget.items.length, (index) {
                         final item = widget.items[index];
-                        final isSelected = widget.controller.text == item.value;
+                        final isSelected = _valueController.text == item.value;
                         return ListTile(
                           title: Text(item.title),
                           selected: isSelected,
@@ -139,8 +144,7 @@ class _TFDropdownFieldState extends State<TFDropdownField> {
                                 )
                               : null,
                           onTap: () {
-                            widget.controller.text = item.value;
-                            _displayController.text = item.title;
+                            _valueController.text = item.value;
                             _hideDropdown();
                           },
                         );
