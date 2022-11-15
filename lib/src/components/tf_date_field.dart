@@ -71,9 +71,12 @@ class _TFDateFieldState extends State<TFDateField> {
       readOnly: true,
       style: widget.style,
       enabled: widget.enabled,
-      suffix: const Icon(
-        Icons.calendar_month_outlined,
-        color: Colors.grey,
+      suffix: GestureDetector(
+        onTap: _showDatePicker,
+        child: const Icon(
+          Icons.calendar_month_outlined,
+          color: Colors.grey,
+        ),
       ),
       onTap: _showDatePicker,
     );

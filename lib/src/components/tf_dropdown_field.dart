@@ -48,6 +48,14 @@ class _TFDropdownFieldState extends State<TFDropdownField> {
     _dropdownOverlay = null;
   }
 
+  void _toggleDropdown() {
+    if (_dropdownOverlay == null) {
+      _showDropdown();
+    } else {
+      _hideDropdown();
+    }
+  }
+
   void _valueControllerListener() {
     if (_valueController.text.isNotEmpty) {
       final initialValue = _valueController.text;
@@ -83,17 +91,14 @@ class _TFDropdownFieldState extends State<TFDropdownField> {
         readOnly: true,
         style: widget.style,
         enabled: widget.enabled,
-        suffix: const Icon(
-          Icons.arrow_drop_down,
-          color: Colors.grey,
+        suffix: GestureDetector(
+          onTap: _toggleDropdown,
+          child: const Icon(
+            Icons.arrow_drop_down,
+            color: Colors.grey,
+          ),
         ),
-        onTap: () {
-          if (_dropdownOverlay == null) {
-            _showDropdown();
-          } else {
-            _hideDropdown();
-          }
-        },
+        onTap: _toggleDropdown,
         onFocusChanged: (hasFocus) {
           if (!hasFocus) _hideDropdown();
         },
