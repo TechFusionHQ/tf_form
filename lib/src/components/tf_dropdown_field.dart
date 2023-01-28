@@ -40,7 +40,7 @@ class _TFDropdownFieldState extends State<TFDropdownField> {
 
   void _showDropdown() {
     _dropdownOverlay = _buildDropListOverlay();
-    Overlay.of(context)?.insert(_dropdownOverlay!);
+    Overlay.of(context).insert(_dropdownOverlay!);
   }
 
   void _hideDropdown() {

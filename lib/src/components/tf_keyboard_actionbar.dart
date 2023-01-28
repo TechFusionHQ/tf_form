@@ -17,7 +17,7 @@ class TFKeyboardActionBar {
       },
     );
 
-    Overlay.of(context)?.insert(_overlayEntry!);
+    Overlay.of(context).insert(_overlayEntry!);
   }
 
   static void removeOverlay() {

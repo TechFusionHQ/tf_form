@@ -1,6 +1,12 @@
+## 0.1.1
+
+### Updated
+
+* Update Flutter 3.7
+
 ## 0.1.0
 
-### Added 
+### Added
 
 * Added `TFTextField` property: `enabled` (`bool`)
 
@@ -8,7 +14,8 @@
 
 * Flexible style editing for form
 
-### Added 
+### Added
+
 * Added `TFForm` static function: `initStyle`
 * Added `TFTextField` property: `style` (`TFFieldStyle`)
 * Added `TFDropdownField` property: `style` (`TFFieldStyle`)
@@ -18,7 +25,7 @@
 
 ## 0.0.8
 
-### Added 
+### Added
 
 * Added `TFTextField` property: `enabled` (`bool`)
 
