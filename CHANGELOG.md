@@ -1,3 +1,9 @@
+## 0.1.2
+
+### Added
+
+* Add error display configuration
+
 ## 0.1.1
 
 ### Updated
