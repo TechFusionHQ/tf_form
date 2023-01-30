@@ -11,6 +11,7 @@ class TFDateField extends StatefulWidget {
   final TextEditingController? relatedController;
   final TFFieldStyle? style;
   final bool enabled;
+  final bool showError;
 
   TFDateField({
     Key? key,
@@ -20,9 +21,10 @@ class TFDateField extends StatefulWidget {
     this.firstDate,
     this.lastDate,
     this.validationTypes = const <TFValidationType>[],
-    this.relatedController, 
+    this.relatedController,
     this.style,
-    this.enabled = true,
+    this.enabled = true,    
+    this.showError = true,
   }) : super(key: key) {
     if (validationTypes.contains(TFValidationType.requiredIfHas) &&
         relatedController == null) {
@@ -71,6 +73,7 @@ class _TFDateFieldState extends State<TFDateField> {
       readOnly: true,
       style: widget.style,
       enabled: widget.enabled,
+      showError: widget.showError,
       suffix: GestureDetector(
         onTap: _showDatePicker,
         child: const Icon(

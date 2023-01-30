@@ -9,6 +9,7 @@ class TFDropdownField extends StatefulWidget {
   final TextEditingController? relatedController;
   final TFFieldStyle? style;
   final bool enabled;
+  final bool showError;
 
   TFDropdownField({
     Key? key,
@@ -19,6 +20,7 @@ class TFDropdownField extends StatefulWidget {
     this.relatedController,
     this.style,
     this.enabled = true,
+    this.showError  = true,
   }) : super(key: key) {
     if (validationTypes.contains(TFValidationType.requiredIfHas) &&
         relatedController == null) {
@@ -91,6 +93,7 @@ class _TFDropdownFieldState extends State<TFDropdownField> {
         readOnly: true,
         style: widget.style,
         enabled: widget.enabled,
+        showError: widget.showError,
         suffix: GestureDetector(
           onTap: _toggleDropdown,
           child: const Icon(

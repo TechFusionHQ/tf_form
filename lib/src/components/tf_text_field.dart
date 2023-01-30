@@ -15,6 +15,7 @@ class TFTextField extends StatefulWidget {
   final bool obscureText;
   final bool expand;
   final bool enabled;
+  final bool showError;
   final Function()? onTap;
   final Function(String)? onChanged;
   final Function(bool)? onFocusChanged;
@@ -53,6 +54,7 @@ class TFTextField extends StatefulWidget {
     this.obscureText = false,
     this.expand = false,
     this.enabled = true,
+    this.showError  = true,
     this.onTap,
     this.onChanged,
     this.onFocusChanged,
@@ -318,7 +320,7 @@ class _TFTextFieldState extends State<TFTextField> {
         ),
         TFErrorText(
           error: _errorMessage,
-          visible: _errorMessage.isNotEmpty,
+          visible: widget.showError && _errorMessage.isNotEmpty,
         ),
       ],
     );
