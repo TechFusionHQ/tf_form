@@ -124,6 +124,7 @@ class TFForm extends StatefulWidget {
     Color? activeColor,
     Color? errorColor,
     TextStyle? titleStyle,
+    TextStyle? errorStyle,
     TFFieldStyle? fieldStyle,
     TFGroupStyle? groupStyle,
   }) {
@@ -132,6 +133,7 @@ class TFForm extends StatefulWidget {
       activeColor: activeColor,
       errorColor: errorColor,
       titleStyle: titleStyle,
+      errorStyle: errorStyle,
       fieldStyle: fieldStyle,
       groupStyle: groupStyle,
     );

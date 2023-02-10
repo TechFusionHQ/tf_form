@@ -6,6 +6,7 @@ class TFFormStyle {
   final Color activeColor;
   final Color errorColor;
   final TextStyle? titleStyle;
+  final TextStyle errorStyle;
   final TFFieldStyle fieldStyle;
   final TFGroupStyle groupStyle;
 
@@ -16,6 +17,10 @@ class TFFormStyle {
     this.titleStyle = const TextStyle(
       fontSize: 16,
       fontWeight: FontWeight.w500,
+    ),    
+    this.errorStyle = const TextStyle(
+      fontSize: 14,
+      fontWeight: FontWeight.w400,
     ),
     this.fieldStyle = const TFFieldStyle(),
     this.groupStyle = const TFGroupStyle(),
@@ -26,6 +31,7 @@ class TFFormStyle {
     Color? activeColor,
     Color? errorColor,
     TextStyle? titleStyle,
+    TextStyle? errorStyle,
     TFFieldStyle? fieldStyle,
     TFGroupStyle? groupStyle,
   }) {
@@ -34,6 +40,7 @@ class TFFormStyle {
       activeColor: activeColor ?? this.activeColor,
       errorColor: errorColor ?? this.errorColor,
       titleStyle: titleStyle ?? this.titleStyle,
+      errorStyle: errorStyle ?? this.errorStyle,
       fieldStyle: fieldStyle ?? this.fieldStyle,
       groupStyle: groupStyle ?? this.groupStyle,
     );

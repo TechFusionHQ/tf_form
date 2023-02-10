@@ -1,3 +1,9 @@
+## 0.1.4
+
+### Added
+
+* Add error style configuration
+
 ## 0.1.3
 
 ### Updated
