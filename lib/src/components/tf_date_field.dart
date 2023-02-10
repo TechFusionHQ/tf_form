@@ -2,7 +2,7 @@ part of 'tf_form.dart';
 
 /// [TFDateField] widget allows the user to pick a DateTime from an input field
 class TFDateField extends StatefulWidget {
-  final String title;
+  final String? title;
   final TextEditingController controller;
   final DateTime? initialDate;
   final DateTime? firstDate;
@@ -15,7 +15,7 @@ class TFDateField extends StatefulWidget {
 
   TFDateField({
     Key? key,
-    required this.title,
+    this.title,
     required this.controller,
     this.initialDate,
     this.firstDate,

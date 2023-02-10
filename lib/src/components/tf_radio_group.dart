@@ -2,7 +2,7 @@ part of 'tf_form.dart';
 
 /// [TFRadioGroup] widget allows user to select one option from multiple selections.
 class TFRadioGroup<T> extends StatefulWidget {
-  final String title;
+  final String? title;
   final List<TFOptionItem<T>> items;
   final T? initialValue;
   final Function(T?) onChanged;
@@ -12,12 +12,12 @@ class TFRadioGroup<T> extends StatefulWidget {
 
   TFRadioGroup({
     Key? key,
-    required this.title,
+    this.title,
     required this.items,
     required this.onChanged,
     this.initialValue,
     this.validationTypes = const <TFValidationType>[],
-    this.relatedController, 
+    this.relatedController,
     this.style,
   }) : super(key: key) {
     if (validationTypes.contains(TFValidationType.requiredIfHas) &&
@@ -100,12 +100,15 @@ class _TFRadioGroupState<T> extends State<TFRadioGroup<T>> {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-            widget.title,
-            style: _tffStyle.titleStyle,
-          ),
-          const SizedBox(height: 8),
+          if (widget.title != null) ...[
+            Text(
+              widget.title!,
+              style: _tffStyle.titleStyle,
+            ),
+            const SizedBox(height: 10),
+          ],
           ...List.generate(widget.items.length, (index) {
             return _buildRadioTile(widget.items[index], index);
           }),

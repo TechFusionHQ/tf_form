@@ -261,13 +261,15 @@ class _TFTextFieldState extends State<TFTextField> {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: [
-        if (widget.title != null)
+        if (widget.title != null) ...[
           Text(
             widget.title!,
             style: _tffStyle.titleStyle,
           ),
-        if (widget.title != null) const SizedBox(height: 8),
+          const SizedBox(height: 10),
+        ],
         Container(
           width: double.infinity,
           height: widget.expand ? null : _height,

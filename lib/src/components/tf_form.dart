@@ -119,8 +119,22 @@ class TFForm extends StatefulWidget {
     return scope?._formState;
   }
 
-  static void initStyle(TFFormStyle style) {
-    _tffStyle = style;
+  static void initStyle({
+    Color? backgroundColor,
+    Color? activeColor,
+    Color? errorColor,
+    TextStyle? titleStyle,
+    TFFieldStyle? fieldStyle,
+    TFGroupStyle? groupStyle,
+  }) {
+    _tffStyle = _tffStyle.copyWith(
+      backgroundColor: backgroundColor,
+      activeColor: activeColor,
+      errorColor: errorColor,
+      titleStyle: titleStyle,
+      fieldStyle: fieldStyle,
+      groupStyle: groupStyle,
+    );
   }
 
   @override

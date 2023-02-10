@@ -20,6 +20,24 @@ class TFFormStyle {
     this.fieldStyle = const TFFieldStyle(),
     this.groupStyle = const TFGroupStyle(),
   });
+
+  TFFormStyle copyWith({
+    Color? backgroundColor,
+    Color? activeColor,
+    Color? errorColor,
+    TextStyle? titleStyle,
+    TFFieldStyle? fieldStyle,
+    TFGroupStyle? groupStyle,
+  }) {
+    return TFFormStyle(
+      backgroundColor: backgroundColor ?? this.backgroundColor,
+      activeColor: activeColor ?? this.activeColor,
+      errorColor: errorColor ?? this.errorColor,
+      titleStyle: titleStyle ?? this.titleStyle,
+      fieldStyle: fieldStyle ?? this.fieldStyle,
+      groupStyle: groupStyle ?? this.groupStyle,
+    );
+  }
 }
 
 /// The style of field widgets

@@ -2,7 +2,7 @@ part of 'tf_form.dart';
 
 /// [TFDropdownField] widget allows the user to pick a value from a dropdown list
 class TFDropdownField extends StatefulWidget {
-  final String title;
+  final String? title;
   final List<TFOptionItem> items;
   final List<TFValidationType> validationTypes;
   final TextEditingController valueController;
@@ -13,7 +13,7 @@ class TFDropdownField extends StatefulWidget {
 
   TFDropdownField({
     Key? key,
-    required this.title,
+    this.title,
     required this.items,
     required this.valueController,
     this.validationTypes = const <TFValidationType>[],
