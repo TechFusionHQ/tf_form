@@ -1,3 +1,9 @@
+## 0.1.3
+
+### Updated
+
+* Update components style
+
 ## 0.1.2
 
 ### Added
