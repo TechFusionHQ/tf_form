@@ -1,3 +1,9 @@
+## 0.1.5
+
+### Update
+
+* Update space before suffix
+
 ## 0.1.4
 
 ### Added

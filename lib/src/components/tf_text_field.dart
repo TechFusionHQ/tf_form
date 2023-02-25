@@ -315,7 +315,7 @@ class _TFTextFieldState extends State<TFTextField> {
                   ),
                 ),
               ),
-              const SizedBox(width: 10),
+              if (widget.suffix is! SizedBox) const SizedBox(width: 10),
               widget.suffix ?? clearButton(),
             ],
           ),
