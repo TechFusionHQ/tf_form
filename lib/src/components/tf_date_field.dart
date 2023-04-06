@@ -23,7 +23,7 @@ class TFDateField extends StatefulWidget {
     this.validationTypes = const <TFValidationType>[],
     this.relatedController,
     this.style,
-    this.enabled = true,    
+    this.enabled = true,
     this.showError = true,
   }) : super(key: key) {
     if (validationTypes.contains(TFValidationType.requiredIfHas) &&
@@ -38,6 +38,8 @@ class TFDateField extends StatefulWidget {
 }
 
 class _TFDateFieldState extends State<TFDateField> {
+  get _contentStyle => widget.style?.contentStyle ?? _tffStyle.fieldStyle.contentStyle;
+
   void _showDatePicker() async {
     final now = DateTime.now();
     const range = Duration(days: 365 * 40);
@@ -76,9 +78,9 @@ class _TFDateFieldState extends State<TFDateField> {
       showError: widget.showError,
       suffix: GestureDetector(
         onTap: _showDatePicker,
-        child: const Icon(
+        child: Icon(
           Icons.calendar_month_outlined,
-          color: Colors.grey,
+          color: _contentStyle.color,
         ),
       ),
       onTap: _showDatePicker,

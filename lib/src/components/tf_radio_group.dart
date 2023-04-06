@@ -35,7 +35,10 @@ class _TFRadioGroupState<T> extends State<TFRadioGroup<T>> {
   T? _groupValue;
   bool _isValid = true;
 
-  List<TFValidationType> get validationTypes => widget.validationTypes;
+  get _validationTypes => widget.validationTypes;
+  get _titleStyle => widget.style?.titleStyle ?? _tffStyle.titleStyle;
+  get _itemTitleStyle => widget.style?.itemTitleStyle ?? _tffStyle.groupStyle.itemTitleStyle;
+  get _unselectedColor => widget.style?.unselectedColor ?? _tffStyle.groupStyle.unselectedColor;
 
   void _setValid(bool val) {
     setState(() {
@@ -51,18 +54,18 @@ class _TFRadioGroupState<T> extends State<TFRadioGroup<T>> {
 
     // for autoValidate
     if ((TFForm.of(context)?.widget.autoValidate ?? false) &&
-        validationTypes.isNotEmpty) {
+        _validationTypes.isNotEmpty) {
       final isValid = _validate();
       _setValid(isValid);
     }
   }
 
   bool _validate() {
-    if (validationTypes.contains(TFValidationType.required)) {
+    if (_validationTypes.contains(TFValidationType.required)) {
       if (_groupValue == null) {
         return false;
       }
-    } else if (validationTypes.contains(TFValidationType.requiredIfHas)) {
+    } else if (_validationTypes.contains(TFValidationType.requiredIfHas)) {
       final relatedVal = widget.relatedController!.text;
       if (relatedVal.isNotEmpty && _groupValue == null) {
         return false;
@@ -75,7 +78,7 @@ class _TFRadioGroupState<T> extends State<TFRadioGroup<T>> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      if (validationTypes.isNotEmpty) {
+      if (_validationTypes.isNotEmpty) {
         TFForm.of(context)?._registerRadioGroup(this);
       }
     });
@@ -84,7 +87,7 @@ class _TFRadioGroupState<T> extends State<TFRadioGroup<T>> {
 
   @override
   void deactivate() {
-    if (validationTypes.isNotEmpty) {
+    if (_validationTypes.isNotEmpty) {
       TFForm.of(context)?._unregisterRadioGroup(this);
     }
     super.deactivate();
@@ -96,7 +99,7 @@ class _TFRadioGroupState<T> extends State<TFRadioGroup<T>> {
       data: Theme.of(context).copyWith(
         unselectedWidgetColor: _isValid
             ? _unselectedColor
-            : _tffStyle.errorColor,
+            : Theme.of(context).colorScheme.error,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -105,7 +108,7 @@ class _TFRadioGroupState<T> extends State<TFRadioGroup<T>> {
           if (widget.title != null) ...[
             Text(
               widget.title!,
-              style: _tffStyle.titleStyle,
+              style: _titleStyle,
             ),
             const SizedBox(height: 10),
           ],
@@ -126,7 +129,7 @@ class _TFRadioGroupState<T> extends State<TFRadioGroup<T>> {
       title: Text(
         item.title,
         style: _itemTitleStyle.copyWith(
-          color: _isValid ? null : _tffStyle.errorColor,
+          color: _isValid ? null : Theme.of(context).colorScheme.error,
         ),
       ),
       contentPadding: EdgeInsets.zero,
@@ -134,11 +137,8 @@ class _TFRadioGroupState<T> extends State<TFRadioGroup<T>> {
         value: item.value,
         groupValue: _groupValue,
         onChanged: _onItemChanged,
-        activeColor: _tffStyle.activeColor,
+        activeColor: Theme.of(context).colorScheme.primary,
       ),
     );
   }
-
-  get _itemTitleStyle => widget.style?.itemTitleStyle ?? _tffStyle.groupStyle.itemTitleStyle;
-  get _unselectedColor => widget.style?.unselectedColor ?? _tffStyle.groupStyle.unselectedColor;
 }

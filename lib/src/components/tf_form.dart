@@ -120,18 +120,12 @@ class TFForm extends StatefulWidget {
   }
 
   static void initStyle({
-    Color? backgroundColor,
-    Color? activeColor,
-    Color? errorColor,
     TextStyle? titleStyle,
     TextStyle? errorStyle,
     TFFieldStyle? fieldStyle,
     TFGroupStyle? groupStyle,
   }) {
     _tffStyle = _tffStyle.copyWith(
-      backgroundColor: backgroundColor,
-      activeColor: activeColor,
-      errorColor: errorColor,
       titleStyle: titleStyle,
       errorStyle: errorStyle,
       fieldStyle: fieldStyle,
@@ -157,7 +151,7 @@ class TFFormState extends State<TFForm> {
   List<String> _errorMessages = [];
 
   void _registerField(_TFTextFieldState field) {
-    for (var type in field.validationTypes) {
+    for (var type in field._validationTypes) {
       if (_fieldMap.containsKey(type)) {
         _fieldMap[type]!.add(field);
       } else {
@@ -167,7 +161,7 @@ class TFFormState extends State<TFForm> {
   }
 
   void _registerCheckboxGroup(_TFCheckboxGroupState group) {
-    for (var type in group.validationTypes) {
+    for (var type in group._validationTypes) {
       if (_checkboxGroupMap.containsKey(type)) {
         _checkboxGroupMap[type]!.add(group);
       } else {
@@ -177,7 +171,7 @@ class TFFormState extends State<TFForm> {
   }
 
   void _registerRadioGroup(_TFRadioGroupState group) {
-    for (var type in group.validationTypes) {
+    for (var type in group._validationTypes) {
       if (_radioGroupMap.containsKey(type)) {
         _radioGroupMap[type]!.add(group);
       } else {
@@ -187,7 +181,7 @@ class TFFormState extends State<TFForm> {
   }
 
   void _unregisterField(_TFTextFieldState field) {
-    for (var type in field.validationTypes) {
+    for (var type in field._validationTypes) {
       if (_fieldMap.containsKey(type)) {
         _fieldMap[type]!.remove(field);
       }
@@ -195,7 +189,7 @@ class TFFormState extends State<TFForm> {
   }
 
   void _unregisterCheckboxGroup(_TFCheckboxGroupState group) {
-    for (var type in group.validationTypes) {
+    for (var type in group._validationTypes) {
       if (_checkboxGroupMap.containsKey(type)) {
         _checkboxGroupMap[type]!.remove(group);
       }
@@ -203,7 +197,7 @@ class TFFormState extends State<TFForm> {
   }
 
   void _unregisterRadioGroup(_TFRadioGroupState group) {
-    for (var type in group.validationTypes) {
+    for (var type in group._validationTypes) {
       if (_radioGroupMap.containsKey(type)) {
         _radioGroupMap[type]!.remove(group);
       }
@@ -214,11 +208,11 @@ class TFFormState extends State<TFForm> {
     int errors = 0;
     if (_fieldMap.containsKey(TFValidationType.required)) {
       for (var field in _fieldMap[TFValidationType.required]!) {
-        if (field.val.isNotEmpty) {
+        if (field._val.isNotEmpty) {
           field._setErrorMessage();
         } else {
           errors++;
-          field._setErrorMessage(val: field.requiredErrorMessage);
+          field._setErrorMessage(val: field._requiredErrorMessage);
         }
       }
     }
@@ -250,9 +244,9 @@ class TFFormState extends State<TFForm> {
     if (_fieldMap.containsKey(TFValidationType.requiredIfHas)) {
       for (var field in _fieldMap[TFValidationType.requiredIfHas]!) {
         final relatedVal = field.widget.relatedController!.text;
-        if (relatedVal.isNotEmpty && field.val.isEmpty) {
+        if (relatedVal.isNotEmpty && field._val.isEmpty) {
           errors++;
-          field._setErrorMessage(val: field.requiredErrorMessage);
+          field._setErrorMessage(val: field._requiredErrorMessage);
         } else {
           field._setErrorMessage();
         }
@@ -288,7 +282,7 @@ class TFFormState extends State<TFForm> {
     if (_fieldMap.containsKey(TFValidationType.emailAddress)) {
       for (var field in _fieldMap[TFValidationType.emailAddress]!) {
         if (_needValidate(field)) {
-          if (TFFormValidator.validateEmailAddress(field.val)) {
+          if (TFFormValidator.validateEmailAddress(field._val)) {
             field._setErrorMessage();
           } else {
             errors++;
@@ -306,7 +300,7 @@ class TFFormState extends State<TFForm> {
     if (_fieldMap.containsKey(TFValidationType.date)) {
       for (var field in _fieldMap[TFValidationType.date]!) {
         if (_needValidate(field)) {
-          if (TFFormValidator.validateDate(field.val)) {
+          if (TFFormValidator.validateDate(field._val)) {
             field._setErrorMessage();
           } else {
             errors++;
@@ -325,7 +319,7 @@ class TFFormState extends State<TFForm> {
       for (var field in _fieldMap[TFValidationType.password]!) {
         if (_needValidate(field)) {
           if (TFFormValidator.validatePassword(
-            field.val,
+            field._val,
             widget.passwordPolicy,
           )) {
             field._setErrorMessage();
@@ -345,7 +339,7 @@ class TFFormState extends State<TFForm> {
     if (_fieldMap.containsKey(TFValidationType.confirmPassword)) {
       for (var field in _fieldMap[TFValidationType.confirmPassword]!) {
         if (_needValidate(field)) {
-          if (field.val == field.widget.passwordController!.text) {
+          if (field._val == field.widget.passwordController!.text) {
             field._setErrorMessage();
           } else {
             errors++;
@@ -363,7 +357,7 @@ class TFFormState extends State<TFForm> {
     if (_fieldMap.containsKey(TFValidationType.simpleChars)) {
       for (var field in _fieldMap[TFValidationType.simpleChars]!) {
         if (_needValidate(field)) {
-          if (TFFormValidator.validateSimpleChars(field.val)) {
+          if (TFFormValidator.validateSimpleChars(field._val)) {
             field._setErrorMessage();
           } else {
             errors++;
@@ -381,7 +375,7 @@ class TFFormState extends State<TFForm> {
     if (_fieldMap.containsKey(TFValidationType.simpleChars)) {
       for (var field in _fieldMap[TFValidationType.simpleChars]!) {
         if (_needValidate(field)) {
-          if (TFFormValidator.validateSlugChars(field.val)) {
+          if (TFFormValidator.validateSlugChars(field._val)) {
             field._setErrorMessage();
           } else {
             errors++;
@@ -399,7 +393,7 @@ class TFFormState extends State<TFForm> {
     if (_fieldMap.containsKey(TFValidationType.simpleSlugChars)) {
       for (var field in _fieldMap[TFValidationType.simpleSlugChars]!) {
         if (_needValidate(field)) {
-          if (TFFormValidator.validateSimpleSlugChars(field.val)) {
+          if (TFFormValidator.validateSimpleSlugChars(field._val)) {
             field._setErrorMessage();
           } else {
             errors++;
@@ -417,7 +411,7 @@ class TFFormState extends State<TFForm> {
     if (_fieldMap.containsKey(TFValidationType.domainChars)) {
       for (var field in _fieldMap[TFValidationType.domainChars]!) {
         if (_needValidate(field)) {
-          if (TFFormValidator.validateDomainChars(field.val)) {
+          if (TFFormValidator.validateDomainChars(field._val)) {
             field._setErrorMessage();
           } else {
             errors++;
@@ -435,7 +429,7 @@ class TFFormState extends State<TFForm> {
     if (_fieldMap.containsKey(TFValidationType.reallySimpleChars)) {
       for (var field in _fieldMap[TFValidationType.reallySimpleChars]!) {
         if (_needValidate(field)) {
-          if (TFFormValidator.validateReallySimpleChars(field.val)) {
+          if (TFFormValidator.validateReallySimpleChars(field._val)) {
             field._setErrorMessage();
           } else {
             errors++;
@@ -453,7 +447,7 @@ class TFFormState extends State<TFForm> {
     if (_fieldMap.containsKey(TFValidationType.href)) {
       for (var field in _fieldMap[TFValidationType.href]!) {
         if (_needValidate(field)) {
-          if (TFFormValidator.validateHref(field.val)) {
+          if (TFFormValidator.validateHref(field._val)) {
             field._setErrorMessage();
           } else {
             errors++;
@@ -471,7 +465,7 @@ class TFFormState extends State<TFForm> {
     if (_fieldMap.containsKey(TFValidationType.integer)) {
       for (var field in _fieldMap[TFValidationType.integer]!) {
         if (_needValidate(field)) {
-          if (TFFormValidator.validateInteger(field.val)) {
+          if (TFFormValidator.validateInteger(field._val)) {
             field._setErrorMessage();
           } else {
             errors++;
@@ -489,7 +483,7 @@ class TFFormState extends State<TFForm> {
     if (_fieldMap.containsKey(TFValidationType.regex)) {
       for (var field in _fieldMap[TFValidationType.regex]!) {
         if (_needValidate(field)) {
-          if (TFFormValidator.validateRegex(field.val, field.widget.regex!)) {
+          if (TFFormValidator.validateRegex(field._val, field.widget.regex!)) {
             field._setErrorMessage();
           } else {
             errors++;
@@ -507,7 +501,7 @@ class TFFormState extends State<TFForm> {
     if (_fieldMap.containsKey(TFValidationType.phone)) {
       for (var field in _fieldMap[TFValidationType.phone]!) {
         if (_needValidate(field)) {
-          if (TFFormValidator.validatePhone(field.val)) {
+          if (TFFormValidator.validatePhone(field._val)) {
             field._setErrorMessage();
           } else {
             errors++;
@@ -652,7 +646,7 @@ class TFFormState extends State<TFForm> {
       width: double.infinity,
       decoration: BoxDecoration(
         color: Colors.red.shade100,
-        border: Border.all(width: 1, color: _tffStyle.errorColor),
+        border: Border.all(width: 1, color: Theme.of(context).colorScheme.error),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
@@ -668,13 +662,13 @@ class TFFormState extends State<TFForm> {
                 Icon(
                   Icons.error_outline,
                   size: 18,
-                  color: _tffStyle.errorColor,
+                  color: Theme.of(context).colorScheme.error,
                 ),
                 const SizedBox(width: 5),
                 Expanded(
                   child: Text(
                     _errorMessages[index],
-                    style: TextStyle(color: _tffStyle.errorColor),
+                    style: TextStyle(color: Theme.of(context).colorScheme.error),
                   ),
                 ),
               ],
@@ -690,15 +684,15 @@ class TFFormState extends State<TFForm> {
 ///
 /// returns [true] if this [TFTextField] needs validation.
 bool _needValidate(_TFTextFieldState field) {
-  if (field.validationTypes.contains(TFValidationType.required)) {
+  if (field._validationTypes.contains(TFValidationType.required)) {
     return true;
   }
-  if (field.validationTypes.contains(TFValidationType.requiredIf)) {
-    if (field.val.isNotEmpty) {
+  if (field._validationTypes.contains(TFValidationType.requiredIf)) {
+    if (field._val.isNotEmpty) {
       return true;
     }
   }
-  if (field.validationTypes.contains(TFValidationType.requiredIfHas)) {
+  if (field._validationTypes.contains(TFValidationType.requiredIfHas)) {
     final relatedVal = field.widget.relatedController!.text.trim();
     if (relatedVal.isNotEmpty) {
       return true;
@@ -727,7 +721,7 @@ class _TFFormScope extends InheritedWidget {
 TFFormStyle _tffStyle = const TFFormStyle(
     fieldStyle: TFFieldStyle(
         height : 48,
-        borderRadius : 10,
+        radius : 10,
         borderWidth : 1,
         borderColor : Color(0x1F000000),
         contentPadding : EdgeInsets.only(

@@ -54,7 +54,7 @@ class TFTextField extends StatefulWidget {
     this.obscureText = false,
     this.expand = false,
     this.enabled = true,
-    this.showError  = true,
+    this.showError = true,
     this.onTap,
     this.onChanged,
     this.onFocusChanged,
@@ -99,11 +99,19 @@ class _TFTextFieldState extends State<TFTextField> {
   String _preVal = "";
   bool _hasFocus = false;
 
-  List<TFValidationType> get validationTypes => widget.validationTypes;
-
-  String get val => widget.controller.text.trim();
-
-  String get requiredErrorMessage => "This field is required";
+  get _validationTypes => widget.validationTypes;
+  get _val => widget.controller.text.trim();
+  get _requiredErrorMessage => "This field is required";
+  get _height => widget.style?.height ?? _tffStyle.fieldStyle.height;
+  get _contentPadding => widget.style?.contentPadding ?? _tffStyle.fieldStyle.contentPadding;
+  get _titleStyle => widget.style?.titleStyle ?? _tffStyle.titleStyle;
+  get _contentStyle => widget.style?.contentStyle ?? _tffStyle.fieldStyle.contentStyle;
+  get _hintStyle => widget.style?.hintStyle ?? _tffStyle.fieldStyle.hintStyle;
+  get _radius => widget.style?.radius ?? _tffStyle.fieldStyle.radius;
+  get _borderWidth => widget.style?.borderWidth ?? _tffStyle.fieldStyle.borderWidth;
+  get _borderColor => widget.style?.borderColor ?? _tffStyle.fieldStyle.borderColor;
+  get _focusBorderColor => widget.style?.focusBorderColor ?? _tffStyle.fieldStyle.focusBorderColor;
+  get _backgroundColor => widget.style?.backgroundColor ?? _tffStyle.fieldStyle.backgroundColor;
 
   void _setErrorMessage({String val = ""}) {
     setState(() {
@@ -112,96 +120,96 @@ class _TFTextFieldState extends State<TFTextField> {
   }
 
   void _onTextChanged() {
-    if (val != _preVal) {
-      _preVal = val;
+    if (_val != _preVal) {
+      _preVal = _val;
     } else {
       return;
     }
 
     if ((TFForm.of(context)?.widget.autoValidate ?? false) &&
-        validationTypes.isNotEmpty) {
+        _validationTypes.isNotEmpty) {
       final errorMessage = _validate();
       _setErrorMessage(val: errorMessage);
     }
 
     if (widget.onChanged != null) {
-      widget.onChanged!(val);
+      widget.onChanged!(_val);
     }
   }
 
   String _validate() {
     final form = TFForm.of(context)!;
 
-    if (validationTypes.contains(TFValidationType.required)) {
-      if (val.isEmpty) {
-        return requiredErrorMessage;
+    if (_validationTypes.contains(TFValidationType.required)) {
+      if (_val.isEmpty) {
+        return _requiredErrorMessage;
       }
-    } else if (validationTypes.contains(TFValidationType.requiredIfHas)) {
+    } else if (_validationTypes.contains(TFValidationType.requiredIfHas)) {
       final relatedVal = widget.relatedController!.text;
-      if (relatedVal.isNotEmpty && val.isEmpty) {
-        return requiredErrorMessage;
+      if (relatedVal.isNotEmpty && _val.isEmpty) {
+        return _requiredErrorMessage;
       }
     }
 
     if (_needValidate(this)) {
-      if (validationTypes.contains(TFValidationType.emailAddress)) {
-        if (!TFFormValidator.validateEmailAddress(val)) {
+      if (_validationTypes.contains(TFValidationType.emailAddress)) {
+        if (!TFFormValidator.validateEmailAddress(_val)) {
           return form.widget.emailErrorMessage;
         }
       }
-      if (validationTypes.contains(TFValidationType.date)) {
-        if (!TFFormValidator.validateDate(val)) {
+      if (_validationTypes.contains(TFValidationType.date)) {
+        if (!TFFormValidator.validateDate(_val)) {
           return form.widget.dateErrorMessage;
         }
       }
-      if (validationTypes.contains(TFValidationType.password)) {
+      if (_validationTypes.contains(TFValidationType.password)) {
         if (!TFFormValidator.validatePassword(
-            val, form.widget.passwordPolicy)) {
+            _val, form.widget.passwordPolicy)) {
           return form.widget.passwordErrorMessage;
         }
       }
-      if (validationTypes.contains(TFValidationType.confirmPassword)) {
-        if (val != widget.passwordController!.text) {
+      if (_validationTypes.contains(TFValidationType.confirmPassword)) {
+        if (_val != widget.passwordController!.text) {
           return form.widget.confirmPasswordErrorMessage;
         }
       }
-      if (validationTypes.contains(TFValidationType.simpleChars)) {
-        if (!TFFormValidator.validateSimpleChars(val)) {
+      if (_validationTypes.contains(TFValidationType.simpleChars)) {
+        if (!TFFormValidator.validateSimpleChars(_val)) {
           return form.widget.simpleCharsErrorMessage;
         }
       }
-      if (validationTypes.contains(TFValidationType.slugChars)) {
-        if (!TFFormValidator.validateSlugChars(val)) {
+      if (_validationTypes.contains(TFValidationType.slugChars)) {
+        if (!TFFormValidator.validateSlugChars(_val)) {
           return form.widget.slugCharsErrorMessage;
         }
       }
-      if (validationTypes.contains(TFValidationType.domainChars)) {
-        if (!TFFormValidator.validateDomainChars(val)) {
+      if (_validationTypes.contains(TFValidationType.domainChars)) {
+        if (!TFFormValidator.validateDomainChars(_val)) {
           return form.widget.domainCharsErrorMessage;
         }
       }
-      if (validationTypes.contains(TFValidationType.simpleSlugChars)) {
-        if (!TFFormValidator.validateSimpleSlugChars(val)) {
+      if (_validationTypes.contains(TFValidationType.simpleSlugChars)) {
+        if (!TFFormValidator.validateSimpleSlugChars(_val)) {
           return form.widget.simpleSlugCharsErrorMessage;
         }
       }
-      if (validationTypes.contains(TFValidationType.reallySimpleChars)) {
-        if (!TFFormValidator.validateReallySimpleChars(val)) {
+      if (_validationTypes.contains(TFValidationType.reallySimpleChars)) {
+        if (!TFFormValidator.validateReallySimpleChars(_val)) {
           return form.widget.reallySimpleCharsErrorMessage;
         }
       }
-      if (validationTypes.contains(TFValidationType.href)) {
-        if (!TFFormValidator.validateHref(val)) {
+      if (_validationTypes.contains(TFValidationType.href)) {
+        if (!TFFormValidator.validateHref(_val)) {
           return form.widget.hrefErrorMessage;
         }
       }
-      if (validationTypes.contains(TFValidationType.integer)) {
-        if (!TFFormValidator.validateInteger(val)) {
+      if (_validationTypes.contains(TFValidationType.integer)) {
+        if (!TFFormValidator.validateInteger(_val)) {
           return form.widget.hrefErrorMessage;
         }
       }
-      if (validationTypes.contains(TFValidationType.phone)) {
-        if (!TFFormValidator.validatePhone(val)) {
+      if (_validationTypes.contains(TFValidationType.phone)) {
+        if (!TFFormValidator.validatePhone(_val)) {
           return form.widget.phoneErrorMessage;
         }
       }
@@ -233,7 +241,7 @@ class _TFTextFieldState extends State<TFTextField> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      if (validationTypes.isNotEmpty) {
+      if (_validationTypes.isNotEmpty) {
         TFForm.of(context)?._registerField(this);
       }
     });
@@ -244,7 +252,7 @@ class _TFTextFieldState extends State<TFTextField> {
 
   @override
   void deactivate() {
-    if (validationTypes.isNotEmpty) {
+    if (_validationTypes.isNotEmpty) {
       TFForm.of(context)?._unregisterField(this);
     }
     super.deactivate();
@@ -266,7 +274,7 @@ class _TFTextFieldState extends State<TFTextField> {
         if (widget.title != null) ...[
           Text(
             widget.title!,
-            style: _tffStyle.titleStyle,
+            style: _titleStyle,
           ),
           const SizedBox(height: 10),
         ],
@@ -329,14 +337,14 @@ class _TFTextFieldState extends State<TFTextField> {
   }
 
   BoxDecoration get defaultDecoration => BoxDecoration(
-        color: _tffStyle.backgroundColor,
-        borderRadius: BorderRadius.circular(_borderRadius),
+        color: _backgroundColor,
+        borderRadius: BorderRadius.circular(_radius),
         border: Border.all(
           width: _borderWidth,
           color: _errorMessage.isNotEmpty
-              ? _tffStyle.errorColor
+              ? Theme.of(context).colorScheme.error
               : _hasFocus
-                  ? _tffStyle.activeColor
+                  ? _focusBorderColor
                   : _borderColor,
         ),
       );
@@ -359,12 +367,4 @@ class _TFTextFieldState extends State<TFTextField> {
       },
     );
   }
-
-  get _height => widget.style?.height ?? _tffStyle.fieldStyle.height;
-  get _contentPadding => widget.style?.contentPadding ?? _tffStyle.fieldStyle.contentPadding;
-  get _contentStyle => widget.style?.contentStyle ?? _tffStyle.fieldStyle.contentStyle;
-  get _hintStyle => widget.style?.hintStyle ?? _tffStyle.fieldStyle.hintStyle;
-  get _borderRadius => widget.style?.borderRadius ?? _tffStyle.fieldStyle.borderRadius;
-  get _borderWidth => widget.style?.borderWidth ?? _tffStyle.fieldStyle.borderWidth;
-  get _borderColor => widget.style?.borderColor ?? _tffStyle.fieldStyle.borderColor;
 }

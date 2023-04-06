@@ -19,7 +19,9 @@ class TFErrorText extends StatelessWidget {
         padding: const EdgeInsets.only(top: 5),
         child: Text(
           error,
-          style: _tffStyle.errorStyle.copyWith(color: _tffStyle.errorColor),
+          style: _tffStyle.errorStyle.copyWith(
+            color: Theme.of(context).colorScheme.error,
+          ),
         ),
       ),
     );

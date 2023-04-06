@@ -1,3 +1,9 @@
+## 0.1.6
+
+### Update
+
+* Update style configuration
+
 ## 0.1.5
 
 ### Update

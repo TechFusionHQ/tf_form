@@ -37,7 +37,10 @@ class _TFCheckboxGroupState<T> extends State<TFCheckboxGroup<T>> {
   List<T> _selectedValues = <T>[];
   bool _isValid = true;
 
-  List<TFValidationType> get validationTypes => widget.validationTypes;
+  get _validationTypes => widget.validationTypes;
+  get _titleStyle => widget.style?.titleStyle ?? _tffStyle.titleStyle;
+  get _itemTitleStyle => widget.style?.itemTitleStyle ?? _tffStyle.groupStyle.itemTitleStyle;
+  get _unselectedColor => widget.style?.unselectedColor ?? _tffStyle.groupStyle.unselectedColor;
 
   void _setValid(bool val) {
     setState(() {
@@ -59,18 +62,18 @@ class _TFCheckboxGroupState<T> extends State<TFCheckboxGroup<T>> {
 
     // for autoValidate
     if ((TFForm.of(context)?.widget.autoValidate ?? false) &&
-        validationTypes.isNotEmpty) {
+        _validationTypes.isNotEmpty) {
       final isValid = _validate();
       _setValid(isValid);
     }
   }
 
   bool _validate() {
-    if (validationTypes.contains(TFValidationType.required)) {
+    if (_validationTypes.contains(TFValidationType.required)) {
       if (_selectedValues.isEmpty) {
         return false;
       }
-    } else if (validationTypes.contains(TFValidationType.requiredIfHas)) {
+    } else if (_validationTypes.contains(TFValidationType.requiredIfHas)) {
       final relatedVal = widget.relatedController!.text;
       if (relatedVal.isNotEmpty && _selectedValues.isEmpty) {
         return false;
@@ -89,7 +92,7 @@ class _TFCheckboxGroupState<T> extends State<TFCheckboxGroup<T>> {
     }
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      if (validationTypes.isNotEmpty) {
+      if (_validationTypes.isNotEmpty) {
         TFForm.of(context)?._registerCheckboxGroup(this);
       }
     });
@@ -97,7 +100,7 @@ class _TFCheckboxGroupState<T> extends State<TFCheckboxGroup<T>> {
 
   @override
   void deactivate() {
-    if (validationTypes.isNotEmpty) {
+    if (_validationTypes.isNotEmpty) {
       TFForm.of(context)?._unregisterCheckboxGroup(this);
     }
     super.deactivate();
@@ -112,7 +115,7 @@ class _TFCheckboxGroupState<T> extends State<TFCheckboxGroup<T>> {
         if (widget.title != null) ...[
           Text(
             widget.title!,
-            style: _tffStyle.titleStyle,
+            style: _titleStyle,
           ),
           const SizedBox(height: 10),
         ],
@@ -132,26 +135,23 @@ class _TFCheckboxGroupState<T> extends State<TFCheckboxGroup<T>> {
       title: Text(
         item.title,
         style: _itemTitleStyle.copyWith(
-          color: _isValid ? null : _tffStyle.errorColor,
+          color: _isValid ? null : Theme.of(context).colorScheme.error,
         ),
       ),
       value: _selectedValues.contains(item.value),
       controlAffinity: ListTileControlAffinity.leading,
-      activeColor: _tffStyle.activeColor,
+      activeColor: Theme.of(context).colorScheme.primary,
       contentPadding: EdgeInsets.zero,
       checkboxShape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(2),
       ),
       side: BorderSide(
         width: 1.5,
-        color: _isValid ? _unselectedColor : _tffStyle.errorColor,
+        color: _isValid ? _unselectedColor : Theme.of(context).colorScheme.error,
       ),
       onChanged: (bool? isSelected) {
         _onItemChanged(item.value, isSelected ?? false);
       },
     );
   }
-
-  get _itemTitleStyle => widget.style?.itemTitleStyle ?? _tffStyle.groupStyle.itemTitleStyle;
-  get _unselectedColor => widget.style?.unselectedColor ?? _tffStyle.groupStyle.unselectedColor;
 }

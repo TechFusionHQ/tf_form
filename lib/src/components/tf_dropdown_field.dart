@@ -20,7 +20,7 @@ class TFDropdownField extends StatefulWidget {
     this.relatedController,
     this.style,
     this.enabled = true,
-    this.showError  = true,
+    this.showError = true,
   }) : super(key: key) {
     if (validationTypes.contains(TFValidationType.requiredIfHas) &&
         relatedController == null) {
@@ -60,8 +60,8 @@ class _TFDropdownFieldState extends State<TFDropdownField> {
 
   void _valueControllerListener() {
     if (_valueController.text.isNotEmpty) {
-      final initialValue = _valueController.text;
-      TFOptionItem selectedItem = widget.items.where((element) => element.value == initialValue).first;
+      final value = _valueController.text;
+      final selectedItem = widget.items.where((item) => item.value == value).first;
       _titleController.text = selectedItem.title;
     }
   }
@@ -115,7 +115,6 @@ class _TFDropdownFieldState extends State<TFDropdownField> {
     final offset = renderBox.localToGlobal(Offset.zero);
     final topOffset = offset.dy + size.height + 5;
 
-    final activeColor = _tffStyle.activeColor;
     return OverlayEntry(
       builder: (context) => GestureDetector(
         onTap: () => _hideDropdown(),
@@ -135,7 +134,7 @@ class _TFDropdownFieldState extends State<TFDropdownField> {
                   offset: Offset(0.0, size.height + 5.0),
                   child: Material(
                     elevation: 2,
-                    color: _tffStyle.backgroundColor,
+                    color: _tffStyle.fieldStyle.backgroundColor,
                     child: Column(
                       children: List.generate(widget.items.length, (index) {
                         final item = widget.items[index];
@@ -143,13 +142,10 @@ class _TFDropdownFieldState extends State<TFDropdownField> {
                         return ListTile(
                           title: Text(item.title),
                           selected: isSelected,
-                          selectedColor: Colors.white,
-                          selectedTileColor: activeColor,
+                          selectedColor: Theme.of(context).colorScheme.onPrimary,
+                          selectedTileColor: Theme.of(context).colorScheme.primary,
                           trailing: isSelected
-                              ? const Icon(
-                                  Icons.check,
-                                  size: 18,
-                                )
+                              ? const Icon(Icons.check, size: 18)
                               : null,
                           onTap: () {
                             _valueController.text = item.value;
