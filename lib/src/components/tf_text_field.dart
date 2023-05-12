@@ -77,15 +77,11 @@ class TFTextField extends StatefulWidget {
     if (validationTypes.contains(TFValidationType.regex) && regex == null) {
       throw ArgumentError("regex type and regex should both be set.");
     }
-    if (validationTypes.contains(TFValidationType.requiredIfHas) &&
-        relatedController == null) {
-      throw ArgumentError(
-          "requiredIfHas type and relatedController should both be set.");
+    if (validationTypes.contains(TFValidationType.requiredIfHas) && relatedController == null) {
+      throw ArgumentError("requiredIfHas type and relatedController should both be set.");
     }
-    if (validationTypes.contains(TFValidationType.confirmPassword) &&
-        passwordController == null) {
-      throw ArgumentError(
-          "confirmPassword type and passwordController should both be set.");
+    if (validationTypes.contains(TFValidationType.confirmPassword) && passwordController == null) {
+      throw ArgumentError("confirmPassword type and passwordController should both be set.");
     }
   }
 
@@ -126,8 +122,7 @@ class _TFTextFieldState extends State<TFTextField> {
       return;
     }
 
-    if ((TFForm.of(context)?.widget.autoValidate ?? false) &&
-        _validationTypes.isNotEmpty) {
+    if ((TFForm.of(context)?.widget.autoValidate ?? false) && _validationTypes.isNotEmpty) {
       final errorMessage = _validate();
       _setErrorMessage(val: errorMessage);
     }
@@ -163,8 +158,7 @@ class _TFTextFieldState extends State<TFTextField> {
         }
       }
       if (_validationTypes.contains(TFValidationType.password)) {
-        if (!TFFormValidator.validatePassword(
-            _val, form.widget.passwordPolicy)) {
+        if (!TFFormValidator.validatePassword(_val, form.widget.passwordPolicy)) {
           return form.widget.passwordErrorMessage;
         }
       }
@@ -285,44 +279,42 @@ class _TFTextFieldState extends State<TFTextField> {
           decoration: defaultDecoration,
           child: Row(
             mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: widget.expand
-                ? CrossAxisAlignment.start
-                : CrossAxisAlignment.center,
+            crossAxisAlignment: widget.expand ? CrossAxisAlignment.start : CrossAxisAlignment.center,
             children: [
               if (widget.prefix != null) widget.prefix!,
               if (widget.prefix != null) const SizedBox(width: 10),
               Expanded(
-                child: SizedBox(
-                  height: _height,
-                  child: TextField(
-                    focusNode: _focusNode,
-                    controller: widget.controller,
-                    autofocus: widget.autoFocus,
-                    readOnly: widget.readOnly,
-                    enabled: widget.enabled,
-                    obscureText: widget.obscureText,
-                    keyboardType: widget.keyboardType,
-                    textInputAction: widget.textInputAction,
-                    onEditingComplete: widget.onEditingComplete,
-                    onTap: widget.onTap,
-                    inputFormatters: widget.inputFormatters,
-                    textAlign: widget.textAlign,
-                    textAlignVertical: TextAlignVertical.center,
-                    maxLines: widget.expand ? widget.maxLines : 1,
-                    maxLength: widget.maxLength,
-                    style: _contentStyle,
-                    decoration: InputDecoration(
-                      hintText: widget.hintText,
-                      hintStyle: _hintStyle,
-                      isDense: true,
-                      border: InputBorder.none,
-                      focusedBorder: InputBorder.none,
-                      errorBorder: InputBorder.none,
-                      enabledBorder: InputBorder.none,
-                      disabledBorder: InputBorder.none,
-                      focusedErrorBorder: InputBorder.none,
-                      counterText: "",
+                child: TextField(
+                  focusNode: _focusNode,
+                  controller: widget.controller,
+                  autofocus: widget.autoFocus,
+                  readOnly: widget.readOnly,
+                  enabled: widget.enabled,
+                  obscureText: widget.obscureText,
+                  keyboardType: widget.keyboardType,
+                  textInputAction: widget.textInputAction,
+                  onEditingComplete: widget.onEditingComplete,
+                  onTap: widget.onTap,
+                  inputFormatters: widget.inputFormatters,
+                  textAlign: widget.textAlign,
+                  textAlignVertical: TextAlignVertical.center,
+                  maxLines: widget.expand ? widget.maxLines : 1,
+                  maxLength: widget.maxLength,
+                  style: _contentStyle,
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.symmetric(
+                      vertical: (_height - 2 * _borderWidth - _contentStyle!.fontSize - 2) / 2,
                     ),
+                    hintText: widget.hintText,
+                    hintStyle: _hintStyle,
+                    isDense: true,
+                    border: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    errorBorder: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    disabledBorder: InputBorder.none,
+                    focusedErrorBorder: InputBorder.none,
+                    counterText: "",
                   ),
                 ),
               ),

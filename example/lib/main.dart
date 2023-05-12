@@ -9,6 +9,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    TFForm.initStyle(
+      fieldStyle: const TFFieldStyle(
+        height: 50,
+        radius: 10,
+        borderColor: Colors.black,
+        borderWidth: 1,
+        contentPadding: EdgeInsets.symmetric(horizontal: 15),
+        contentStyle: TextStyle(fontSize: 16),
+      ),
+    );
+
     return MaterialApp(
       title: appTitle,
       debugShowCheckedModeBanner: false,
@@ -100,17 +111,6 @@ class DemoFormPageState extends State<DemoFormPage> {
                 ],
               ),
               const SizedBox(height: 15),
-              TFDateField(
-                title: "Birthday",
-                controller: birthdayController,
-                initialDate: DateTime.now(),
-                firstDate:
-                    DateTime.now().subtract(const Duration(days: 50 * 365)),
-                lastDate: DateTime.now(),
-                validationTypes: const [
-                  TFValidationType.required,
-                ],
-              ),
               const SizedBox(height: 15),
               TFDropdownField(
                 title: "Role",
@@ -140,8 +140,7 @@ class DemoFormPageState extends State<DemoFormPage> {
                 title: "Height (cm)",
                 hintText: "Enter height",
                 controller: heightController,
-                keyboardType:
-                    const TextInputType.numberWithOptions(decimal: true),
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
                 validationTypes: const [
                   TFValidationType.required,
                 ],
