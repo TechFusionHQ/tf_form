@@ -9,21 +9,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TFForm.initStyle(
-      fieldStyle: const TFFieldStyle(
-        height: 50,
-        radius: 10,
-        borderColor: Colors.black,
-        borderWidth: 1,
-        contentPadding: EdgeInsets.symmetric(horizontal: 15),
-        contentStyle: TextStyle(fontSize: 16),
-      ),
-    );
-
     return MaterialApp(
       title: appTitle,
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(backgroundColor: Colors.white),
+      theme: ThemeData(),
       home: const DemoFormPage(),
     );
   }

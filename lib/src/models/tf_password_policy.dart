@@ -1,28 +1,5 @@
 /// Password policy object is the set of rules for the password field in [TFForm] widget.
 class TFFormPasswordPolicy {
-  final int maxlength;
-  final int minLength;
-  final int? minUpper;
-  final int? minLower;
-  final int? minSpecial;
-  final int minAlpha;
-  final int minNumeric;
-
-  /// List of words not allowed in password
-  final List<String> badWords;
-
-  /// Minimum number of sequential characters
-  final int badSequenceLength;
-
-  /// Multiple sequential characters are not allowed
-  final bool noQwertySequences;
-
-  /// Sequential characters are not allowed
-  final bool noSequential;
-
-  /// Custom rule
-  final RegExp? custom;
-
   const TFFormPasswordPolicy({
     this.maxlength = 9223372036854775807,
     this.minLength = 6,
@@ -53,4 +30,27 @@ class TFFormPasswordPolicy {
       'noSequential': noSequential,
     };
   }
+
+  final int maxlength;
+  final int minLength;
+  final int? minUpper;
+  final int? minLower;
+  final int? minSpecial;
+  final int minAlpha;
+  final int minNumeric;
+
+  /// List of words not allowed in password
+  final List<String> badWords;
+
+  /// Minimum number of sequential characters
+  final int badSequenceLength;
+
+  /// Multiple sequential characters are not allowed
+  final bool noQwertySequences;
+
+  /// Sequential characters are not allowed
+  final bool noSequential;
+
+  /// Custom rule
+  final RegExp? custom;
 }

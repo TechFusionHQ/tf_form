@@ -8,42 +8,6 @@ part of 'tf_form.dart';
 /// A [TFForm] ancestor is required. The [TFForm] simply makes it easier to
 /// validate multiple fields at once.
 class TFTextField extends StatefulWidget {
-  final TextEditingController controller;
-  final FocusNode? focusNode;
-  final bool readOnly;
-  final bool autoFocus;
-  final bool obscureText;
-  final bool expand;
-  final bool enabled;
-  final bool showError;
-  final Function()? onTap;
-  final Function(String)? onChanged;
-  final Function(bool)? onFocusChanged;
-  final Function()? onEditingComplete;
-  final String? title;
-  final String? hintText;
-  final int? maxLength;
-  final int? maxLines;
-  final Widget? prefix;
-  final Widget? suffix;
-  final TextAlign textAlign;
-  final TextInputType keyboardType;
-  final TextInputAction textInputAction;
-  final List<TextInputFormatter>? inputFormatters;
-  final TFFieldStyle? style;
-
-  /// For validation
-  final List<TFValidationType> validationTypes;
-
-  /// For requiredIfHas type
-  final TextEditingController? relatedController;
-
-  /// For confirmPassword type
-  final TextEditingController? passwordController;
-
-  /// For regex type
-  final RegExp? regex;
-
   TFTextField({
     Key? key,
     this.title,
@@ -85,6 +49,42 @@ class TFTextField extends StatefulWidget {
     }
   }
 
+  final TextEditingController controller;
+  final FocusNode? focusNode;
+  final bool readOnly;
+  final bool autoFocus;
+  final bool obscureText;
+  final bool expand;
+  final bool enabled;
+  final bool showError;
+  final Function()? onTap;
+  final Function(String)? onChanged;
+  final Function(bool)? onFocusChanged;
+  final Function()? onEditingComplete;
+  final String? title;
+  final String? hintText;
+  final int? maxLength;
+  final int? maxLines;
+  final Widget? prefix;
+  final Widget? suffix;
+  final TextAlign textAlign;
+  final TextInputType keyboardType;
+  final TextInputAction textInputAction;
+  final List<TextInputFormatter>? inputFormatters;
+  final TFFieldStyle? style;
+
+  /// For validation
+  final List<TFValidationType> validationTypes;
+
+  /// For requiredIfHas type
+  final TextEditingController? relatedController;
+
+  /// For confirmPassword type
+  final TextEditingController? passwordController;
+
+  /// For regex type
+  final RegExp? regex;
+
   @override
   State<TFTextField> createState() => _TFTextFieldState();
 }
@@ -95,19 +95,19 @@ class _TFTextFieldState extends State<TFTextField> {
   String _preVal = "";
   bool _hasFocus = false;
 
-  get _validationTypes => widget.validationTypes;
-  get _val => widget.controller.text.trim();
-  get _requiredErrorMessage => "This field is required";
-  get _height => widget.style?.height ?? _tffStyle.fieldStyle.height;
-  get _contentPadding => widget.style?.contentPadding ?? _tffStyle.fieldStyle.contentPadding;
-  get _titleStyle => widget.style?.titleStyle ?? _tffStyle.titleStyle;
-  get _contentStyle => widget.style?.contentStyle ?? _tffStyle.fieldStyle.contentStyle;
-  get _hintStyle => widget.style?.hintStyle ?? _tffStyle.fieldStyle.hintStyle;
-  get _radius => widget.style?.radius ?? _tffStyle.fieldStyle.radius;
-  get _borderWidth => widget.style?.borderWidth ?? _tffStyle.fieldStyle.borderWidth;
-  get _borderColor => widget.style?.borderColor ?? _tffStyle.fieldStyle.borderColor;
-  get _focusBorderColor => widget.style?.focusBorderColor ?? _tffStyle.fieldStyle.focusBorderColor;
-  get _backgroundColor => widget.style?.backgroundColor ?? _tffStyle.fieldStyle.backgroundColor;
+  List<TFValidationType> get _validationTypes => widget.validationTypes;
+  String get _val => widget.controller.text.trim();
+  String get _requiredErrorMessage => "This field is required";
+  double get _height => widget.style?.height ?? _tffStyle.fieldStyle.height;
+  double get _radius => widget.style?.radius ?? _tffStyle.fieldStyle.radius;
+  double get _borderWidth => widget.style?.borderWidth ?? _tffStyle.fieldStyle.borderWidth;
+  EdgeInsets get _contentPadding => widget.style?.contentPadding ?? _tffStyle.fieldStyle.contentPadding;
+  TextStyle get _titleStyle => widget.style?.titleStyle ?? _tffStyle.titleStyle;
+  TextStyle get _contentStyle => widget.style?.contentStyle ?? _tffStyle.fieldStyle.contentStyle;
+  TextStyle get _hintStyle => widget.style?.hintStyle ?? _tffStyle.fieldStyle.hintStyle;
+  Color get _borderColor => widget.style?.borderColor ?? _tffStyle.fieldStyle.borderColor;
+  Color get _focusBorderColor => widget.style?.focusBorderColor ?? _tffStyle.fieldStyle.focusBorderColor;
+  Color get _backgroundColor => widget.style?.backgroundColor ?? _tffStyle.fieldStyle.backgroundColor;
 
   void _setErrorMessage({String val = ""}) {
     setState(() {
@@ -276,7 +276,7 @@ class _TFTextFieldState extends State<TFTextField> {
           width: double.infinity,
           height: widget.expand ? null : _height,
           padding: _contentPadding,
-          decoration: defaultDecoration,
+          decoration: _defaultDecoration,
           child: Row(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: widget.expand ? CrossAxisAlignment.start : CrossAxisAlignment.center,
@@ -303,7 +303,7 @@ class _TFTextFieldState extends State<TFTextField> {
                   style: _contentStyle,
                   decoration: InputDecoration(
                     contentPadding: EdgeInsets.symmetric(
-                      vertical: (_height - 2 * _borderWidth - _contentStyle!.fontSize - 2) / 2,
+                      vertical: (_height - 2 * _borderWidth - _contentStyle.fontSize! - 2) / 2,
                     ),
                     hintText: widget.hintText,
                     hintStyle: _hintStyle,
@@ -319,7 +319,7 @@ class _TFTextFieldState extends State<TFTextField> {
                 ),
               ),
               if (widget.suffix is! SizedBox) const SizedBox(width: 10),
-              widget.suffix ?? clearButton(),
+              widget.suffix ?? _clearButton(),
             ],
           ),
         ),
@@ -331,7 +331,7 @@ class _TFTextFieldState extends State<TFTextField> {
     );
   }
 
-  BoxDecoration get defaultDecoration => BoxDecoration(
+  BoxDecoration get _defaultDecoration => BoxDecoration(
         color: _backgroundColor,
         borderRadius: BorderRadius.circular(_radius),
         border: Border.all(
@@ -344,7 +344,7 @@ class _TFTextFieldState extends State<TFTextField> {
         ),
       );
 
-  Widget clearButton() {
+  Widget _clearButton() {
     if (widget.readOnly || !widget.enabled) return const SizedBox();
     return ValueListenableBuilder<TextEditingValue>(
       valueListenable: widget.controller,
@@ -355,7 +355,7 @@ class _TFTextFieldState extends State<TFTextField> {
             onTap: widget.controller.clear,
             child: Icon(
               Icons.clear,
-              color: _contentStyle?.color,
+              color: _contentStyle.color,
             ),
           ),
         );

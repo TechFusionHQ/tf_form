@@ -2,14 +2,14 @@ part of 'tf_form.dart';
 
 /// Error text widget
 class TFErrorText extends StatelessWidget {
-  final String error;
-  final bool visible;
-
   const TFErrorText({
     Key? key,
     required this.error,
     required this.visible,
   }) : super(key: key);
+
+  final String error;
+  final bool visible;
 
   @override
   Widget build(BuildContext context) {

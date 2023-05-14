@@ -2,15 +2,6 @@ part of 'tf_form.dart';
 
 /// [TFDropdownField] widget allows the user to pick a value from a dropdown list
 class TFDropdownField extends StatefulWidget {
-  final String? title;
-  final List<TFOptionItem> items;
-  final List<TFValidationType> validationTypes;
-  final TextEditingController valueController;
-  final TextEditingController? relatedController;
-  final TFFieldStyle? style;
-  final bool enabled;
-  final bool showError;
-
   TFDropdownField({
     Key? key,
     this.title,
@@ -22,12 +13,19 @@ class TFDropdownField extends StatefulWidget {
     this.enabled = true,
     this.showError = true,
   }) : super(key: key) {
-    if (validationTypes.contains(TFValidationType.requiredIfHas) &&
-        relatedController == null) {
-      throw ArgumentError(
-          "requiredIfHas type and relatedController should both be set.");
+    if (validationTypes.contains(TFValidationType.requiredIfHas) && relatedController == null) {
+      throw ArgumentError("requiredIfHas type and relatedController should both be set.");
     }
   }
+
+  final String? title;
+  final List<TFOptionItem> items;
+  final List<TFValidationType> validationTypes;
+  final TextEditingController valueController;
+  final TextEditingController? relatedController;
+  final TFFieldStyle? style;
+  final bool enabled;
+  final bool showError;
 
   @override
   State<TFDropdownField> createState() => _TFDropdownFieldState();
@@ -144,9 +142,7 @@ class _TFDropdownFieldState extends State<TFDropdownField> {
                           selected: isSelected,
                           selectedColor: Theme.of(context).colorScheme.onPrimary,
                           selectedTileColor: Theme.of(context).colorScheme.primary,
-                          trailing: isSelected
-                              ? const Icon(Icons.check, size: 18)
-                              : null,
+                          trailing: isSelected ? const Icon(Icons.check, size: 18) : null,
                           onTap: () {
                             _valueController.text = item.value;
                             _hideDropdown();

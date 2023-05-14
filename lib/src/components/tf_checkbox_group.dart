@@ -4,14 +4,6 @@ part of 'tf_form.dart';
 /// The checkbox is displayed before the item name,
 /// which you can check/uncheck to make/remove the selection.
 class TFCheckboxGroup<T> extends StatefulWidget {
-  final String? title;
-  final List<TFOptionItem<T>> items;
-  final List<T>? initialValues;
-  final void Function(List<T>) onChanged;
-  final List<TFValidationType> validationTypes;
-  final TextEditingController? relatedController;
-  final TFGroupStyle? style;
-
   TFCheckboxGroup({
     Key? key,
     this.title,
@@ -22,12 +14,18 @@ class TFCheckboxGroup<T> extends StatefulWidget {
     this.relatedController,
     this.style,
   }) : super(key: key) {
-    if (validationTypes.contains(TFValidationType.requiredIfHas) &&
-        relatedController == null) {
-      throw ArgumentError(
-          "requiredIfHas type and relatedController should both be set.");
+    if (validationTypes.contains(TFValidationType.requiredIfHas) && relatedController == null) {
+      throw ArgumentError("requiredIfHas type and relatedController should both be set.");
     }
   }
+
+  final String? title;
+  final List<TFOptionItem<T>> items;
+  final List<T>? initialValues;
+  final void Function(List<T>) onChanged;
+  final List<TFValidationType> validationTypes;
+  final TextEditingController? relatedController;
+  final TFGroupStyle? style;
 
   @override
   State<TFCheckboxGroup<T>> createState() => _TFCheckboxGroupState();
@@ -37,10 +35,10 @@ class _TFCheckboxGroupState<T> extends State<TFCheckboxGroup<T>> {
   List<T> _selectedValues = <T>[];
   bool _isValid = true;
 
-  get _validationTypes => widget.validationTypes;
-  get _titleStyle => widget.style?.titleStyle ?? _tffStyle.titleStyle;
-  get _itemTitleStyle => widget.style?.itemTitleStyle ?? _tffStyle.groupStyle.itemTitleStyle;
-  get _unselectedColor => widget.style?.unselectedColor ?? _tffStyle.groupStyle.unselectedColor;
+  List<TFValidationType> get _validationTypes => widget.validationTypes;
+  TextStyle get _titleStyle => widget.style?.titleStyle ?? _tffStyle.titleStyle;
+  TextStyle get _itemTitleStyle => widget.style?.itemTitleStyle ?? _tffStyle.groupStyle.itemTitleStyle;
+  Color get _unselectedColor => widget.style?.unselectedColor ?? _tffStyle.groupStyle.unselectedColor;
 
   void _setValid(bool val) {
     setState(() {
@@ -61,8 +59,7 @@ class _TFCheckboxGroupState<T> extends State<TFCheckboxGroup<T>> {
     widget.onChanged(selectedValues);
 
     // for autoValidate
-    if ((TFForm.of(context)?.widget.autoValidate ?? false) &&
-        _validationTypes.isNotEmpty) {
+    if ((TFForm.of(context)?.widget.autoValidate ?? false) && _validationTypes.isNotEmpty) {
       final isValid = _validate();
       _setValid(isValid);
     }

@@ -20,13 +20,13 @@ enum TFValidationType {
 
 /// Validation result object that will be returned when calling [TFFormState.validate]
 class TFFormValidationResult {
-  int errors;
-  List<String> errorMessages;
-
   TFFormValidationResult({
     this.errors = 0,
     this.errorMessages = const <String>[],
   });
 
   factory TFFormValidationResult.empty() => TFFormValidationResult();
+  
+  int errors;
+  List<String> errorMessages;
 }

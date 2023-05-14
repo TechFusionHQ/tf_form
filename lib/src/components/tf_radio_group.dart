@@ -2,14 +2,6 @@ part of 'tf_form.dart';
 
 /// [TFRadioGroup] widget allows user to select one option from multiple selections.
 class TFRadioGroup<T> extends StatefulWidget {
-  final String? title;
-  final List<TFOptionItem<T>> items;
-  final T? initialValue;
-  final Function(T?) onChanged;
-  final List<TFValidationType> validationTypes;
-  final TextEditingController? relatedController;
-  final TFGroupStyle? style;
-
   TFRadioGroup({
     Key? key,
     this.title,
@@ -20,12 +12,18 @@ class TFRadioGroup<T> extends StatefulWidget {
     this.relatedController,
     this.style,
   }) : super(key: key) {
-    if (validationTypes.contains(TFValidationType.requiredIfHas) &&
-        relatedController == null) {
-      throw ArgumentError(
-          "requiredIfHas type and relatedController should both be set.");
+    if (validationTypes.contains(TFValidationType.requiredIfHas) && relatedController == null) {
+      throw ArgumentError("requiredIfHas type and relatedController should both be set.");
     }
   }
+
+  final String? title;
+  final List<TFOptionItem<T>> items;
+  final T? initialValue;
+  final Function(T?) onChanged;
+  final List<TFValidationType> validationTypes;
+  final TextEditingController? relatedController;
+  final TFGroupStyle? style;
 
   @override
   State<TFRadioGroup<T>> createState() => _TFRadioGroupState<T>();
@@ -35,10 +33,10 @@ class _TFRadioGroupState<T> extends State<TFRadioGroup<T>> {
   T? _groupValue;
   bool _isValid = true;
 
-  get _validationTypes => widget.validationTypes;
-  get _titleStyle => widget.style?.titleStyle ?? _tffStyle.titleStyle;
-  get _itemTitleStyle => widget.style?.itemTitleStyle ?? _tffStyle.groupStyle.itemTitleStyle;
-  get _unselectedColor => widget.style?.unselectedColor ?? _tffStyle.groupStyle.unselectedColor;
+  List<TFValidationType> get _validationTypes => widget.validationTypes;
+  TextStyle get _titleStyle => widget.style?.titleStyle ?? _tffStyle.titleStyle;
+  TextStyle get _itemTitleStyle => widget.style?.itemTitleStyle ?? _tffStyle.groupStyle.itemTitleStyle;
+  Color get _unselectedColor => widget.style?.unselectedColor ?? _tffStyle.groupStyle.unselectedColor;
 
   void _setValid(bool val) {
     setState(() {
@@ -53,8 +51,7 @@ class _TFRadioGroupState<T> extends State<TFRadioGroup<T>> {
     });
 
     // for autoValidate
-    if ((TFForm.of(context)?.widget.autoValidate ?? false) &&
-        _validationTypes.isNotEmpty) {
+    if ((TFForm.of(context)?.widget.autoValidate ?? false) && _validationTypes.isNotEmpty) {
       final isValid = _validate();
       _setValid(isValid);
     }
@@ -97,9 +94,7 @@ class _TFRadioGroupState<T> extends State<TFRadioGroup<T>> {
   Widget build(BuildContext context) {
     return Theme(
       data: Theme.of(context).copyWith(
-        unselectedWidgetColor: _isValid
-            ? _unselectedColor
-            : Theme.of(context).colorScheme.error,
+        unselectedWidgetColor: _isValid ? _unselectedColor : Theme.of(context).colorScheme.error,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

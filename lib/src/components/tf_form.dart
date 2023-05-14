@@ -86,22 +86,17 @@ class TFForm extends StatefulWidget {
     this.visibleError = true,
     this.passwordPolicy = const TFFormPasswordPolicy(),
     this.requiredErrorMessage = 'Please enter all required fields',
-    this.emailErrorMessage =
-        'Please check the format of your email address, it should read like ben@somewhere.com',
+    this.emailErrorMessage = 'Please check the format of your email address, it should read like ben@somewhere.com',
     this.dateErrorMessage = 'Please enter a valid date',
-    this.passwordErrorMessage =
-        'Your password must be at least 6 characters and it must contain numbers and letters',
+    this.passwordErrorMessage = 'Your password must be at least 6 characters and it must contain numbers and letters',
     this.confirmPasswordErrorMessage = 'Please confirm your password',
-    this.simpleCharsErrorMessage =
-        'Please use only letters, numbers, underscores, dots, dashes and spaces',
-    this.slugCharsErrorMessage =
-        'Please use only letters, numbers, underscores, dots, dashes and spaces',
+    this.simpleCharsErrorMessage = 'Please use only letters, numbers, underscores, dots, dashes and spaces',
+    this.slugCharsErrorMessage = 'Please use only letters, numbers, underscores, dots, dashes and spaces',
     this.simpleSlugCharsErrorMessage =
         'Please use only letters, numbers, underscores, dashes. Please do not use underscores or dashes at the start and/or end',
     this.domainCharsErrorMessage =
         'Please use only letters, numbers, dashes and dots. Please do not use dashes or dots at the start and/or end',
-    this.reallySimpleCharsErrorMessage =
-        'Please use only letters and numbers, no punctuation, dots, spaces, etc',
+    this.reallySimpleCharsErrorMessage = 'Please use only letters and numbers, no punctuation, dots, spaces, etc',
     this.numberErrorMessage = 'Please enter only numeric digits',
     this.integerErrorMessage = 'Please enter only integer',
     this.hrefErrorMessage = 'Please enter a valid URL',
@@ -114,8 +109,7 @@ class TFForm extends StatefulWidget {
   /// _TFFormState form = TFForm.of(context);
   /// ```
   static TFFormState? of(BuildContext context) {
-    final _TFFormScope? scope =
-        context.dependOnInheritedWidgetOfExactType<_TFFormScope>();
+    final _TFFormScope? scope = context.dependOnInheritedWidgetOfExactType<_TFFormScope>();
     return scope?._formState;
   }
 
@@ -718,21 +712,4 @@ class _TFFormScope extends InheritedWidget {
   bool updateShouldNotify(_TFFormScope old) => false;
 }
 
-TFFormStyle _tffStyle = const TFFormStyle(
-    fieldStyle: TFFieldStyle(
-        height : 48,
-        radius : 10,
-        borderWidth : 1,
-        borderColor : Color(0x1F000000),
-        contentPadding : EdgeInsets.only(
-          left: 10,
-          right: 10,
-          top: 5,
-          bottom: 5,
-        ),
-    ),
-    groupStyle: TFGroupStyle(
-        itemTitleStyle :  TextStyle(fontSize: 16),
-        unselectedColor : Color(0x1F000000),
-    )
-);
+TFFormStyle _tffStyle = const TFFormStyle();
