@@ -98,16 +98,16 @@ class _TFTextFieldState extends State<TFTextField> {
   List<TFValidationType> get _validationTypes => widget.validationTypes;
   String get _val => widget.controller.text.trim();
   String get _requiredErrorMessage => "This field is required";
-  double get _height => widget.style?.height ?? _tffStyle.fieldStyle.height;
-  double get _radius => widget.style?.radius ?? _tffStyle.fieldStyle.radius;
-  double get _borderWidth => widget.style?.borderWidth ?? _tffStyle.fieldStyle.borderWidth;
-  EdgeInsets get _contentPadding => widget.style?.contentPadding ?? _tffStyle.fieldStyle.contentPadding;
-  TextStyle get _titleStyle => widget.style?.titleStyle ?? _tffStyle.titleStyle;
-  TextStyle get _contentStyle => widget.style?.contentStyle ?? _tffStyle.fieldStyle.contentStyle;
-  TextStyle get _hintStyle => widget.style?.hintStyle ?? _tffStyle.fieldStyle.hintStyle;
-  Color get _borderColor => widget.style?.borderColor ?? _tffStyle.fieldStyle.borderColor;
-  Color get _focusBorderColor => widget.style?.focusBorderColor ?? _tffStyle.fieldStyle.focusBorderColor;
-  Color get _backgroundColor => widget.style?.backgroundColor ?? _tffStyle.fieldStyle.backgroundColor;
+  double get _height => widget.style?.height ?? _tffStyle.fieldStyle.height!;
+  double get _radius => widget.style?.radius ?? _tffStyle.fieldStyle.radius!;
+  double get _borderWidth => widget.style?.borderWidth ?? _tffStyle.fieldStyle.borderWidth!;
+  EdgeInsets get _contentPadding => widget.style?.contentPadding ?? _tffStyle.fieldStyle.contentPadding!;
+  TextStyle get _titleStyle => widget.style?.titleStyle ?? _tffStyle.fieldStyle.titleStyle ?? _tffStyle.titleStyle;
+  TextStyle get _contentStyle => widget.style?.contentStyle ?? _tffStyle.fieldStyle.contentStyle!;
+  TextStyle get _hintStyle => widget.style?.hintStyle ?? _tffStyle.fieldStyle.hintStyle!;
+  Color get _borderColor => widget.style?.borderColor ?? _tffStyle.fieldStyle.borderColor!;
+  Color get _focusBorderColor => widget.style?.focusBorderColor ?? _tffStyle.fieldStyle.focusBorderColor!;
+  Color get _backgroundColor => widget.style?.backgroundColor ?? _tffStyle.fieldStyle.backgroundColor!;
 
   void _setErrorMessage({String val = ""}) {
     setState(() {

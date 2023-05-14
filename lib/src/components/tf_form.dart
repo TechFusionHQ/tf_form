@@ -712,4 +712,20 @@ class _TFFormScope extends InheritedWidget {
   bool updateShouldNotify(_TFFormScope old) => false;
 }
 
-TFFormStyle _tffStyle = const TFFormStyle();
+TFFormStyle _tffStyle = const TFFormStyle(
+  fieldStyle: TFFieldStyle(
+    height: 50,
+    radius: 10,
+    borderWidth: 1,
+    borderColor: Colors.grey,
+    focusBorderColor: Colors.lightBlueAccent,
+    backgroundColor: Colors.white,
+    contentPadding: EdgeInsets.symmetric(horizontal: 10),
+    contentStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+    hintStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+  ),
+  groupStyle: TFGroupStyle(
+    itemTitleStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+    unselectedColor: Colors.black87,
+  ),
+);

@@ -34,9 +34,9 @@ class _TFRadioGroupState<T> extends State<TFRadioGroup<T>> {
   bool _isValid = true;
 
   List<TFValidationType> get _validationTypes => widget.validationTypes;
-  TextStyle get _titleStyle => widget.style?.titleStyle ?? _tffStyle.titleStyle;
-  TextStyle get _itemTitleStyle => widget.style?.itemTitleStyle ?? _tffStyle.groupStyle.itemTitleStyle;
-  Color get _unselectedColor => widget.style?.unselectedColor ?? _tffStyle.groupStyle.unselectedColor;
+  TextStyle get _titleStyle => widget.style?.titleStyle ?? _tffStyle.groupStyle.titleStyle ?? _tffStyle.titleStyle;
+  TextStyle get _itemTitleStyle => widget.style?.itemTitleStyle ?? _tffStyle.groupStyle.itemTitleStyle!;
+  Color get _unselectedColor => widget.style?.unselectedColor ?? _tffStyle.groupStyle.unselectedColor!;
 
   void _setValid(bool val) {
     setState(() {

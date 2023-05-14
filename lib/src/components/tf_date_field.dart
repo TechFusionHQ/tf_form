@@ -36,7 +36,7 @@ class TFDateField extends StatefulWidget {
 }
 
 class _TFDateFieldState extends State<TFDateField> {
-  TextStyle get _contentStyle => widget.style?.contentStyle ?? _tffStyle.fieldStyle.contentStyle;
+  TextStyle get _contentStyle => widget.style?.contentStyle ?? _tffStyle.fieldStyle.contentStyle!;
 
   void _showDatePicker() async {
     final now = DateTime.now();
