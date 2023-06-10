@@ -1,3 +1,9 @@
+## 0.1.12
+
+### Fix Bug
+
+* Fix bug null-safety
+
 ## 0.1.11
 
 ### Update

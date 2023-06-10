@@ -54,8 +54,26 @@ class TFFieldStyle {
   final Color? backgroundColor;
   final EdgeInsets? contentPadding;
   final TextStyle? titleStyle;
+
+  // Must declare fontSize and fontHeight for contentStyle
   final TextStyle? contentStyle;
+
   final TextStyle? hintStyle;
+
+  TFFieldStyle copyWith({TFFieldStyle? fieldStyle}) {
+    return TFFieldStyle(
+      height: fieldStyle?.height ?? height,
+      radius: fieldStyle?.radius ?? radius,
+      borderWidth: fieldStyle?.borderWidth ?? borderWidth,
+      borderColor: fieldStyle?.borderColor ?? borderColor,
+      focusBorderColor: fieldStyle?.focusBorderColor ?? focusBorderColor,
+      backgroundColor: fieldStyle?.backgroundColor ?? backgroundColor,
+      contentPadding: fieldStyle?.contentPadding ?? contentPadding,
+      titleStyle: fieldStyle?.titleStyle ?? titleStyle,
+      contentStyle: fieldStyle?.contentStyle ?? contentStyle,
+      hintStyle: fieldStyle?.hintStyle ?? hintStyle,
+    );
+  }
 }
 
 /// The style of checkbox/raido group widgets
@@ -69,4 +87,12 @@ class TFGroupStyle {
   final TextStyle? titleStyle;
   final TextStyle? itemTitleStyle;
   final Color? unselectedColor;
+
+  TFGroupStyle copyWith({TFGroupStyle? groupStyle}) {
+    return TFGroupStyle(
+      titleStyle: groupStyle?.titleStyle ?? titleStyle,
+      itemTitleStyle: groupStyle?.itemTitleStyle ?? itemTitleStyle,
+      unselectedColor: groupStyle?.unselectedColor ?? unselectedColor,
+    );
+  }
 }

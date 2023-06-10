@@ -122,8 +122,8 @@ class TFForm extends StatefulWidget {
     _tffStyle = _tffStyle.copyWith(
       titleStyle: titleStyle,
       errorStyle: errorStyle,
-      fieldStyle: fieldStyle,
-      groupStyle: groupStyle,
+      fieldStyle: _tffStyle.fieldStyle.copyWith(fieldStyle: fieldStyle),
+      groupStyle: _tffStyle.groupStyle.copyWith(groupStyle: groupStyle),
     );
   }
 
@@ -721,11 +721,11 @@ TFFormStyle _tffStyle = const TFFormStyle(
     focusBorderColor: Colors.lightBlueAccent,
     backgroundColor: Colors.white,
     contentPadding: EdgeInsets.symmetric(horizontal: 10),
-    contentStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-    hintStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+    contentStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, height: 1),
+    hintStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, height: 1),
   ),
   groupStyle: TFGroupStyle(
-    itemTitleStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+    itemTitleStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, height: 1),
     unselectedColor: Colors.black87,
   ),
 );

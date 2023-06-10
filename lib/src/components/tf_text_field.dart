@@ -303,7 +303,7 @@ class _TFTextFieldState extends State<TFTextField> {
                   style: _contentStyle,
                   decoration: InputDecoration(
                     contentPadding: EdgeInsets.symmetric(
-                      vertical: (_height - 2 * _borderWidth - _contentStyle.fontSize! - 2) / 2,
+                      vertical: (_height - 2 * _borderWidth - _contentStyle.fontSize!) / 2,
                     ),
                     hintText: widget.hintText,
                     hintStyle: _hintStyle,
