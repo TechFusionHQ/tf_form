@@ -47,8 +47,8 @@ class TFForm extends StatefulWidget {
   /// The error message when password fields are invalid
   final String passwordErrorMessage;
 
-  /// The error message when confirmPassword fields are invalid
-  final String confirmPasswordErrorMessage;
+  /// The error message when retype fields are invalid
+  final String retypeErrorMessage;
 
   /// The error message when simpleChars fields are invalid
   final String simpleCharsErrorMessage;
@@ -89,7 +89,7 @@ class TFForm extends StatefulWidget {
     this.emailErrorMessage = 'Please check the format of your email address, it should read like ben@somewhere.com',
     this.dateErrorMessage = 'Please enter a valid date',
     this.passwordErrorMessage = 'Your password must be at least 6 characters and it must contain numbers and letters',
-    this.confirmPasswordErrorMessage = 'Please confirm your password',
+    this.retypeErrorMessage = 'Please confirm your field',
     this.simpleCharsErrorMessage = 'Please use only letters, numbers, underscores, dots, dashes and spaces',
     this.slugCharsErrorMessage = 'Please use only letters, numbers, underscores, dots, dashes and spaces',
     this.simpleSlugCharsErrorMessage =
@@ -328,16 +328,16 @@ class TFFormState extends State<TFForm> {
     return errors;
   }
 
-  int _validateConfirmPasswordFields() {
+  int _validateRetypeFields() {
     int errors = 0;
-    if (_fieldMap.containsKey(TFValidationType.confirmPassword)) {
-      for (var field in _fieldMap[TFValidationType.confirmPassword]!) {
+    if (_fieldMap.containsKey(TFValidationType.retype)) {
+      for (var field in _fieldMap[TFValidationType.retype]!) {
         if (_needValidate(field)) {
-          if (field._val == field.widget.passwordController!.text) {
+          if (field._val == field.widget.relatedController!.text) {
             field._setErrorMessage();
           } else {
             errors++;
-            field._setErrorMessage(val: widget.confirmPasswordErrorMessage);
+            field._setErrorMessage(val: widget.retypeErrorMessage);
           }
         }
       }
@@ -545,10 +545,10 @@ class TFFormState extends State<TFForm> {
         errorMessages.add(widget.passwordErrorMessage);
       }
 
-      final errorConfirmPassword = _validateConfirmPasswordFields();
-      if (errorConfirmPassword > 0) {
-        errors += errorConfirmPassword;
-        errorMessages.add(widget.confirmPasswordErrorMessage);
+      final errorRetype = _validateRetypeFields();
+      if (errorRetype > 0) {
+        errors += errorRetype;
+        errorMessages.add(widget.retypeErrorMessage);
       }
 
       final errorSimpleChar = _validateSimpleCharsFields();

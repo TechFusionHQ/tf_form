@@ -242,10 +242,11 @@ class DemoFormPageState extends State<DemoFormPage> {
             TFTextField(
               title: "Confirm",
               controller: confirmPasswordController,
-              passwordController: passwordController,
+              relatedController: passwordController,
+              retypeInvalidMessage: "",
               validationTypes: const [
                 TFValidationType.required,
-                TFValidationType.confirmPassword,
+                TFValidationType.retype,
               ],
             ),
             const SizedBox(height: 10),

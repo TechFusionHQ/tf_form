@@ -6,7 +6,7 @@ enum TFValidationType {
   emailAddress,
   date,
   password,
-  confirmPassword,
+  retype,
   simpleChars,
   slugChars,
   simpleSlugChars,
@@ -16,6 +16,7 @@ enum TFValidationType {
   integer,
   regex,
   phone,
+
 }
 
 /// Validation result object that will be returned when calling [TFFormState.validate]

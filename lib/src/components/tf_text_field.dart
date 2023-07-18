@@ -34,8 +34,8 @@ class TFTextField extends StatefulWidget {
     this.maxLines,
     this.validationTypes = const <TFValidationType>[],
     this.relatedController,
-    this.passwordController,
     this.regex,
+    this.retypeInvalidMessage,
     this.style,
   }) : super(key: key) {
     if (validationTypes.contains(TFValidationType.regex) && regex == null) {
@@ -44,8 +44,11 @@ class TFTextField extends StatefulWidget {
     if (validationTypes.contains(TFValidationType.requiredIfHas) && relatedController == null) {
       throw ArgumentError("requiredIfHas type and relatedController should both be set.");
     }
-    if (validationTypes.contains(TFValidationType.confirmPassword) && passwordController == null) {
-      throw ArgumentError("confirmPassword type and passwordController should both be set.");
+    if (validationTypes.contains(TFValidationType.retype) && relatedController == null) {
+      throw ArgumentError("retype type and relatedController should both be set.");
+    }
+    if (validationTypes.contains(TFValidationType.retype) && retypeInvalidMessage == null) {
+      throw ArgumentError("retype type and retypeInvalidMessage should both be set.");
     }
   }
 
@@ -79,11 +82,11 @@ class TFTextField extends StatefulWidget {
   /// For requiredIfHas type
   final TextEditingController? relatedController;
 
-  /// For confirmPassword type
-  final TextEditingController? passwordController;
-
   /// For regex type
   final RegExp? regex;
+
+  /// For retype field
+  final String? retypeInvalidMessage;
 
   @override
   State<TFTextField> createState() => _TFTextFieldState();
@@ -162,9 +165,9 @@ class _TFTextFieldState extends State<TFTextField> {
           return form.widget.passwordErrorMessage;
         }
       }
-      if (_validationTypes.contains(TFValidationType.confirmPassword)) {
-        if (_val != widget.passwordController!.text) {
-          return form.widget.confirmPasswordErrorMessage;
+      if (_validationTypes.contains(TFValidationType.retype)) {
+        if (_val != widget.relatedController!.text) {
+          return widget.retypeInvalidMessage ?? "";
         }
       }
       if (_validationTypes.contains(TFValidationType.simpleChars)) {
