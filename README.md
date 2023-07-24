@@ -163,6 +163,33 @@ A checkbox group allows user to select multiple items
 TFRecaptchaField(controller: recaptchaController, uri: Uri.parse("https://www.anhcode.com/recaptcha.html")),
 ```
 
+Example html file:
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>reCAPTCHA</title>
+    <script src="https://www.google.com/recaptcha/api.js?render=YOUR_RECAPTCHA_SITE_KEY" async defer></script>
+    <script>
+        function sendBack(msg) {
+            if (typeof tf_form !== "undefined") {
+                tf_form.postMessage(msg);
+            }
+        }
+
+        window.onload = function () {
+            grecaptcha.ready(function () {
+                grecaptcha.execute('YOUR_RECAPTCHA_SITE_KEY', {action: 'submit'}).then(sendBack);
+            });
+        }
+    </script>
+</head>
+<body>
+</body>
+</html>
+```
+
 ## Basic Usage
 
 - First, create a `TFForm`
