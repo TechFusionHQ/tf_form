@@ -1,6 +1,6 @@
 part of 'tf_form.dart';
 
-/// [TFRecaptchaField] widget allows the user to pick a DateTime from an input field
+/// [TFRecaptchaField] widget allows loading Google's reCAPTCHA v3 token and set to a TextEditingController's instance
 class TFRecaptchaField extends StatefulWidget {
   TFRecaptchaField({
     Key? key,
