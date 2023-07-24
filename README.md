@@ -159,6 +159,10 @@ A checkbox group allows user to select multiple items
 
 ### TFRecaptchaField
 
+A field to load Google's reCAPTCHA v3 token and set value to a TextEditingController's instance, so it can be posted with other fields of the form.
+
+It requires a remote html page which is configured in Google reCAPTCHA admin console so reCAPTCHA js can work properly.
+
 ```dart
 TFRecaptchaField(controller: recaptchaController, uri: Uri.parse("https://www.anhcode.com/recaptcha.html")),
 ```
