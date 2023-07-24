@@ -157,6 +157,12 @@ A checkbox group allows user to select multiple items
       ),
 ```
 
+### TFRecaptchaField
+
+```dart
+TFRecaptchaField(controller: recaptchaController, uri: Uri.parse("https://www.anhcode.com/recaptcha.html")),
+```
+
 ## Basic Usage
 
 - First, create a `TFForm`

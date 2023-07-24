@@ -35,6 +35,7 @@ class DemoFormPageState extends State<DemoFormPage> {
   final phoneController = TextEditingController();
   final heightController = TextEditingController();
   final roleController = TextEditingController(text: "member");
+  final recaptchaController = TextEditingController();
 
   final _addressesFormKey = GlobalKey<TFFormState>();
   final address1Controller = TextEditingController();
@@ -168,6 +169,7 @@ class DemoFormPageState extends State<DemoFormPage> {
                 ],
                 relatedController: nicknameController,
               ),
+              TFRecaptchaField(controller: recaptchaController, uri: Uri.parse("https://www.anhcode.com/recaptcha.html")),
               const SizedBox(height: 40),
               ElevatedButton(
                 onPressed: () {
