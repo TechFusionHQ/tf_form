@@ -2,6 +2,12 @@
 
 ### Added
 
+* Add `TFRecaptchaField`
+
+## 0.1.13
+
+### Added
+
 * Add `TFValidationType.retype`
 
 ## 0.1.12

@@ -157,6 +157,43 @@ A checkbox group allows user to select multiple items
       ),
 ```
 
+### TFRecaptchaField
+
+A field to load Google's reCAPTCHA v3 token and set value to a TextEditingController's instance, so it can be posted with other fields of the form.
+
+It requires a remote html page which is configured in Google reCAPTCHA admin console so reCAPTCHA js can work properly.
+
+```dart
+TFRecaptchaField(controller: recaptchaController, uri: Uri.parse("https://www.anhcode.com/recaptcha.html")),
+```
+
+Example html file:
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>reCAPTCHA</title>
+    <script src="https://www.google.com/recaptcha/api.js?render=YOUR_RECAPTCHA_SITE_KEY" async defer></script>
+    <script>
+        function sendBack(msg) {
+            if (typeof tf_form !== "undefined") {
+                tf_form.postMessage(msg);
+            }
+        }
+
+        window.onload = function () {
+            grecaptcha.ready(function () {
+                grecaptcha.execute('YOUR_RECAPTCHA_SITE_KEY', {action: 'submit'}).then(sendBack);
+            });
+        }
+    </script>
+</head>
+<body>
+</body>
+</html>
+```
+
 ## Basic Usage
 
 - First, create a `TFForm`
