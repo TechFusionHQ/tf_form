@@ -2,7 +2,7 @@ part of 'tf_form.dart';
 
 /// [TFRecaptchaField] widget allows loading Google's reCAPTCHA v3 token and set to a TextEditingController's instance
 class TFRecaptchaField extends StatefulWidget {
-  TFRecaptchaField({
+  const TFRecaptchaField({
     Key? key,
     required this.controller,
     required this.uri,
@@ -10,7 +10,7 @@ class TFRecaptchaField extends StatefulWidget {
 
   final TextEditingController controller;
   final String jsChannelName = 'tf_form';
-  Uri uri = Uri.parse("https://www.anhcode.com/recaptcha.html");
+  final Uri uri;
 
   @override
   State<TFRecaptchaField> createState() => _TFRecaptchaFieldState();
