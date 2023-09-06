@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 class TFKeyboardActionBar {
   static OverlayEntry? _overlayEntry;
 
-  static void showOverlay(BuildContext context) {
+  static void showOverlay(BuildContext context, {Function()? onDone}) {
     if (_overlayEntry != null) return;
 
     _overlayEntry = OverlayEntry(
@@ -12,7 +12,7 @@ class TFKeyboardActionBar {
           bottom: MediaQuery.of(context).viewInsets.bottom,
           right: 0.0,
           left: 0.0,
-          child: const KeyboardActionBarWidget(),
+          child: KeyboardActionBarWidget(onDone: onDone),
         );
       },
     );
@@ -29,7 +29,9 @@ class TFKeyboardActionBar {
 }
 
 class KeyboardActionBarWidget extends StatelessWidget {
-  const KeyboardActionBarWidget({Key? key}) : super(key: key);
+  final Function()? onDone;
+
+  const KeyboardActionBarWidget({Key? key, this.onDone}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +56,7 @@ class KeyboardActionBarWidget extends StatelessWidget {
       ),
       onPressed: () {
         FocusScope.of(context).requestFocus(FocusNode());
+        onDone?.call();
       },
       child: const Text(
         "Done",

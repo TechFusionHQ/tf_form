@@ -1,3 +1,9 @@
+## 0.1.15
+
+### Added
+
+* Add Action for Keyboard Bar
+
 ## 0.1.14
 
 ### Added

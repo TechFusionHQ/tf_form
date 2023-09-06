@@ -19,6 +19,8 @@ class TFTextField extends StatefulWidget {
     this.expand = false,
     this.enabled = true,
     this.showError = true,
+    this.showDoneButton = true,
+    this.onKeyboardDone,
     this.onTap,
     this.onChanged,
     this.onFocusChanged,
@@ -60,7 +62,9 @@ class TFTextField extends StatefulWidget {
   final bool expand;
   final bool enabled;
   final bool showError;
+  final bool showDoneButton;
   final Function()? onTap;
+  final Function()? onKeyboardDone;
   final Function(String)? onChanged;
   final Function(bool)? onFocusChanged;
   final Function()? onEditingComplete;
@@ -221,9 +225,9 @@ class _TFTextFieldState extends State<TFTextField> {
     });
 
     // Add action bar for numeric keyboard in iOS
-    if (Platform.isIOS && numericKeyboardTypes.contains(widget.keyboardType)) {
+    if (Platform.isIOS && numericKeyboardTypes.contains(widget.keyboardType) && widget.showDoneButton) {
       if (_hasFocus) {
-        TFKeyboardActionBar.showOverlay(context);
+        TFKeyboardActionBar.showOverlay(context, onDone: widget.onKeyboardDone);
       } else {
         TFKeyboardActionBar.removeOverlay();
       }
