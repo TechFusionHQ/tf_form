@@ -362,6 +362,7 @@ class _TFTextFieldState extends State<TFTextField> {
             onTap: widget.controller.clear,
             child: Icon(
               Icons.clear,
+              size: 20,
               color: _contentStyle.color,
             ),
           ),
