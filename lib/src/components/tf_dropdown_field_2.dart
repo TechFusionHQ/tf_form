@@ -137,6 +137,7 @@ class _TFDropdownFieldState2<T extends TFDropdonwnItem> extends State<TFDropdown
                           selectedTileColor: Theme.of(context).colorScheme.primary,
                           trailing: isSelected ? const Icon(Icons.check, size: 18) : null,
                           onTap: () {
+                            _titleController.text = item.displayTitle;
                             widget.onChanged?.call(item);
                             _hideDropdown();
                           },
