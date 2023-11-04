@@ -8,3 +8,9 @@ class TFOptionItem<T> {
   final String title;
   final T value;
 }
+
+abstract class TFDropdonwnItem {
+  String get displayTitle;
+
+  String get id;
+}

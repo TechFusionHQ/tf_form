@@ -14,6 +14,8 @@ part 'tf_checkbox_group.dart';
 
 part 'tf_dropdown_field.dart';
 
+part 'tf_dropdown_field_2.dart';
+
 part 'tf_date_field.dart';
 
 part 'tf_error_text.dart';
