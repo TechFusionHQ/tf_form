@@ -39,6 +39,8 @@ class TFTextField extends StatefulWidget {
     this.regex,
     this.retypeInvalidMessage,
     this.style,
+    this.autofillHints,
+    this.prefixPadding = 10.0,
   }) : super(key: key) {
     if (validationTypes.contains(TFValidationType.regex) && regex == null) {
       throw ArgumentError("regex type and regex should both be set.");
@@ -79,6 +81,8 @@ class TFTextField extends StatefulWidget {
   final TextInputAction textInputAction;
   final List<TextInputFormatter>? inputFormatters;
   final TFFieldStyle? style;
+  final List<String>? autofillHints;
+  final double prefixPadding;
 
   /// For validation
   final List<TFValidationType> validationTypes;
@@ -289,12 +293,13 @@ class _TFTextFieldState extends State<TFTextField> {
             crossAxisAlignment: widget.expand ? CrossAxisAlignment.start : CrossAxisAlignment.center,
             children: [
               if (widget.prefix != null) widget.prefix!,
-              if (widget.prefix != null) const SizedBox(width: 10),
+              if (widget.prefix != null) SizedBox(width: widget.prefixPadding),
               Expanded(
                 child: TextField(
                   focusNode: _focusNode,
                   controller: widget.controller,
                   autofocus: widget.autoFocus,
+                  autofillHints: widget.autofillHints,
                   readOnly: widget.readOnly,
                   enabled: widget.enabled,
                   obscureText: widget.obscureText,
